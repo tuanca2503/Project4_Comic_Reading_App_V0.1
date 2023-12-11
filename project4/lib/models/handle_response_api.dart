@@ -84,16 +84,23 @@ class HandleResponseAPI {
     }
   }
 
+  ResultCallAPI getErrReturn(e) {
+    return ResultCallAPI(
+        response: http.Response.bytes([int.parse(e.toString())], 404));
+  }
+
   ///////////////////////////
 }
 
 class ResultCallAPI {
   final http.Response response;
+  dynamic data;
   int code = 404;
   bool check = false;
   String mess = '';
   ResultCallAPI({
     required this.response,
+    this.data,
   }) {
     checkStatusCode();
   }

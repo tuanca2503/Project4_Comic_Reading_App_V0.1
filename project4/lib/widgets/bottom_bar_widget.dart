@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:project4/main.dart';
+import 'package:project4/repositories/base_repository.dart';
 import 'package:project4/repositories/user_repository.dart';
 import 'package:project4/screens/account_screen.dart';
 import 'package:project4/screens/home_screen.dart';
 import 'package:project4/screens/rank_screen.dart';
 import 'package:project4/screens/search_screen.dart';
+import 'package:project4/screens/user_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
 
 class BottomBarWidget extends StatefulWidget {
@@ -14,14 +16,14 @@ class BottomBarWidget extends StatefulWidget {
       required this.colorTheme,
       required this.padding,
       required this.chooseBottomicon,
-      required this.userRepository,
+      required this.baseRepository,
       required this.constraints});
   final BoxConstraints constraints;
   final double padding;
   final BoxConstraints baseConstraints;
   final Color colorTheme;
   final int chooseBottomicon;
-  final UserRepository userRepository;
+  final BaseRepository baseRepository;
 
   @override
   State<BottomBarWidget> createState() => _BottomBarWidgetState();
@@ -68,7 +70,10 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
       child: Row(
         children: [
           itemBottom(
-            pageTo: HomeScreen(baseConstraints: widget.baseConstraints),
+            pageTo: HomeScreen(
+              baseConstraints: widget.baseConstraints,
+              baseRepository: widget.baseRepository,
+            ),
             link: 'home',
             choose: myMap["home"] ?? false,
             txt: 'Trang chủ',
@@ -87,13 +92,15 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
           ),
           itemBottom(
             itemUser: true,
-            pageTo:
-                (widget.userRepository.fetchUserData().refreshToken.isNotEmpty)
-                    ? SearchScreen(baseConstraints: widget.baseConstraints)
-                    : AccountScreen(
-                        baseConstraints: widget.baseConstraints,
-                        userRepository: widget.userRepository,
-                      ),
+            pageTo: (widget.baseRepository.userRepository
+                    .fetchUserData()
+                    .refreshToken
+                    .isNotEmpty)
+                ? UserScreen(baseConstraints: widget.baseConstraints)
+                : AccountScreen(
+                    baseConstraints: widget.baseConstraints,
+                    baseRepository: widget.baseRepository,
+                  ),
             link: 'th.jpg',
             choose: myMap["user"] ?? false,
             txt: 'User',

@@ -6,40 +6,86 @@ import 'package:project4/models/part_comic_book.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class ComicBook {
-  final String idComicBook;
-  final String name;
-  final String author;
-  final String description;
-  final String linkImage;
-  final int view;
-  final int like;
-  final int follow;
-  final String rank;
-  final String yearPublic;
+  String id;
+  String title;
+  String coverImage;
+  int createdDate;
+  int lastUpdatedDate;
+  int totalChapters;
+  int totalRead;
+  int totalLike;
+  int totalFavourite;
+  String? currentReadChapterName;
+  int? currentReadChapterId;
+  //
+  List<Genre> genres;
+//
+  String author;
+  String description;
+  bool like;
+  bool favourite;
 
 ///////////////////
 
-  final List<String> listCategory;
   final List<List<ChapterComicBook>> listChapters;
   final List<String> listPart;
   List<PartComicBook> partComicBook = [];
 
   ComicBook({
-    this.idComicBook = "",
-    this.yearPublic = "",
-    this.rank = "",
-    this.name = "",
-    this.author = "",
+    this.currentReadChapterId,
+    this.currentReadChapterName,
+    this.id = "",
+    this.title = "",
+    this.coverImage = "c4.jpg",
+    this.createdDate = 1999,
+    this.lastUpdatedDate = 0,
+    this.author = "Unknow",
+    this.totalChapters = 0,
+    this.totalRead = 0,
+    this.totalLike = 0,
+    this.totalFavourite = 0,
     this.description = "",
-    this.linkImage = "c4.jpg",
-    this.listCategory = const [],
-    this.view = 0,
-    this.like = 0,
-    this.follow = 0,
+    this.genres = const [],
+    this.like = false,
+    this.favourite = false,
     this.listPart = const [],
     this.listChapters = const [[]],
   }) {
     setPartComicBook(part: listPart, chapter: listChapters);
+  }
+  ///////
+  List<ComicBook> getAllDataFromJson({required List<dynamic> jsons}) {
+    List<ComicBook> datas = [];
+    for (var json in jsons) {
+      datas.add(
+        ComicBook(
+          id: json['id'],
+          title: json['title'],
+          coverImage: json['coverImage'],
+          createdDate:
+              DateTime.fromMillisecondsSinceEpoch(json['createdDate']).year,
+          lastUpdatedDate: json['lastUpdatedDate'],
+          genres: Genre().getAllDataFromJson(jsons: json['genres']),
+          totalChapters: json['totalChapters'],
+          totalRead: json['totalRead'],
+          totalLike: json['totalLike'],
+          totalFavourite: json['totalFavourite'],
+          currentReadChapterName: json['currentReadChapterName'],
+          currentReadChapterId: json['currentReadChapterId'],
+        ),
+      );
+    }
+    return datas;
+  }
+
+  void getDetailsDataFromJson({required Map<String, dynamic> json}) {
+    author = json['author'];
+    description = json['description'];
+    currentReadChapterName = json['currentReadChapterName'];
+    currentReadChapterId = json['currentReadChapterId'];
+
+    favourite = json['favourite'];
+    like = json['like'];
   }
 
   void setPartComicBook(
@@ -77,31 +123,14 @@ class ComicBook {
     List<ComicBook> comicBooks = List.generate(
       7,
       (index) => ComicBook(
-        idComicBook: 'CB${Random().nextInt(500) + 20}-$index',
-        name: 'Comic Name $index ',
+        id: 'CB${Random().nextInt(500) + 20}-$index',
+        title: 'Comic Name $index ',
         author: 'Author $index ',
-        yearPublic: "${Random().nextInt(25) + 1999}",
-        rank: "${Random().nextInt(10) + 1}",
+        createdDate: Random().nextInt(25) + 1999,
         description:
             'The story revolves around the life of a young girl named Hương. Born and raised in a small village in Vietnam, Hương dreams of exploring the world beyond her humble beginnings. However, her life takes a dramatic turn when her family falls into financial hardship, forcing her to put her dreams on hold.Despite the challenges, Hương remains resilient. She takes on various jobs to support her family, all the while nurturing her dream of traveling. Her determination and hard work eventually pay off when she receives a scholarship to study abroad.',
-        linkImage: 'c$index.jpg',
-        listCategory: List.generate(
-            Random().nextInt(8) + 3,
-            (index) => [
-                  'Action',
-                  'Adventure',
-                  'Comedy',
-                  'Drama',
-                  'Fantasy',
-                  'Shounen',
-                  'Supernatured',
-                  'Seinen',
-                  'Comedy',
-                  'Romance',
-                ][Random().nextInt(10)]),
-        view: Random().nextInt(500) * Random().nextInt(100),
-        like: Random().nextInt(500) * Random().nextInt(100),
-        follow: Random().nextInt(500) * Random().nextInt(100),
+        coverImage: 'c$index.jpg',
+        genres: Genre().seed(),
         listPart: ["Phần 1"],
         listChapters: [
           List.generate(
@@ -143,57 +172,11 @@ class ComicBook {
       ComicBook(),
     ]);
     return comicBooks;
-
-////////////
-    ///
-
-    // return [
-    //   ComicBook(
-    //     yearPublic: "1997",
-    //     rank: "1",
-    //     name: 'Comic Name 1',
-    //     author: 'Author 1',
-    //     description:
-    //         'The story revolves around the life of a young girl named Hương. Born and raised in a small village in Vietnam, Hương dreams of exploring the world beyond her humble beginnings. However, her life takes a dramatic turn when her family falls into financial hardship, forcing her to put her dreams on hold.Despite the challenges, Hương remains resilient. She takes on various jobs to support her family, all the while nurturing her dream of traveling. Her determination and hard work eventually pay off when she receives a scholarship to study abroad.',
-    //     linkImage: 'c1.jpg',
-    //     listCategory: [
-    //       'Action',
-    //       'Adventure',
-    //       'Comedy',
-    //       'Drama',
-    //       'Fantasy',
-    //       'Shounen',
-    //       'Supernatured',
-    //       'Seinen',
-    //       'Comedy',
-    //       'Romance',
-    //     ],
-    //     view: 1000,
-    //     like: 500,
-    //     follow: 300,
-    //     listPart: ["Phan 1"],
-    //     listChapters: [
-    //       [
-    //         ChapterComicBook(chapterName: 'Chapter 1', chapterDate: '1-1-1111'),
-    //         ChapterComicBook(chapterName: 'Chapter 2', chapterDate: '1-1-1111'),
-    //         ChapterComicBook(chapterName: 'Chapter 3', chapterDate: '1-1-1111'),
-    //         ChapterComicBook(chapterName: 'Chapter 4', chapterDate: '1-1-1111'),
-    //         ChapterComicBook(chapterName: 'Chapter 5', chapterDate: '1-1-1111'),
-    //         ChapterComicBook(chapterName: 'Chapter 6', chapterDate: '1-1-1111'),
-    //         ChapterComicBook(chapterName: 'Chapter 7', chapterDate: '1-1-1111'),
-    //         ChapterComicBook(chapterName: 'Chapter 8', chapterDate: '1-1-1111'),
-    //         ChapterComicBook(chapterName: 'Chapter 9', chapterDate: '1-1-1111'),
-    //         ChapterComicBook(
-    //             chapterName: 'Chapter 10', chapterDate: '1-1-1111'),
-    //       ]
-    //     ],
-    //   ),
-    // ];
   }
 
   //////////////////////////////
   QrImageView toQrImage({required Color color, required double size}) {
-    String json = '{"id": "$idComicBook"}';
+    String json = '{"id": "$id"}';
 
     return QrImageView(
       eyeStyle: QrEyeStyle(eyeShape: QrEyeShape.square, color: color),
@@ -203,6 +186,40 @@ class ComicBook {
       version: QrVersions.auto,
       size: size,
       padding: EdgeInsets.zero,
+    );
+  }
+}
+
+class Genre {
+  String id;
+  String genresName;
+  Genre({this.id = '', this.genresName = ''});
+  List<Genre> getAllDataFromJson({required List<dynamic> jsons}) {
+    List<Genre> datas = [];
+    for (var json in jsons) {
+      datas.add(Genre(id: json['id'], genresName: json['genresName']));
+    }
+    return datas;
+  }
+
+  List<Genre> seed() {
+    return List.generate(
+      Random().nextInt(8) + 3,
+      (index) => Genre(
+        id: "MTVC$index",
+        genresName: [
+          'Action',
+          'Adventure',
+          'Comedy',
+          'Drama',
+          'Fantasy',
+          'Shounen',
+          'Supernatured',
+          'Seinen',
+          'Comedy',
+          'Romance',
+        ][Random().nextInt(10)],
+      ),
     );
   }
 }

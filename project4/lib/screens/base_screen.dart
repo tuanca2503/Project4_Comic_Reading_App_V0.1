@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:project4/models/handle_response_api.dart';
+import 'package:project4/repositories/base_repository.dart';
 import 'package:project4/repositories/user_repository.dart';
 import 'package:project4/widgets/base_widget.dart';
 import 'package:project4/widgets/bottom_bar_widget.dart';
@@ -19,30 +21,24 @@ class BaseScreen extends StatelessWidget {
   final bool setBottomBar;
   final int chooseBottomicon;
   //send data ->base->bottom
+  testapi({required BaseRepository baseRepository}) async {
+    ResultCallAPI response =
+        await baseRepository.comicsRepository.getAllComics();
+    print(response.mess);
+  }
 
   @override
   Widget build(BuildContext context) {
     Color colorTheme = Color(0xFF080401);
 
     double heightHeadBottom = baseConstraints.maxHeight * 0.09;
-    final UserRepository userRepository = GetIt.instance<UserRepository>();
-    // userRepository.registerUser(
-    //     email: "abc@a.a", password: "aaaa", userName: "aaaa");
-    // userRepository.loginUser(email: "abc@a.a", password: "aaaa");
-    // userRepository.getInforUser();
-    // print(userRepository.token);
-    ////////////////////
-    // final response = userRepository
-    //     .loginUser(email: "abc@a.a", password: "aaaa")
-    //     .then((value) {
-    //   if (value is String) {
-    //     userRepository.getInforUser(token: value);
+    final BaseRepository baseRepository = GetIt.instance<BaseRepository>();
+    testapi(baseRepository: baseRepository);
 
-    //     return value;
-    //   }
-    // });
-
-    // print(userRepository.loginUser(email: "abc@a.a", password: "aaaa"));
+    /// base repo
+    ///
+    ///
+    ///
 
     return Scaffold(
       /////////////////////////////////
@@ -83,7 +79,7 @@ class BaseScreen extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return BottomBarWidget(
-                    userRepository: userRepository,
+                    baseRepository: baseRepository,
                     constraints: constraints,
                     chooseBottomicon: chooseBottomicon,
                     padding: 10,

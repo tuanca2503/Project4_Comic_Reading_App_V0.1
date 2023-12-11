@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:project4/config.dart';
 import 'package:project4/models/comic_book.dart';
 import 'package:project4/screens/details_comic_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
@@ -61,7 +62,9 @@ class _ListWidgetState extends State<ListWidget> {
               child: FittedBox(
                 fit: BoxFit.cover,
                 child: myEventHandler(
-                    child: BaseWidget().setImageAsset(comicBook.linkImage),
+                    child: Image.network(
+                      '${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}',
+                    ),
                     comicBook: comicBook),
               ),
             ),
@@ -72,7 +75,7 @@ class _ListWidgetState extends State<ListWidget> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: BaseWidget().setText(
-                    txt: "${comicBook.name} ",
+                    txt: "${comicBook.title} ",
                     fontSize: 18,
                     fontWeight: FontWeight.w100),
               ),
@@ -86,7 +89,7 @@ class _ListWidgetState extends State<ListWidget> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    for (String value in comicBook.listCategory)
+                    for (Genre value in comicBook.genres)
                       FittedBox(
                         fit: BoxFit.cover,
                         child: Container(
@@ -99,7 +102,7 @@ class _ListWidgetState extends State<ListWidget> {
                             alignment: Alignment.center,
                             child: BaseWidget().setText(
                                 color: Color(0xffD8d8d8),
-                                txt: value,
+                                txt: value.genresName,
                                 fontSize: 6,
                                 fontWeight: FontWeight.w100),
                           ),
@@ -268,7 +271,9 @@ class _ListWidgetState extends State<ListWidget> {
         decoration: BoxDecoration(
           borderRadius: borderRadius,
           image: DecorationImage(
-              image: AssetImage('assets/images/${comicBook.linkImage}'),
+              image: NetworkImage(
+                '${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}',
+              ),
               fit: BoxFit.cover),
         ),
         child: Stack(
@@ -296,8 +301,8 @@ class _ListWidgetState extends State<ListWidget> {
                         child: Container(
                           clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(borderRadius: borderRadius),
-                          child: Image.asset(
-                            'assets/images/${comicBook.linkImage}',
+                          child: Image.network(
+                            '${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}',
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -315,7 +320,7 @@ class _ListWidgetState extends State<ListWidget> {
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: BaseWidget().setText(
-                                      txt: comicBook.name, fontSize: 10),
+                                      txt: comicBook.title, fontSize: 10),
                                 ),
                               ),
                               Expanded(
@@ -332,8 +337,8 @@ class _ListWidgetState extends State<ListWidget> {
                                           spacing: spacingWrap,
                                           runSpacing: spacingWrap,
                                           children: [
-                                            for (String value
-                                                in comicBook.listCategory)
+                                            for (Genre value
+                                                in comicBook.genres)
                                               FittedBox(
                                                 fit: BoxFit.cover,
                                                 child: Container(
@@ -359,7 +364,7 @@ class _ListWidgetState extends State<ListWidget> {
                                                     child: BaseWidget().setText(
                                                         color:
                                                             Color(0xffD8d8d8),
-                                                        txt: value,
+                                                        txt: value.genresName,
                                                         fontSize: 8,
                                                         fontWeight:
                                                             FontWeight.w100),
@@ -406,7 +411,8 @@ class _ListWidgetState extends State<ListWidget> {
                                                 ),
                                                 Container(
                                                   child: BaseWidget().setText(
-                                                    txt: "${comicBook.view}",
+                                                    txt:
+                                                        "${comicBook.totalRead}",
                                                     fontSize: 8.3,
                                                     fontWeight: FontWeight.w100,
                                                   ),
@@ -424,7 +430,8 @@ class _ListWidgetState extends State<ListWidget> {
                                                     link:
                                                         'heart_full_grey.png'),
                                                 BaseWidget().setText(
-                                                  txt: "${comicBook.follow}",
+                                                  txt:
+                                                      "${comicBook.totalFavourite}",
                                                   fontSize: 8,
                                                   fontWeight: FontWeight.w100,
                                                 ),
@@ -440,7 +447,7 @@ class _ListWidgetState extends State<ListWidget> {
                                                 BaseWidget().setImageIcon(
                                                     link: 'like_full_grey.png'),
                                                 BaseWidget().setText(
-                                                  txt: "${comicBook.like}",
+                                                  txt: "${comicBook.totalLike}",
                                                   fontSize: 8,
                                                   fontWeight: FontWeight.w100,
                                                 ),
@@ -560,8 +567,8 @@ class _ListWidgetState extends State<ListWidget> {
                                           Radius.circular(10))),
                                   child: FittedBox(
                                     fit: BoxFit.cover,
-                                    child: BaseWidget()
-                                        .setImageAsset(comicBook.linkImage),
+                                    child: Image.network(
+                                        "${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}"),
                                   ),
                                 ),
                               ),
@@ -578,7 +585,7 @@ class _ListWidgetState extends State<ListWidget> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: BaseWidget().setText(
-                                                txt: comicBook.name,
+                                                txt: comicBook.title,
                                                 fontWeight: FontWeight.w900),
                                           ),
                                         ),
@@ -609,9 +616,8 @@ class _ListWidgetState extends State<ListWidget> {
                                                   scrollDirection:
                                                       Axis.horizontal,
                                                   children: [
-                                                    for (String value
-                                                        in comicBook
-                                                            .listCategory)
+                                                    for (Genre value
+                                                        in comicBook.genres)
                                                       FittedBox(
                                                         fit: BoxFit.cover,
                                                         child: Container(
@@ -644,7 +650,8 @@ class _ListWidgetState extends State<ListWidget> {
                                                             child: BaseWidget().setText(
                                                                 color: Color(
                                                                     0xffD8d8d8),
-                                                                txt: value,
+                                                                txt: value
+                                                                    .genresName,
                                                                 fontSize: 8,
                                                                 fontWeight:
                                                                     FontWeight
@@ -717,7 +724,7 @@ class _ListWidgetState extends State<ListWidget> {
                                             flex: 2,
                                             child: BaseWidget().setText(
                                               txt:
-                                                  "${comicBook.follow} lượt thích",
+                                                  "${comicBook.totalLike} lượt thích",
                                               fontSize: 13,
                                               fontWeight: FontWeight.w100,
                                               color: Color(0xffd8d8d8),
@@ -756,7 +763,7 @@ class _ListWidgetState extends State<ListWidget> {
                                             flex: 2,
                                             child: BaseWidget().setText(
                                                 txt:
-                                                    "${comicBook.view} lượt xem",
+                                                    "${comicBook.totalRead} lượt xem",
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.w100,
                                                 color: Color(0xffd8d8d8)),

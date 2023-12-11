@@ -12,10 +12,10 @@ import 'package:cookie_jar/cookie_jar.dart';
 
 class UserRepository {
   User _user = User();
-  HandleResponseAPI handleResponseAPI = HandleResponseAPI();
-  String ip = AppConfig.apiIP;
-  String port = AppConfig.apiPort;
-  UserRepository();
+
+  String ip;
+  String port;
+  UserRepository({required this.ip, required this.port});
 
   ///
   User fetchUserData() {
@@ -32,7 +32,7 @@ class UserRepository {
         method: 'post',
         ip: ip,
         port: port,
-        api: '/api/auth/free/login',
+        api: 'api/auth/free/login',
         apiBody: {
           'email': email,
           'password': password,
@@ -66,7 +66,7 @@ class UserRepository {
         method: 'post',
         port: port,
         ip: ip,
-        api: '/api/auth/free/register',
+        api: 'api/auth/free/register',
         apiBody: {
           'email': email,
           'password': password,
@@ -82,6 +82,24 @@ class UserRepository {
   }
 
   ///////////////////////////////////
+  Future<dynamic> forgotPassword({required String email}) async {
+    try {
+      final ResultCallAPI response = await HandleResponseAPI().callAPI(
+        method: 'post',
+        port: port,
+        ip: ip,
+        api: 'api/auth/free/forgot-password',
+        apiBody: {
+          'email': email,
+        },
+      );
+
+      return response;
+    } catch (e) {
+      print("///ERROR: $e///");
+      return false;
+    }
+  }
 
   ///
   ///
@@ -92,7 +110,7 @@ class UserRepository {
           method: 'get',
           port: port,
           ip: ip,
-          api: '/api/user/get-information',
+          api: 'api/user/get-information',
           apiHeader: {
             'Authorization': 'Bearer ${accessToken}',
             'Content-Type': 'application/json',

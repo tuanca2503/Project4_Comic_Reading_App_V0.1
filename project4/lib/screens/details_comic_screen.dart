@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project4/config.dart';
 import 'package:project4/models/chapter_comic_book.dart';
 import 'package:project4/models/comic_book.dart';
 import 'package:project4/models/part_comic_book.dart';
@@ -201,8 +202,8 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                             0.3,
                                                     decoration: BoxDecoration(
                                                         image: DecorationImage(
-                                                            image: AssetImage(
-                                                                'assets/images/${widget.comicBook.linkImage}'),
+                                                            image: NetworkImage(
+                                                                '${AppConfig.apiIP}${AppConfig.apiPort}${widget.comicBook.coverImage}'),
                                                             fit: BoxFit.cover),
                                                         borderRadius:
                                                             borderRadius),
@@ -449,7 +450,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
               child: Container(
                 alignment: Alignment.center,
                 child: BaseWidget().setText(
-                    txt: comicBook.name,
+                    txt: comicBook.title,
                     fontWeight: FontWeight.w900,
                     fontSize: 25),
               ),
@@ -471,7 +472,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                 alignment: Alignment.center,
                 child: BaseWidget().setText(
                     txt:
-                        "${widget.comicBook.yearPublic} - En course de publication",
+                        "${widget.comicBook.createdDate} - En course de publication",
                     fontWeight: FontWeight.w100,
                     fontSize: 15,
                     color: Color.fromARGB(255, 116, 116, 116)),
@@ -488,7 +489,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                     scrollDirection: Axis.horizontal,
                     children: [
 //
-                      for (String value in comicBook.listCategory)
+                      for (Genre value in comicBook.genres)
                         FittedBox(
                           fit: BoxFit.cover,
                           child: Container(
@@ -504,7 +505,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                               alignment: Alignment.center,
                               child: BaseWidget().setText(
                                   color: Colors.white,
-                                  txt: value,
+                                  txt: value.genresName,
                                   fontSize: 3,
                                   fontWeight: FontWeight.w100),
                             ),
@@ -516,19 +517,6 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                 ),
               ),
             ),
-            // Expanded(
-            //   flex: 3,
-            //   child: Container(
-            //     width: constraints.maxWidth,
-            //     alignment: Alignment.center,
-            //     child: Container(
-            //       width: constraints.maxWidth,
-            //       padding: EdgeInsets.only(right: 10),
-            //       alignment: Alignment.center,
-            //       child: Text("ko biet"),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
@@ -551,7 +539,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                 ),
               ),
               child: BaseWidget().setText(
-                  txt: "Top ${widget.comicBook.rank} bảng xếp hạng",
+                  txt: "Top ${1} bảng xếp hạng",
                   color: Color.fromARGB(255, 0, 0, 0),
                   fontWeight: FontWeight.w200,
                   fontSize: 12),
@@ -569,7 +557,8 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
       height: constraints.maxHeight,
       child: FittedBox(
         fit: BoxFit.cover,
-        child: Image.asset("assets/images/${widget.comicBook.linkImage}"),
+        child: Image.network(
+            '${AppConfig.apiIP}${AppConfig.apiPort}${widget.comicBook.coverImage}'),
       ),
     );
   }

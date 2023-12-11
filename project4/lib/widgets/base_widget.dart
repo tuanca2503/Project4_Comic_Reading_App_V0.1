@@ -80,6 +80,30 @@ class BaseWidget {
 
   ///
   ///
+  ///
+  Widget setFutureBuilder(
+      {required Function(dynamic) callback, required repo}) {
+    return FutureBuilder(
+      future: repo,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          return callback(snapshot);
+
+          // Using await here is allowed because it's inside an async function
+        } else {
+          return Text('Unexpected ConnectionState');
+        }
+      },
+    );
+  }
+
+  ///
+  ///
+  ///
   Widget handleEventBackNavigation(
       {required Widget child, required BuildContext context}) {
     return GestureDetector(
@@ -221,7 +245,7 @@ class BaseWidget {
                                             padding: EdgeInsets.only(right: 20),
                                             child: BaseWidget().setText(
                                                 txt:
-                                                    "http://metaphobius.epizy.com/?id=${comicBook.idComicBook}",
+                                                    "http://metaphobius.epizy.com/?id=${comicBook.id}",
                                                 fontWeight: FontWeight.w100),
                                           )),
                                       // Expanded(
@@ -252,7 +276,7 @@ class BaseWidget {
                                   txt: "Sao chép liên kết",
                                   handleEvent: Clipboard.setData(ClipboardData(
                                       text:
-                                          "http://metaphobius.epizy.com/?id=${comicBook.idComicBook}")),
+                                          "http://metaphobius.epizy.com/?id=${comicBook.id}")),
                                   showToast: true,
                                   msg: "Sao chép thành công"),
                               itemBoxShare(

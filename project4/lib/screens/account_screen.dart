@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:project4/models/app_valid.dart';
 import 'package:project4/models/handle_response_api.dart';
 import 'package:project4/models/user.dart';
+import 'package:project4/repositories/base_repository.dart';
 import 'package:project4/repositories/user_repository.dart';
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/screens/home_screen.dart';
@@ -12,10 +14,8 @@ import 'package:project4/widgets/base_widget.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen(
-      {super.key,
-      required this.baseConstraints,
-      required UserRepository this.userRepository});
-  final UserRepository userRepository;
+      {super.key, required this.baseConstraints, required this.baseRepository});
+  final BaseRepository baseRepository;
   final BoxConstraints baseConstraints;
 
   @override
@@ -474,24 +474,73 @@ class _AccountScreenState extends State<AccountScreen> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       TextButton(
-                        onPressed: () => showDialog<String>(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            title: const Text('AlertDialog Title'),
-                            content: const Text('AlertDialog description'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.pop(context, 'Cancel'),
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, 'OK'),
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          ),
-                        ),
+                        onPressed: () {
+                          TextEditingController _forgotPass =
+                              TextEditingController();
+                          String _errMess = '';
+                          showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Forgot Password'),
+                              actions: <Widget>[
+                                (_errMess.isNotEmpty || _errMess.isBool)
+                                    ? BaseWidget().setText(
+                                        txt: _errMess,
+                                        color: Colors.red,
+                                        fontSize: 14)
+                                    : Container(),
+                                TextField(
+                                  controller: _forgotPass,
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                    labelText: 'Email',
+                                    hintText: 'Enter your email',
+                                  ),
+                                ),
+                                SizedBox(height: 16.0),
+                                Row(
+                                  children: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, 'Cancel'),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        //
+                                        dynamic validMess =
+                                            AppValid(data: _forgotPass.text)
+                                                    .isValidEmail
+                                                ? true
+                                                : "Hay nhap dung email";
+                                        //
+                                        if (validMess is bool && validMess) {
+                                          ResultCallAPI response = await widget
+                                              .baseRepository.userRepository
+                                              .forgotPassword(
+                                                  email: _forgotPass.text);
+                                          /////
+                                          print(response.mess);
+                                          if (!response.check ||
+                                              response.code == 400) {
+                                            errorMess = response.mess;
+                                          }
+                                          Navigator.pop(context);
+                                        } else {
+                                          setState(() {
+                                            _errMess = validMess;
+                                          });
+                                        }
+                                        //
+                                      },
+                                      child: const Text('Send'),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          );
+                        },
                         child: Text(
                           'Forgot your password?',
                           style: TextStyle(
@@ -623,8 +672,9 @@ class _AccountScreenState extends State<AccountScreen> {
                                 pw: _password.text);
                             //
                             if (validMess is bool && validMess) {
-                              ResultCallAPI response =
-                                  await widget.userRepository.registerUser(
+                              ResultCallAPI response = await widget
+                                  .baseRepository.userRepository
+                                  .registerUser(
                                       email: _email.text,
                                       password: _password.text,
                                       userName: _username.text);
@@ -633,15 +683,18 @@ class _AccountScreenState extends State<AccountScreen> {
                               if (!response.check || response.code == 400) {
                                 errorMess = "Email bi trung";
                               } else {
-                                await widget.userRepository.loginUser(
-                                    email: _email.text,
-                                    password: _password.text);
+                                await widget.baseRepository.userRepository
+                                    .loginUser(
+                                        email: _email.text,
+                                        password: _password.text);
                                 setState(() {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => HomeScreen(
-                                          baseConstraints: baseConstraints),
+                                        baseRepository: widget.baseRepository,
+                                        baseConstraints: baseConstraints,
+                                      ),
                                     ),
                                   );
                                 });
@@ -659,8 +712,9 @@ class _AccountScreenState extends State<AccountScreen> {
                                 key: key, em: _email.text, pw: _password.text);
 
                             if (validMess is bool && validMess) {
-                              ResultCallAPI response =
-                                  await widget.userRepository.loginUser(
+                              ResultCallAPI response = await widget
+                                  .baseRepository.userRepository
+                                  .loginUser(
                                       email: _email.text,
                                       password: _password.text);
                               /////
@@ -675,6 +729,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => HomeScreen(
+                                          baseRepository: widget.baseRepository,
                                           baseConstraints: baseConstraints),
                                     ),
                                   );

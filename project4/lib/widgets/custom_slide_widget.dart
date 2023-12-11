@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:project4/config.dart';
 import 'package:project4/models/comic_book.dart';
 import 'package:project4/screens/details_comic_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
@@ -31,8 +32,8 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
 
                 return Stack(
                   children: [
-                    Image.asset(
-                      "assets/images/${comicBook.linkImage}",
+                    Image.network(
+                      "${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}",
                       fit: BoxFit.cover,
                       width: constraints.maxWidth,
                       height: constraints.maxWidth * 2,

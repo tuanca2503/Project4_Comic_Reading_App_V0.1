@@ -1,19 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:project4/models/comic_book.dart';
+import 'package:project4/models/handle_response_api.dart';
+import 'package:project4/repositories/base_repository.dart';
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
 import 'package:project4/widgets/custom_slide_widget.dart';
 import 'package:project4/widgets/list_widget.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key, required this.baseConstraints});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen(
+      {super.key, required this.baseConstraints, required this.baseRepository});
   final BoxConstraints baseConstraints;
-  List<ComicBook> comicBooks = ComicBook().Seed();
+  final BaseRepository baseRepository;
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-        baseConstraints: baseConstraints,
+        baseConstraints: widget.baseConstraints,
         setAppBar: 1,
         setBottomBar: true,
         chooseBottomicon: 1,
@@ -36,12 +51,17 @@ class HomeScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: 20),
               ),
-              Container(
-                margin: EdgeInsets.only(bottom: 20),
-                child: CustomSlideWidget(
-                  comicBooks: comicBooks,
-                  baseConstraints: baseConstraints,
-                ),
+              BaseWidget().setFutureBuilder(
+                callback: (snapshot) {
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: CustomSlideWidget(
+                      comicBooks: snapshot.data!.data,
+                      baseConstraints: widget.baseConstraints,
+                    ),
+                  );
+                },
+                repo: widget.baseRepository.comicsRepository.getAllComics(),
               ),
 
               //end slide
@@ -51,14 +71,28 @@ class HomeScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: BaseWidget().setText(txt: "Mới cập nhật", fontSize: 15),
               ),
-              Container(
-                height: 300,
-                child: ListWidget(
-                  baseConstraints: baseConstraints,
-                  setList: 0,
-                  comicBooks: comicBooks,
-                ),
+              BaseWidget().setFutureBuilder(
+                callback: (snapshot) {
+                  return Container(
+                    height: 300,
+                    child: ListWidget(
+                      setList: 0,
+                      comicBooks: snapshot.data!.data,
+                      baseConstraints: widget.baseConstraints,
+                    ),
+                  );
+                },
+                repo: widget.baseRepository.comicsRepository
+                    .getAllComics(filter: 'LAST_UPDATED_DATE'),
               ),
+              // Container(
+              //   height: 300,
+              //   child: ListWidget(
+              //     baseConstraints: widget.baseConstraints,
+              //     setList: 0,
+              //     comicBooks: ComicBook().Seed(),
+              //   ),
+              // ),
               //end list
               //list
               Container(
@@ -66,15 +100,29 @@ class HomeScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: BaseWidget().setText(txt: "Được ưa thích", fontSize: 15),
               ),
-              Container(
-                height: 300,
-                child: ListWidget(
-                  baseConstraints: baseConstraints,
-                  setList: 1,
-                  comicBooks: comicBooks,
-                ),
+              BaseWidget().setFutureBuilder(
+                callback: (snapshot) {
+                  return Container(
+                    height: 300,
+                    child: ListWidget(
+                      setList: 1,
+                      comicBooks: snapshot.data!.data,
+                      baseConstraints: widget.baseConstraints,
+                    ),
+                  );
+                },
+                repo: widget.baseRepository.comicsRepository
+                    .getAllComics(filter: 'TOP_FAVOURITE'),
               ),
-              //
+              // Container(
+              //   height: 300,
+              //   child: ListWidget(
+              //     baseConstraints: widget.baseConstraints,
+              //     setList: 1,
+              //     comicBooks: ComicBook().Seed(),
+              //   ),
+              // ),
+              ////////////////////////////////////
               // Container(
               //   padding: EdgeInsets.all(thisPadding),
               //   alignment: Alignment.centerLeft,

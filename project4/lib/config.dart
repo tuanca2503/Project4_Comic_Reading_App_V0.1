@@ -15,7 +15,7 @@ class AppConfig {
   //8080
   ///
   static const String apiIP = 'http://localhost:';
-  static const String apiPort = '8080';
+  static const String apiPort = '8080/';
 
   ///
   ///
