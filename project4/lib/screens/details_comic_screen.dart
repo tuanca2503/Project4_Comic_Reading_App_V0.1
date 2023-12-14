@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:project4/config.dart';
-import 'package:project4/models/chapter_comic_book.dart';
 import 'package:project4/models/comic_book.dart';
-import 'package:project4/models/part_comic_book.dart';
+
+import 'package:project4/repositories/base_repository.dart';
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/screens/rank_screen.dart';
+import 'package:project4/screens/reading_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
 
 class DetailsComicScreen extends StatefulWidget {
@@ -12,7 +13,9 @@ class DetailsComicScreen extends StatefulWidget {
       {super.key,
       required this.comicBook,
       required this.baseConstraints,
-      this.showButton = 0});
+      this.showButton = 0,
+      required this.baseRepository});
+  final BaseRepository baseRepository;
   final ComicBook comicBook;
   final BoxConstraints baseConstraints;
   final int showButton;
@@ -28,7 +31,6 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
   int countClick = 0;
 
   String showPartComic = "";
-  _DetailsComicScreenState();
 
   ///////////////////////////////////
   @override
@@ -36,8 +38,14 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
     // TODO: implement initState
     super.initState();
     setSwitchEvent(showButton: widget.showButton);
-    showPartComic = widget.comicBook.partComicBook.first.partName;
+
+    showPartComic = 'Phan 1';
+    ////////////////////
+
+    //////
   }
+
+  //////////////////////////////////////////
 
   void setSwitchEvent({required int showButton}) {
     //0 chapter||||||||||||||||1 details
@@ -76,17 +84,25 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
     double heightBackgroundBox = widget.baseConstraints.maxHeight * 0.6;
     double heightContentBox = widget.baseConstraints.maxHeight * 0.6;
 
-    return Column(
-      // child: ListView(
-      children: [
-        backgroundBox(heightBackgroundBox: heightBackgroundBox),
-        contentBox(heightContentBox: heightContentBox)
-      ],
-      // ),
-    );
+    return BaseWidget().setFutureBuilder(
+        callback: (snapshot) {
+          return Column(
+            children: [
+              backgroundBox(
+                  heightBackgroundBox: heightBackgroundBox,
+                  comicBook: snapshot.data!.data),
+              contentBox(
+                  heightContentBox: heightContentBox,
+                  comicBook: snapshot.data!.data)
+            ],
+          );
+        },
+        repo: widget.baseRepository.comicsRepository
+            .getDetailsComics(thisComicBook: widget.comicBook));
   }
 
-  Widget contentBox({required double heightContentBox}) {
+  Widget contentBox(
+      {required double heightContentBox, required ComicBook comicBook}) {
     Color borderColor = Color(0xff1A1114);
     double ourRadius = 10;
     double scalePadding = 7;
@@ -153,7 +169,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                           Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              widget.comicBook.description,
+                              comicBook.description,
                               style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 13,
@@ -175,181 +191,186 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                         children: [
                                           //-------------------------------
 
-                                          for (PartComicBook valuePartComic
-                                              in widget.comicBook.partComicBook)
-                                            Column(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      if (showPartComic ==
-                                                          valuePartComic
-                                                              .partName) {
-                                                        showPartComic = "";
-                                                      } else {
-                                                        showPartComic =
-                                                            valuePartComic
-                                                                .partName;
-                                                      }
-                                                    });
-                                                  },
+                                          // for (PartComicBook valuePartComic
+                                          //     in comicBook.partComicBook)
+                                          Column(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    if (showPartComic ==
+                                                        'Phan 1') {
+                                                      showPartComic = "";
+                                                    } else {
+                                                      showPartComic = 'Phan 1';
+                                                    }
+                                                  });
+                                                },
+                                                child: Container(
+                                                  margin: EdgeInsets.only(
+                                                      bottom: 0),
+                                                  clipBehavior: Clip.hardEdge,
+                                                  height:
+                                                      constraints.maxHeight *
+                                                          0.25,
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              '${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}'),
+                                                          fit: BoxFit.cover),
+                                                      borderRadius:
+                                                          borderRadius),
                                                   child: Container(
-                                                    margin: EdgeInsets.only(
-                                                        bottom: 0),
-                                                    clipBehavior: Clip.hardEdge,
-                                                    height:
-                                                        constraints.maxHeight *
-                                                            0.3,
-                                                    decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: NetworkImage(
-                                                                '${AppConfig.apiIP}${AppConfig.apiPort}${widget.comicBook.coverImage}'),
-                                                            fit: BoxFit.cover),
-                                                        borderRadius:
-                                                            borderRadius),
-                                                    child: Container(
-                                                      padding:
-                                                          EdgeInsets.all(10),
-                                                      color: Color.fromARGB(
-                                                          200, 0, 0, 0),
-                                                      child: Row(
-                                                        children: [
-                                                          Expanded(
-                                                            flex: 9,
-                                                            child: Column(
-                                                              children: [
-                                                                Expanded(
-                                                                  child:
-                                                                      Container(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerLeft,
-                                                                    child: BaseWidget()
-                                                                        .setText(
-                                                                            txt:
-                                                                                valuePartComic.partName),
-                                                                  ),
+                                                    padding: EdgeInsets.all(10),
+                                                    color: Color.fromARGB(
+                                                        200, 0, 0, 0),
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          flex: 9,
+                                                          child: Column(
+                                                            children: [
+                                                              Expanded(
+                                                                child:
+                                                                    Container(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerLeft,
+                                                                  child: BaseWidget()
+                                                                      .setText(
+                                                                          txt:
+                                                                              'Phan 1'),
                                                                 ),
-                                                                Expanded(
-                                                                  child:
-                                                                      Container(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerLeft,
-                                                                    child: BaseWidget().setText(
-                                                                        txt:
-                                                                            "${valuePartComic.chapter.length} chuong",
-                                                                        color: Colors
-                                                                            .grey,
-                                                                        fontSize:
-                                                                            10),
-                                                                  ),
+                                                              ),
+                                                              Expanded(
+                                                                child:
+                                                                    Container(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerLeft,
+                                                                  child: BaseWidget().setText(
+                                                                      txt:
+                                                                          "${comicBook.totalChapters} chuong",
+                                                                      color: Colors
+                                                                          .grey,
+                                                                      fontSize:
+                                                                          10),
                                                                 ),
-                                                              ],
-                                                            ),
+                                                              ),
+                                                            ],
                                                           ),
-                                                          Expanded(
-                                                            flex: 1,
-                                                            child: Container(
-                                                              child: (showPartComic ==
-                                                                      valuePartComic
-                                                                          .partName)
-                                                                  ? BaseWidget()
-                                                                      .setImageIcon(
-                                                                          link:
-                                                                              "up_orange.png")
-                                                                  : BaseWidget()
-                                                                      .setImageIcon(
-                                                                          link:
-                                                                              "down_orange.png"),
-                                                            ),
+                                                        ),
+                                                        Expanded(
+                                                          flex: 1,
+                                                          child: Container(
+                                                            child: (showPartComic ==
+                                                                    'Phan 1')
+                                                                ? BaseWidget()
+                                                                    .setImageIcon(
+                                                                        link:
+                                                                            "up_orange.png")
+                                                                : BaseWidget()
+                                                                    .setImageIcon(
+                                                                        link:
+                                                                            "down_orange.png"),
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                 ),
-                                                //////
-                                                ///
-                                                /// true show false null
-                                                /////
-                                                (showPartComic ==
-                                                        valuePartComic.partName)
-                                                    ? Column(
-                                                        children: [
-                                                          for (ChapterComicBook valueChapterComic
-                                                              in valuePartComic
-                                                                  .chapter)
-                                                            Container(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(10),
-                                                              height: constraints
-                                                                      .maxHeight *
-                                                                  0.25,
-                                                              child: Column(
-                                                                children: [
-                                                                  Expanded(
-                                                                    // width: double.infinity,
-                                                                    // height: double.infinity,
+                                              ),
+                                              //////
+                                              ///
+                                              /// true show false null
+                                              /////
+                                              (showPartComic == 'Phan 1')
+                                                  ? Column(
+                                                      children: [
+                                                        for (ChapterComicBook valueChapterComic
+                                                            in comicBook
+                                                                .listChapters)
+                                                          BaseWidget()
+                                                              .handleEventNavigation(
+                                                                  child:
+                                                                      Container(
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            10),
+                                                                    height: constraints
+                                                                            .maxHeight *
+                                                                        0.25,
                                                                     child:
-                                                                        Container(
-                                                                      child:
-                                                                          Row(
-                                                                        children: [
-                                                                          Expanded(
-                                                                            flex:
-                                                                                9,
+                                                                        Column(
+                                                                      children: [
+                                                                        Expanded(
+                                                                          // width: double.infinity,
+                                                                          // height: double.infinity,
+                                                                          child:
+                                                                              Container(
                                                                             child:
-                                                                                Column(
+                                                                                Row(
                                                                               children: [
                                                                                 Expanded(
+                                                                                  flex: 9,
+                                                                                  child: Column(
+                                                                                    children: [
+                                                                                      Expanded(
+                                                                                        child: Container(
+                                                                                          alignment: Alignment.centerLeft,
+                                                                                          child: BaseWidget().setText(txt: valueChapterComic.name, color: Colors.white, fontSize: 15),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                                Expanded(
+                                                                                  flex: 2,
                                                                                   child: Container(
-                                                                                    alignment: Alignment.centerLeft,
-                                                                                    child: BaseWidget().setText(txt: valueChapterComic.chapterName, color: Colors.white, fontSize: 15),
+                                                                                    child: BaseWidget().setText(txt: valueChapterComic.lastUpdatedDate.toString(), color: Colors.white, fontSize: 12),
                                                                                   ),
                                                                                 ),
                                                                               ],
                                                                             ),
                                                                           ),
-                                                                          Expanded(
-                                                                            flex:
-                                                                                2,
-                                                                            child:
-                                                                                Container(
-                                                                              child: BaseWidget().setText(txt: valueChapterComic.chapterDate, color: Colors.white, fontSize: 12),
+                                                                        ),
+                                                                        Container(
+                                                                          width:
+                                                                              double.infinity,
+                                                                          height:
+                                                                              2,
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            color:
+                                                                                Color(0xff16120F),
+                                                                            borderRadius:
+                                                                                BorderRadius.all(
+                                                                              Radius.circular(2),
                                                                             ),
                                                                           ),
-                                                                        ],
-                                                                      ),
+                                                                        )
+                                                                      ],
                                                                     ),
                                                                   ),
-                                                                  Container(
-                                                                    width: double
-                                                                        .infinity,
-                                                                    height: 2,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Color(
-                                                                          0xff16120F),
-                                                                      borderRadius:
-                                                                          BorderRadius
-                                                                              .all(
-                                                                        Radius.circular(
-                                                                            2),
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                        ],
-                                                      )
-                                                    : Container()
+                                                                  pageTo: ReadingScreen(
+                                                                      chapterComicBook:
+                                                                          valueChapterComic,
+                                                                      baseRepository:
+                                                                          widget
+                                                                              .baseRepository,
+                                                                      baseConstraints:
+                                                                          widget
+                                                                              .baseConstraints),
+                                                                  context:
+                                                                      context)
+                                                        ////////////////////////////
+                                                      ],
+                                                    )
+                                                  : Container()
 
-                                                //////////////
-                                              ],
-                                            ),
+                                              //////////////
+                                            ],
+                                          ),
 
                                           //--------------------------------
                                         ],
@@ -363,7 +384,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                         : null,
 
                 ///
-              )
+              ),
               /////
             ],
           );
@@ -414,7 +435,8 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
     );
   }
 
-  backgroundBox({required double heightBackgroundBox}) {
+  backgroundBox(
+      {required double heightBackgroundBox, required ComicBook comicBook}) {
     return Container(
       padding: EdgeInsets.all(10),
       width: double.infinity,
@@ -423,12 +445,11 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
         builder: (context, constraints) {
           return Stack(
             children: [
-              backgroundDetails(constraints: constraints),
+              backgroundDetails(constraints: constraints, comicBook: comicBook),
               blurBottomBackground(constraints: constraints),
               ////////////////////background
               buttonShowRank(constraints: constraints),
-              boxDetailsComic(
-                  constraints: constraints, comicBook: widget.comicBook),
+              boxDetailsComic(constraints: constraints, comicBook: comicBook),
             ],
           );
         },
@@ -471,8 +492,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
               child: Container(
                 alignment: Alignment.center,
                 child: BaseWidget().setText(
-                    txt:
-                        "${widget.comicBook.createdDate} - En course de publication",
+                    txt: "${comicBook.createdDate} - En course de publication",
                     fontWeight: FontWeight.w100,
                     fontSize: 15,
                     color: Color.fromARGB(255, 116, 116, 116)),
@@ -547,7 +567,8 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
             pageTo: RankScreen(baseConstraints: widget.baseConstraints)));
   }
 
-  Widget backgroundDetails({required BoxConstraints constraints}) {
+  Widget backgroundDetails(
+      {required BoxConstraints constraints, required ComicBook comicBook}) {
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: const BoxDecoration(
@@ -558,7 +579,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
       child: FittedBox(
         fit: BoxFit.cover,
         child: Image.network(
-            '${AppConfig.apiIP}${AppConfig.apiPort}${widget.comicBook.coverImage}'),
+            '${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}'),
       ),
     );
   }

@@ -48,11 +48,11 @@ class HandleResponseAPI {
       Map<String, String> apiHeader = const {
         'accept': '*/*',
         'Content-Type': 'application/json; charset=UTF-8',
+        'ngrok-skip-browser-warning': 'true',
       },
       Map<String, String> apiBody = const {}}) async {
     String url = '${ip}${port}${api}';
-    print(url);
-    // apiBody = jsonEncode(apiBody);
+    // print(url);
 
     switch (method.toLowerCase()) {
       case 'get':

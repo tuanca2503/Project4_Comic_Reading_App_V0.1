@@ -32,10 +32,11 @@ class ComicsRepository {
       if (response.check) {
         List<dynamic> jsonArray = jsonDecode(response.response.body)['data'];
         _comicBook = ComicBook().getAllDataFromJson(jsons: jsonArray);
+        response.data = _comicBook;
+
 ///////////////////////
         // await getDetailsComics(id: _comicBook.first.id);
       }
-      response.data = _comicBook;
 
       return response;
     } catch (e) {
@@ -44,14 +45,45 @@ class ComicsRepository {
     }
   }
 
-  Future<ResultCallAPI> getDetailsComics({required String id}) async {
+  Future<ResultCallAPI> getDetailsComics(
+      {required ComicBook thisComicBook}) async {
     try {
       final ResultCallAPI response = await HandleResponseAPI().callAPI(
-          method: 'get', ip: ip, port: port, api: 'api/mangas/free/$id');
+          method: 'get',
+          ip: ip,
+          port: port,
+          api: 'api/mangas/free/${thisComicBook.id}');
       if (response.check) {
-        _comicBook
-            .firstWhere((cmb) => cmb.id == id)
-            .getDetailsDataFromJson(json: jsonDecode(response.response.body));
+        thisComicBook.setDetailsDataFromJson(
+            json: jsonDecode(response.response.body));
+        response.data = thisComicBook;
+        // _comicBook
+        //     .firstWhere((cmb) => cmb.id == id)
+        //     .getDetailsDataFromJson(json: jsonDecode(response.response.body));
+      }
+
+      return response;
+    } catch (e) {
+      print("///ERROR: $e///");
+      return HandleResponseAPI().getErrReturn(e);
+    }
+  }
+
+  ///
+  Future<ResultCallAPI> getChapterComic(
+      {required ChapterComicBook chapter}) async {
+    try {
+      final ResultCallAPI response = await HandleResponseAPI().callAPI(
+          method: 'get',
+          ip: ip,
+          port: port,
+          api: 'api/chapters/free/${chapter.id}');
+      if (response.check) {
+        chapter.setDetailsChapter(json: jsonDecode(response.response.body));
+        response.data = chapter;
+        // _comicBook
+        //     .firstWhere((cmb) => cmb.id == id)
+        //     .getDetailsDataFromJson(json: jsonDecode(response.response.body));
       }
 
       return response;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:project4/models/comic_book.dart';
+import 'package:project4/repositories/base_repository.dart';
 
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
@@ -12,8 +13,10 @@ import 'package:project4/widgets/list_widget.dart';
 class UserScreen extends StatefulWidget {
   const UserScreen({
     super.key,
+    required this.baseRepository,
     required this.baseConstraints,
   });
+  final BaseRepository baseRepository;
 
   final BoxConstraints baseConstraints;
 
@@ -184,6 +187,7 @@ class _AccountScreenState extends State<UserScreen> {
           child: Container(
             height: 300,
             child: ListWidget(
+              baseRepository: widget.baseRepository,
               baseConstraints: widget.baseConstraints,
               setList: 1,
               comicBooks: ComicBook().Seed(),

@@ -22,9 +22,9 @@ class BaseScreen extends StatelessWidget {
   final int chooseBottomicon;
   //send data ->base->bottom
   testapi({required BaseRepository baseRepository}) async {
-    ResultCallAPI response =
-        await baseRepository.comicsRepository.getAllComics();
-    print(response.mess);
+    // ResultCallAPI response =
+    //     await baseRepository.comicsRepository.getAllComics();
+    // print(response.mess);
   }
 
   @override

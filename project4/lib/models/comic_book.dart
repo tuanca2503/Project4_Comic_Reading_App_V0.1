@@ -1,8 +1,7 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:project4/models/chapter_comic_book.dart';
-import 'package:project4/models/part_comic_book.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class ComicBook {
@@ -27,9 +26,9 @@ class ComicBook {
 
 ///////////////////
 
-  final List<List<ChapterComicBook>> listChapters;
-  final List<String> listPart;
-  List<PartComicBook> partComicBook = [];
+  List<ChapterComicBook> listChapters = [];
+  // List<String> listPart;
+  // List<PartComicBook> partComicBook = [];
 
   ComicBook({
     this.currentReadChapterId,
@@ -48,10 +47,10 @@ class ComicBook {
     this.genres = const [],
     this.like = false,
     this.favourite = false,
-    this.listPart = const [],
-    this.listChapters = const [[]],
+    // this.listPart = const [],
+    // this.listChapters = const [[]],
   }) {
-    setPartComicBook(part: listPart, chapter: listChapters);
+    // setPartComicBook(part: listPart, chapter: listChapters);
   }
   ///////
   List<ComicBook> getAllDataFromJson({required List<dynamic> jsons}) {
@@ -60,7 +59,7 @@ class ComicBook {
       datas.add(
         ComicBook(
           id: json['id'],
-          title: json['title'],
+          title: utf8.decode(latin1.encode(json['title'])),
           coverImage: json['coverImage'],
           createdDate:
               DateTime.fromMillisecondsSinceEpoch(json['createdDate']).year,
@@ -78,45 +77,64 @@ class ComicBook {
     return datas;
   }
 
-  void getDetailsDataFromJson({required Map<String, dynamic> json}) {
-    author = json['author'];
-    description = json['description'];
+  void setDetailsDataFromJson({required Map<String, dynamic> json}) {
+    author = utf8.decode(latin1.encode(json['author']));
+    description = utf8.decode(latin1.encode(json['description']));
     currentReadChapterName = json['currentReadChapterName'];
     currentReadChapterId = json['currentReadChapterId'];
 
     favourite = json['favourite'];
     like = json['like'];
+
+    //
+    // listPart = [json['part'] ?? 'Phan 1'];
+    // print(listPart);
+
+    listChapters =
+        ChapterComicBook().setListChapterFormJson(jsons: json['chapters']);
+
+    // List<ChapterComicBook>
+
+    //
+    // listChapters = [
+    //   List.generate(json['chapters'], ( chapterIndex) {
+    //     print(chapterIndex);
+    //     return ChapterComicBook();
+    //   }),
+    // ];
+
+    // listChapters = [[]]
   }
 
-  void setPartComicBook(
-      {required List<String> part,
-      required List<List<ChapterComicBook>> chapter}) {
-    /////
-    ///////////// chap = [[]]
-    int i = 0;
-    if (part.length == chapter.length) {
-      for (var valuePart in part) {
-        partComicBook
-            .add(PartComicBook(partName: valuePart, chapter: chapter[i]));
-        i++;
-      }
-    } else {
-      partComicBook.add(PartComicBook(
-          partName: "error part or chapter not equal", chapter: []));
-    }
-  }
+  // void setPartComicBook(
+  //     {required List<String> part,
+  //     required List<List<ChapterComicBook>> chapter}) {
+  //   /////
+  //   ///////////// chap = [[]]
+  //   int i = 0;
+  //   if (part.length == chapter.length) {
+  //     for (var valuePart in part) {
+  //       partComicBook
+  //           .add(PartComicBook(partName: valuePart, chapter: chapter[i]));
+  //       i++;
+  //     }
+  //   } else {
+  //     partComicBook.add(PartComicBook(
+  //         partName: "error part or chapter not equal", chapter: []));
+  //   }
+  // }
 
-  int getSumAllChapInPart() {
-    int sum = 0;
-    for (var value in partComicBook) {
-      sum += value.chapter.length;
-    }
-    return sum;
-  }
+  // int getSumAllChapInPart() {
+  //   int sum = 0;
+  //   for (var value in partComicBook) {
+  //     sum += value.chapter.length;
+  //   }
+  //   return sum;
+  // }
 
-  List<PartComicBook> getPartComicBook() {
-    return partComicBook;
-  }
+  // List<PartComicBook> getPartComicBook() {
+  //   return partComicBook;
+  // }
 
   List<ComicBook> Seed() {
 //////////////////////
@@ -131,46 +149,46 @@ class ComicBook {
             'The story revolves around the life of a young girl named Hương. Born and raised in a small village in Vietnam, Hương dreams of exploring the world beyond her humble beginnings. However, her life takes a dramatic turn when her family falls into financial hardship, forcing her to put her dreams on hold.Despite the challenges, Hương remains resilient. She takes on various jobs to support her family, all the while nurturing her dream of traveling. Her determination and hard work eventually pay off when she receives a scholarship to study abroad.',
         coverImage: 'c$index.jpg',
         genres: Genre().seed(),
-        listPart: ["Phần 1"],
-        listChapters: [
-          List.generate(
-              Random().nextInt(20) + 5,
-              (chapterIndex) => ChapterComicBook(
-                  chapterName: 'Chương ${chapterIndex + 1}',
-                  chapterDate:
-                      '${Random().nextInt(31)}-${Random().nextInt(12)}-${Random().nextInt(25) + 1999}'))
-        ],
+        // listPart: ["Phần 1"],
+        // listChapters: [
+        //   List.generate(
+        //       Random().nextInt(20) + 5,
+        //       (chapterIndex) => ChapterComicBook(
+        //           id: '0',
+        //           name: 'Chương ${chapterIndex + 1}',
+        //           lastUpdatedDate: 0))
+        // ],
       ),
     );
 
-//////test model
-    comicBooks.addAll([
-      //error
-      ComicBook(
-        listPart: ["p1", "p2"],
-        listChapters: [
-          [ChapterComicBook(chapterName: "c1", chapterDate: "1-1-1111")]
-        ],
-      ),
-      ComicBook(
-        listPart: ["p1", "p2"],
-        listChapters: [
-          List.generate(
-              Random().nextInt(20) + 5,
-              (chapterIndex) => ChapterComicBook(
-                  chapterName: 'Chapter ${chapterIndex + 1}',
-                  chapterDate:
-                      '${Random().nextInt(31)}-${Random().nextInt(12)}-${Random().nextInt(25) + 1999}')),
-          List.generate(
-              Random().nextInt(20) + 5,
-              (chapterIndex) => ChapterComicBook(
-                  chapterName: 'Chapter ${chapterIndex + 1}',
-                  chapterDate:
-                      '${Random().nextInt(31)}-${Random().nextInt(12)}-${Random().nextInt(25) + 1999}'))
-        ],
-      ),
-      ComicBook(),
-    ]);
+// //////test model
+//     comicBooks.addAll([
+//       //error
+//       ComicBook(
+//         listPart: ["p1", "p2"],
+//         listChapters: [
+//           [ChapterComicBook(name: "c1", chapterDate: "1-1-1111")]
+//         ],
+//       ),
+//       ComicBook(
+//         listPart: ["p1", "p2"],
+//         listChapters: [
+//           List.generate(
+//               Random().nextInt(20) + 5,
+//               (chapterIndex) => ChapterComicBook(
+//                   chapterName: 'Chapter ${chapterIndex + 1}',
+//                   chapterDate:
+//                       '${Random().nextInt(31)}-${Random().nextInt(12)}-${Random().nextInt(25) + 1999}')),
+//           List.generate(
+//               Random().nextInt(20) + 5,
+//               (chapterIndex) => ChapterComicBook(
+//                   chapterName: 'Chapter ${chapterIndex + 1}',
+//                   chapterDate:
+//                       '${Random().nextInt(31)}-${Random().nextInt(12)}-${Random().nextInt(25) + 1999}'))
+//         ],
+//       ),
+//       ComicBook(),
+//     ]);
     return comicBooks;
   }
 
@@ -197,7 +215,12 @@ class Genre {
   List<Genre> getAllDataFromJson({required List<dynamic> jsons}) {
     List<Genre> datas = [];
     for (var json in jsons) {
-      datas.add(Genre(id: json['id'], genresName: json['genresName']));
+      datas.add(
+        Genre(
+          id: json['id'],
+          genresName: utf8.decode(latin1.encode(json['genresName'])),
+        ),
+      );
     }
     return datas;
   }
@@ -221,5 +244,43 @@ class Genre {
         ][Random().nextInt(10)],
       ),
     );
+  }
+}
+
+///
+class ChapterComicBook {
+  String id;
+  String name;
+  int lastUpdatedDate;
+  List<String> images;
+
+  ChapterComicBook(
+      {this.name = '',
+      this.lastUpdatedDate = 0,
+      this.id = '',
+      this.images = const []});
+  ChapterComicBook setChapterFromJson({required Map<String, dynamic> json}) {
+    return ChapterComicBook(
+        id: json['id'],
+        name: utf8.decode(latin1.encode(json['name'])),
+        lastUpdatedDate: json['lastUpdatedDate']);
+  }
+
+  List<ChapterComicBook> setListChapterFormJson(
+      {required List<dynamic> jsons}) {
+    List<ChapterComicBook> datas = [];
+    for (var json in jsons) {
+      datas.add(ChapterComicBook().setChapterFromJson(json: json));
+    }
+    return datas;
+  }
+
+  void setDetailsChapter({required Map<String, dynamic> json}) {
+    // images.add('1');
+    // print(images );
+    images = [];
+    for (var value in json['images']) {
+      images.add(value);
+    }
   }
 }

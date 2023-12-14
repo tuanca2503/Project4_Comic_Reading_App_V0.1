@@ -5,11 +5,18 @@ import 'package:project4/models/user.dart';
 import 'package:project4/repositories/base_repository.dart';
 import 'package:project4/repositories/user_repository.dart';
 import 'package:project4/screens/home_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   GetIt.instance.registerLazySingleton<BaseRepository>(() => BaseRepository());
 
-  runApp(const MyApp());
+  // runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => VisibilityProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -29,5 +36,15 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+class VisibilityProvider with ChangeNotifier {
+  bool _isVisible = true;
+
+  bool get isVisible => _isVisible;
+  void toggleVisibility() {
+    _isVisible = !_isVisible;
+    notifyListeners();
   }
 }

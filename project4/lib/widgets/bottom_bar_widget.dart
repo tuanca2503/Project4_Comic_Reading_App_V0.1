@@ -96,7 +96,10 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
                     .fetchUserData()
                     .refreshToken
                     .isNotEmpty)
-                ? UserScreen(baseConstraints: widget.baseConstraints)
+                ? UserScreen(
+                    baseConstraints: widget.baseConstraints,
+                    baseRepository: widget.baseRepository,
+                  )
                 : AccountScreen(
                     baseConstraints: widget.baseConstraints,
                     baseRepository: widget.baseRepository,

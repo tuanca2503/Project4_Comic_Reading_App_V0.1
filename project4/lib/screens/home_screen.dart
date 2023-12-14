@@ -56,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Container(
                     margin: EdgeInsets.only(bottom: 20),
                     child: CustomSlideWidget(
+                      baseRepository: widget.baseRepository,
                       comicBooks: snapshot.data!.data,
                       baseConstraints: widget.baseConstraints,
                     ),
@@ -76,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Container(
                     height: 300,
                     child: ListWidget(
+                      baseRepository: widget.baseRepository,
                       setList: 0,
                       comicBooks: snapshot.data!.data,
                       baseConstraints: widget.baseConstraints,
@@ -105,6 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Container(
                     height: 300,
                     child: ListWidget(
+                      baseRepository: widget.baseRepository,
                       setList: 1,
                       comicBooks: snapshot.data!.data,
                       baseConstraints: widget.baseConstraints,

@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:project4/config.dart';
 import 'package:project4/models/comic_book.dart';
+import 'package:project4/models/handle_response_api.dart';
+import 'package:project4/repositories/base_repository.dart';
 import 'package:project4/screens/details_comic_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
 
@@ -13,7 +15,9 @@ class ListWidget extends StatefulWidget {
       {super.key,
       required this.setList,
       required this.comicBooks,
-      required this.baseConstraints});
+      required this.baseConstraints,
+      required this.baseRepository});
+  final BaseRepository baseRepository;
   final int setList;
   final List<ComicBook> comicBooks;
   final BoxConstraints baseConstraints;
@@ -383,8 +387,7 @@ class _ListWidgetState extends State<ListWidget> {
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: BaseWidget().setText(
-                                      txt:
-                                          "${comicBook.getSumAllChapInPart()} Chương",
+                                      txt: "${comicBook.totalChapters} Chương",
                                       fontSize: 10,
                                       fontWeight: FontWeight.w100,
                                       color: Color(0xFFd8d8d8)),
@@ -491,11 +494,17 @@ class _ListWidgetState extends State<ListWidget> {
           context,
           MaterialPageRoute(
             builder: (context) => DetailsComicScreen(
-                comicBook: comicBook, baseConstraints: widget.baseConstraints),
+                baseRepository: widget.baseRepository,
+                comicBook: comicBook,
+                baseConstraints: widget.baseConstraints),
           ),
         );
       },
-      onLongPress: () {
+      onLongPress: () async {
+        ResultCallAPI response = await widget.baseRepository.comicsRepository
+            .getDetailsComics(thisComicBook: comicBook);
+
+        comicBook = response.data;
         showModalBottomSheet(
           backgroundColor: Colors.transparent,
           // backgroundColor: Color(0xff22211F),
@@ -597,7 +606,7 @@ class _ListWidgetState extends State<ListWidget> {
                                           alignment: Alignment.centerLeft,
                                           child: BaseWidget().setText(
                                               txt:
-                                                  "${comicBook.getSumAllChapInPart()} Chương ",
+                                                  "${comicBook.totalChapters} Chương ",
                                               fontSize: 10,
                                               fontWeight: FontWeight.w100,
                                               color: Color(0xFFd8d8d8)),
@@ -849,6 +858,7 @@ class _ListWidgetState extends State<ListWidget> {
                                       ),
                                     ),
                                     pageTo: DetailsComicScreen(
+                                        baseRepository: widget.baseRepository,
                                         comicBook: comicBook,
                                         baseConstraints:
                                             widget.baseConstraints),

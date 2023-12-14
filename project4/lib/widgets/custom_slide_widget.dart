@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:project4/config.dart';
 import 'package:project4/models/comic_book.dart';
+import 'package:project4/repositories/base_repository.dart';
 import 'package:project4/screens/details_comic_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
 
@@ -9,9 +10,12 @@ class CustomSlideWidget extends StatefulWidget {
   final List<ComicBook> comicBooks;
 
   final BoxConstraints baseConstraints;
+  final BaseRepository baseRepository;
 
   const CustomSlideWidget(
-      {required this.comicBooks, required this.baseConstraints});
+      {required this.comicBooks,
+      required this.baseConstraints,
+      required this.baseRepository});
 
   @override
   _CustomSlideWidgetState createState() => _CustomSlideWidgetState();
@@ -84,20 +88,6 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
     );
   }
 
-  Widget myEventHandler({required Widget child, required Widget pageTo}) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => pageTo,
-          ),
-        );
-      },
-      child: child,
-    );
-  }
-
 //DetailsComicScreen(comicBook: comicBook)
   Widget itemButtonSlide(
       {required Color color,
@@ -107,7 +97,8 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
       required int showButton}) {
     return Expanded(
       flex: 5,
-      child: myEventHandler(
+      child: BaseWidget().handleEventNavigation(
+        context: context,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(6)),
@@ -137,6 +128,7 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
           ),
         ),
         pageTo: DetailsComicScreen(
+            baseRepository: widget.baseRepository,
             showButton: showButton,
             baseConstraints: widget.baseConstraints,
             comicBook: comicBook),
