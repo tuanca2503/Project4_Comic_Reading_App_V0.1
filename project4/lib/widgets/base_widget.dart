@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:project4/config.dart';
 
 // import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:project4/models/comic_book.dart';
@@ -44,6 +45,15 @@ class BaseWidget {
 
   Image setImageAsset(String link) {
     return Image.asset('assets/images/$link');
+  }
+
+  Image setImageNetwork({required String link, BoxFit fit = BoxFit.cover}) {
+    return Image.network(
+      '${AppConfig.apiIP}${AppConfig.apiPort}$link',
+      headers: const {
+        'ngrok-skip-browser-warning': 'true',
+      },
+    );
   }
 
   Container setImageIcon(

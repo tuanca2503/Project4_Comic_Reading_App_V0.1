@@ -66,9 +66,8 @@ class _ListWidgetState extends State<ListWidget> {
               child: FittedBox(
                 fit: BoxFit.cover,
                 child: myEventHandler(
-                    child: Image.network(
-                      '${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}',
-                    ),
+                    child: BaseWidget()
+                        .setImageNetwork(link: comicBook.coverImage),
                     comicBook: comicBook),
               ),
             ),
@@ -303,13 +302,11 @@ class _ListWidgetState extends State<ListWidget> {
                       Expanded(
                         flex: 2,
                         child: Container(
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(borderRadius: borderRadius),
-                          child: Image.network(
-                            '${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                            clipBehavior: Clip.hardEdge,
+                            decoration:
+                                BoxDecoration(borderRadius: borderRadius),
+                            child: BaseWidget()
+                                .setImageNetwork(link: comicBook.coverImage)),
                       ),
                       SizedBox(
                         width: 5,
@@ -576,8 +573,8 @@ class _ListWidgetState extends State<ListWidget> {
                                           Radius.circular(10))),
                                   child: FittedBox(
                                     fit: BoxFit.cover,
-                                    child: Image.network(
-                                        "${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}"),
+                                    child: BaseWidget().setImageNetwork(
+                                        link: comicBook.coverImage),
                                   ),
                                 ),
                               ),

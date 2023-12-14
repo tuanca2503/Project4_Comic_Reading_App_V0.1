@@ -93,7 +93,7 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
           itemBottom(
             itemUser: true,
             pageTo: (widget.baseRepository.userRepository
-                    .fetchUserData()
+                    .getUserData()
                     .refreshToken
                     .isNotEmpty)
                 ? UserScreen(

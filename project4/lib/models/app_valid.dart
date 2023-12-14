@@ -12,7 +12,7 @@ class AppValid {
     } else if (!AppValid(data: em).isValidEmail) {
       return 'Hay nhap dung dinh dang email';
     } else if (!AppValid(data: pw).isValidPassword) {
-      return 'Nhap mat khau lon hon 4';
+      return 'Nhap mat khau lon hon 4 nho hon 10';
     } else if (key) {
       if (pw != rePw) {
         return 'Mat khau nhap lai k trung khop';
@@ -33,7 +33,7 @@ class AppValid {
   }
 
   bool get isValidPassword {
-    final passwordRegExp = RegExp(r'^(?=.*?[a-z]).{4,}$');
+    final passwordRegExp = RegExp(r'^(?=.*?[a-z]).{4,10}$');
     return passwordRegExp.hasMatch(data);
   }
 

@@ -18,7 +18,7 @@ class UserRepository {
   UserRepository({required this.ip, required this.port});
 
   ///
-  User fetchUserData() {
+  User getUserData() {
     // Make an API call to fetch user data using the stored token
     Future.delayed(Duration(seconds: 2));
     return _user;
