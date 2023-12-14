@@ -20,6 +20,7 @@ class _SearchScreenState extends State<SearchScreen> {
   ///seed fillter
   List<FillterComicBook> listFillters = FillterComicBook().seed();
   Map<FillterComicBook, bool> chooseItemFillter = {};
+  List<String> items = [];
 
   ///
   ///
@@ -96,7 +97,54 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: Container(
                       width: size.maxWidth,
                       height: size.maxHeight,
-                      color: Colors.amber,
+                      child: Column(
+                        children: [
+                          Container(
+                            width: widget.baseConstraints.maxWidth,
+                            height: heightResultBox * 0.05,
+                            child: Text(
+                              'Kết quả tìm kiếm',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize:
+                                      widget.baseConstraints.maxWidth * 0.05),
+                            ),
+                          ),
+                          Container(
+                            width: widget.baseConstraints.maxWidth,
+                            height: heightResultBox * 0.95,
+                            child: items.isEmpty
+                                ? const Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.insert_drive_file,
+                                          size: 48.0,
+                                          color: Colors.grey,
+                                        ),
+                                        SizedBox(height: 8.0),
+                                        Text(
+                                          'Danh sách trống',
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    itemCount: items.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        title: Text(items[index]),
+                                      );
+                                    },
+                                  ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
 
@@ -472,7 +520,7 @@ class _SearchScreenState extends State<SearchScreen> {
               border: Border.all(width: 2, color: borderColor),
             ),
             padding: EdgeInsets.all(scalePadding),
-            height: heightSearchBox,
+            height: heightSearchBox / 1.5,
             child: LayoutBuilder(builder: (context, constraints) {
               return Container(
                 alignment: Alignment.center,

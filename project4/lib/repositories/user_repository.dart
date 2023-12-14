@@ -1,14 +1,11 @@
 import 'dart:io';
 
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:get/get.dart';
 import 'package:project4/config.dart';
 import 'package:project4/models/handle_response_api.dart';
 import 'package:project4/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:cookie_jar/cookie_jar.dart';
 
 class UserRepository {
   User _user = User();
@@ -46,7 +43,7 @@ class UserRepository {
             HandleResponseAPI().getAccessToken(json: response.response.body);
         _user.refreshToken =
             HandleResponseAPI().getRefreshToken(json: response.response.body);
-        saveRefreshTokenInCookie(_user.refreshToken);
+
         await getInforUser(accessToken: _user.accessToken);
       }
       return response;
@@ -125,27 +122,6 @@ class UserRepository {
     }
 
     return null;
-  }
-
-  void saveRefreshTokenInCookie(String refreshToken) async {
-    try {
-      var dio = Dio();
-
-      // Xác định CookieJar
-      var cookieJar = CookieJar();
-      dio.interceptors.add(CookieManager(cookieJar));
-
-      // Thực hiện một request mẫu để thiết lập cookie ban đầu
-      await dio.get('https://example.com/dummy');
-
-      // Đặt cookie của refresh token
-      cookieJar.saveFromResponse(Uri.parse('https://example.com'), [
-        Cookie('refreshToken', refreshToken),
-      ]);
-      print('Refresh token đã được lưu vào cookie');
-    } catch (e) {
-      print(e);
-    }
   }
 
 // //

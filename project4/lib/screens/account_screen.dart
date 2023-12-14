@@ -14,9 +14,15 @@ import 'package:project4/widgets/base_widget.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen(
-      {super.key, required this.baseConstraints, required this.baseRepository});
+      {super.key,
+      required this.baseConstraints,
+      required this.baseRepository,
+      this.chooseScreen = false,
+      this.keyAS = false});
   final BaseRepository baseRepository;
   final BoxConstraints baseConstraints;
+  final bool keyAS;
+  final bool chooseScreen;
 
   @override
   State<AccountScreen> createState() => _AccountScreenState();
@@ -46,7 +52,8 @@ class _AccountScreenState extends State<AccountScreen> {
   //////////////////////////////////////
   @override
   void initState() {
-    chooseScreen = false;
+    chooseScreen = widget.chooseScreen;
+    key = widget.keyAS;
     double screenWidth = widget.baseConstraints.maxWidth;
     ThemeData(colorSchemeSeed: const Color(0xFF3b4149), useMaterial3: true);
     fontSize = screenWidth * 0.03;

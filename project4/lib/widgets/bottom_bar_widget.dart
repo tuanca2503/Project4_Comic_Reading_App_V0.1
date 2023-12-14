@@ -3,8 +3,8 @@ import 'package:project4/main.dart';
 import 'package:project4/repositories/base_repository.dart';
 import 'package:project4/repositories/user_repository.dart';
 import 'package:project4/screens/account_screen.dart';
+import 'package:project4/screens/follow_comic_screen.dart';
 import 'package:project4/screens/home_screen.dart';
-import 'package:project4/screens/rank_screen.dart';
 import 'package:project4/screens/search_screen.dart';
 import 'package:project4/screens/user_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
@@ -85,7 +85,7 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
             txt: 'Tìm kiếm',
           ),
           itemBottom(
-            pageTo: RankScreen(baseConstraints: widget.baseConstraints),
+            pageTo: FollowScreen(baseConstraints: widget.baseConstraints),
             link: 'heart',
             choose: myMap["follow"] ?? false,
             txt: 'Theo dõi',

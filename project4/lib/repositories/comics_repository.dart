@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:get/get.dart';
 import 'package:project4/config.dart';
 import 'package:project4/models/comic_book.dart';
@@ -8,8 +7,6 @@ import 'package:project4/models/handle_response_api.dart';
 import 'package:project4/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:cookie_jar/cookie_jar.dart';
 
 class ComicsRepository {
   List<ComicBook> _comicBook = ComicBook().Seed();
@@ -56,6 +53,7 @@ class ComicsRepository {
       if (response.check) {
         thisComicBook.setDetailsDataFromJson(
             json: jsonDecode(response.response.body));
+
         response.data = thisComicBook;
         // _comicBook
         //     .firstWhere((cmb) => cmb.id == id)
@@ -80,6 +78,7 @@ class ComicsRepository {
           api: 'api/chapters/free/${chapter.id}');
       if (response.check) {
         chapter.setDetailsChapter(json: jsonDecode(response.response.body));
+
         response.data = chapter;
         // _comicBook
         //     .firstWhere((cmb) => cmb.id == id)

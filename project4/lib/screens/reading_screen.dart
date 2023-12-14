@@ -62,57 +62,58 @@ class _ReadingScreenState extends State<ReadingScreen> {
     // print(chapterComicBook.images.length);
     // final visibilityProvider = context.read<VisibilityProvider>();
 
-    return Consumer<VisibilityProvider>(
-        builder: (context, visibilityProvider, child) {
-      return Stack(
-        children: [
-          GestureDetector(
-            onTap: () {
-              visibilityProvider.toggleVisibility();
-              // context.read<VisibilityProvider>().toggleVisibility();
-              // setState(() {
-              //   showBars = !showBars;
-              // });
-            },
-            child: Container(
-              height: widget.baseConstraints.maxHeight,
-              width: widget.baseConstraints.maxWidth,
-              child: ListView.builder(
-                itemCount: chapterComicBook.images.length,
-                itemBuilder: (context, index) {
-                  return IntrinsicHeight(
-                    child: Image.network(
-                        '${AppConfig.apiIP}${AppConfig.apiPort}${chapterComicBook.images[index]}'),
-                  );
-                },
+    return Consumer<ScreenProvider>(
+      builder: (context, visibilityProvider, child) {
+        return Stack(
+          children: [
+            GestureDetector(
+              onTap: () {
+                visibilityProvider.toggleVisibility();
+                // context.read<VisibilityProvider>().toggleVisibility();
+                // setState(() {
+                //   showBars = !showBars;
+                // });
+              },
+              child: Container(
+                height: widget.baseConstraints.maxHeight,
+                width: widget.baseConstraints.maxWidth,
+                child: ListView.builder(
+                  itemCount: chapterComicBook.images.length,
+                  itemBuilder: (context, index) {
+                    return IntrinsicHeight(
+                      child: Image.network(
+                          '${AppConfig.apiIP}${AppConfig.apiPort}${chapterComicBook.images[index]}'),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
 
-          visibilityProvider.isVisible
-              ? Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: headerBar(
-                      heightHeadBott: heightHeadBott,
-                      chapterName: chapterComicBook.name),
-                )
-              : Container(),
+            visibilityProvider.isVisible
+                ? Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: headerBar(
+                        heightHeadBott: heightHeadBott,
+                        chapterName: chapterComicBook.name),
+                  )
+                : Container(),
 
-          /////
+            /////
 
-          visibilityProvider.isVisible
-              ? Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: bottomBar(heightHeadBott: heightHeadBott),
-                )
-              : Container(),
-        ],
-      );
-    });
+            visibilityProvider.isVisible
+                ? Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: bottomBar(heightHeadBott: heightHeadBott),
+                  )
+                : Container(),
+          ],
+        );
+      },
+    );
   }
 //
 

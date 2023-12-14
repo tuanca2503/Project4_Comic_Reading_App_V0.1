@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:project4/config.dart';
+import 'package:project4/main.dart';
 
 // import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:project4/models/comic_book.dart';
+import 'package:provider/provider.dart';
 
 typedef void CallbackColor(Color color);
 typedef void CallBackConstraints(BoxConstraints constraints);
@@ -70,26 +72,8 @@ class BaseWidget {
     );
   }
 
-  /////event
-  Widget handleEventNavigation(
-      {required Widget child,
-      required Widget pageTo,
-      required BuildContext context}) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => pageTo,
-          ),
-        );
-      },
-      child: child,
-    );
-  }
+  ///
 
-  ///
-  ///
   ///
   Widget setFutureBuilder(
       {required Function(dynamic) callback, required repo}) {
@@ -110,6 +94,28 @@ class BaseWidget {
       },
     );
   }
+
+  ///
+  /////event
+  Widget handleEventNavigation(
+      {required Widget child,
+      required Widget pageTo,
+      required BuildContext context}) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => pageTo,
+          ),
+        );
+      },
+      child: child,
+    );
+  }
+
+  ///
+  ///
 
   ///
   ///

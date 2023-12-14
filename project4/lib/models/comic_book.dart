@@ -251,24 +251,28 @@ class Genre {
 class ChapterComicBook {
   String id;
   String name;
-  int lastUpdatedDate;
+  String lastUpdatedDate;
   List<String> images;
 
   ChapterComicBook(
       {this.name = '',
-      this.lastUpdatedDate = 0,
+      this.lastUpdatedDate = '0',
       this.id = '',
       this.images = const []});
   ChapterComicBook setChapterFromJson({required Map<String, dynamic> json}) {
+    DateTime dateTime =
+        DateTime.fromMillisecondsSinceEpoch(json['lastUpdatedDate']);
     return ChapterComicBook(
         id: json['id'],
         name: utf8.decode(latin1.encode(json['name'])),
-        lastUpdatedDate: json['lastUpdatedDate']);
+        lastUpdatedDate: '${dateTime.day}/${dateTime.month}/${dateTime.year}');
+    //DateTime.fromMillisecondsSinceEpoch(json['createdDate']).year
   }
 
   List<ChapterComicBook> setListChapterFormJson(
       {required List<dynamic> jsons}) {
     List<ChapterComicBook> datas = [];
+
     for (var json in jsons) {
       datas.add(ChapterComicBook().setChapterFromJson(json: json));
     }

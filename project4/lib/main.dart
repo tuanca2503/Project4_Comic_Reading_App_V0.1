@@ -13,7 +13,7 @@ void main() {
   // runApp(const MyApp());
   runApp(
     ChangeNotifierProvider(
-      create: (context) => VisibilityProvider(),
+      create: (context) => ScreenProvider(),
       child: MyApp(),
     ),
   );
@@ -39,22 +39,47 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class VisibilityProvider with ChangeNotifier {
+class ScreenProvider with ChangeNotifier {
   bool _isVisible = true;
+  //
+  bool boxDetailDetailsScreen = false;
+  bool boxChapterDetailsScreen = true;
+  //0 = chapter || 1 = details
+  bool buttonDetailsScreen = true;
+  String showPartDetailsScreen = '';
+  //
+  bool showBoxSwitch = true;
 
   bool get isVisible => _isVisible;
   void toggleVisibility() {
     _isVisible = !_isVisible;
     notifyListeners();
   }
-}
 
-class DetailsProviderScreen with ChangeNotifier {
-  bool _isVisible = true;
+  void toggleDetailsScreen({required int showButton}) {
+    switch (showButton) {
+      case 0:
+        boxChapterDetailsScreen = true;
+        boxDetailDetailsScreen = false;
+        break;
 
-  bool get isVisible => _isVisible;
-  void toggleVisibility() {
-    _isVisible = !_isVisible;
+      case 1:
+        boxChapterDetailsScreen = false;
+        boxDetailDetailsScreen = true;
+        break;
+    }
+    // boxDetailDetailsScreen = !boxDetailDetailsScreen;
+    // boxChapterDetailsScreen = !boxChapterDetailsScreen;
+
+    notifyListeners();
+  }
+
+  void toggleShowPart(String part) {
+    if (showPartDetailsScreen == part) {
+      showPartDetailsScreen = '';
+    } else {
+      showPartDetailsScreen = part;
+    }
     notifyListeners();
   }
 }
