@@ -117,29 +117,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 repo: widget.baseRepository.comicsRepository
                     .getAllComics(filter: 'TOP_FAVOURITE'),
               ),
-              // Container(
-              //   height: 300,
-              //   child: ListWidget(
-              //     baseConstraints: widget.baseConstraints,
-              //     setList: 1,
-              //     comicBooks: ComicBook().Seed(),
-              //   ),
-              // ),
-              ////////////////////////////////////
-              // Container(
-              //   padding: EdgeInsets.all(thisPadding),
-              //   alignment: Alignment.centerLeft,
-              //   child: BaseWidget().setText(txt: "Được ưa thích", fontSize: 15),
-              // ),
-              // Container(
-              //   height: 500,
-              //   child: ListWidget(
-              //     baseConstraints: baseConstraints,
-              //     setList: 2,
-              //     comicBooks: comicBooks,
-              //   ),
-              // ),
-              //
+
+              //////////////////////////////////
+              Container(
+                padding: EdgeInsets.all(thisPadding),
+                alignment: Alignment.centerLeft,
+                child: BaseWidget().setText(txt: "Xem thêm", fontSize: 15),
+              ),
+              BaseWidget().setFutureBuilder(
+                callback: (snapshot) {
+                  return Container(
+                    height: 500,
+                    child: ListWidget(
+                      baseRepository: widget.baseRepository,
+                      setList: 2,
+                      comicBooks: snapshot.data!.data,
+                      baseConstraints: widget.baseConstraints,
+                    ),
+                  );
+                },
+                repo: widget.baseRepository.comicsRepository
+                    .getAllComics(filter: 'TOP_LIKE'),
+              ),
+
               Container(
                 height: 100,
                 padding: EdgeInsets.all(thisPadding),

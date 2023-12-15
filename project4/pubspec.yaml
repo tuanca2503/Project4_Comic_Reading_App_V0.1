@@ -30,9 +30,9 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   # devtools: ^2.9.4
-  dio: ^5.4.0
-  dio_cookie_manager: ^2.0.0
-  cookie_jar: ^3.0.1
+  # dio: ^5.4.0
+  # dio_cookie_manager: ^2.0.0
+  # cookie_jar: ^3.0.1
   dart_jsonwebtoken: ^2.12.1
   image_gallery_saver: ^2.0.3
   fluttertoast: ^8.1.1

@@ -55,6 +55,7 @@ class BaseWidget {
       headers: const {
         'ngrok-skip-browser-warning': 'true',
       },
+      fit: fit,
     );
   }
 

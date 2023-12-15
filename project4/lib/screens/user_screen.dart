@@ -377,7 +377,7 @@ class _AccountScreenState extends State<UserScreen> {
           //   border: Border.all(width: 1, color: Colors.white),
           // ),
           child: Text(
-            'Settings',
+            'Cài đặt',
             style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -425,7 +425,7 @@ class _AccountScreenState extends State<UserScreen> {
                             fontSize: fontBack),
                       ),
                       Text(
-                        'Edit personal details',
+                        'Sửa thông tin',
                         style: TextStyle(
                             color: Color(0xff575757), fontSize: fontFour),
                       ),
@@ -477,7 +477,7 @@ class _AccountScreenState extends State<UserScreen> {
                           alignment: Alignment
                               .centerLeft, // Đặt vị trí về giữa bên trái
                           child: Text(
-                            'Dark Mode',
+                            'Đổi giao diện',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -496,6 +496,10 @@ class _AccountScreenState extends State<UserScreen> {
                 child: Center(
                   child: Switch(
                     value: DarkSwitched,
+                    activeColor: Colors.white,
+                    activeTrackColor: Colors.black,
+                    inactiveThumbColor: Colors.black,
+                    inactiveTrackColor: Colors.white,
                     onChanged: (value) => {
                       setState(() {
                         DarkSwitched = value;
@@ -517,7 +521,7 @@ class _AccountScreenState extends State<UserScreen> {
                   alignment:
                       Alignment.centerLeft, // Đặt vị trí về giữa bên trái
                   child: Text(
-                    'Profile',
+                    'Thông tin',
                     style: TextStyle(
                         color: Color(0xff595959),
                         fontWeight: FontWeight.bold,
@@ -555,7 +559,7 @@ class _AccountScreenState extends State<UserScreen> {
                           alignment: Alignment
                               .centerLeft, // Đặt vị trí về giữa bên trái
                           child: Text(
-                            'Reading history',
+                            'lịch sử đọc truyện',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -605,7 +609,7 @@ class _AccountScreenState extends State<UserScreen> {
                           alignment: Alignment
                               .centerLeft, // Đặt vị trí về giữa bên trái
                           child: Text(
-                            'Change Password',
+                            'Thay mật khẩu',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -638,7 +642,7 @@ class _AccountScreenState extends State<UserScreen> {
                   alignment:
                       Alignment.centerLeft, // Đặt vị trí về giữa bên trái
                   child: Text(
-                    'Notifications',
+                    'Thông báo',
                     style: TextStyle(
                         color: Color(0xff595959),
                         fontWeight: FontWeight.bold,
@@ -676,7 +680,7 @@ class _AccountScreenState extends State<UserScreen> {
                           alignment: Alignment
                               .centerLeft, // Đặt vị trí về giữa bên trái
                           child: Text(
-                            'Notifications',
+                            'Thông báo',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -694,6 +698,10 @@ class _AccountScreenState extends State<UserScreen> {
                   height: constraints.maxHeight,
                   child: Center(
                     child: Switch(
+                      activeColor: Colors.white,
+                      activeTrackColor: Colors.black,
+                      inactiveThumbColor: Colors.black,
+                      inactiveTrackColor: Colors.white,
                       value: NotificationsSwitched,
                       onChanged: (value) => {
                         setState(() {
@@ -715,7 +723,7 @@ class _AccountScreenState extends State<UserScreen> {
                   alignment:
                       Alignment.centerLeft, // Đặt vị trí về giữa bên trái
                   child: Text(
-                    'Regional',
+                    'Tương tác',
                     style: TextStyle(
                         color: Color(0xff595959),
                         fontWeight: FontWeight.bold,
@@ -753,7 +761,7 @@ class _AccountScreenState extends State<UserScreen> {
                           alignment: Alignment
                               .centerLeft, // Đặt vị trí về giữa bên trái
                           child: Text(
-                            'Language',
+                            'Ngôn ngữ',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -804,7 +812,7 @@ class _AccountScreenState extends State<UserScreen> {
                           alignment: Alignment
                               .centerLeft, // Đặt vị trí về giữa bên trái
                           child: Text(
-                            'Loguot',
+                            'Đăng xuất',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -822,7 +830,7 @@ class _AccountScreenState extends State<UserScreen> {
                   height: constraints.maxHeight,
                   child: Transform.scale(
                     scale: 0.25,
-                    child: BaseWidget().setImageAsset('logout.png'),
+                    child: BaseWidget().setImageAsset('next-white.png'),
                   ),
                 )),
           ]),

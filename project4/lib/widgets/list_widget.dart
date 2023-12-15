@@ -38,7 +38,7 @@ class _ListWidgetState extends State<ListWidget> {
       case 1:
         return mylistView(myList: widget.comicBooks);
       case 2:
-        return myPaging();
+        return myPaging(myList: widget.comicBooks);
       default:
         return Container(
           child: BaseWidget().setText(
@@ -153,66 +153,115 @@ class _ListWidgetState extends State<ListWidget> {
   }
 
 /////////////-------------------------------------------
-  final int itemsPerPage = 20;
-  int currentPage = 0;
+  final int itemsPerPage = 4;
+  int currentPage = 1;
   //
-  List<String> generateData() {
-    return List.generate(100, (index) => 'Item $index');
-  }
 
-  List<String> getPageData() {
-    int startIndex = currentPage * itemsPerPage;
-    int endIndex = (currentPage + 1) * itemsPerPage;
-    return generateData().sublist(startIndex, endIndex);
+  List<ComicBook> getCurrentPageItems({required List<ComicBook> itemList}) {
+    int startIndex = (currentPage - 1) * itemsPerPage;
+    int endIndex = currentPage * itemsPerPage;
+    endIndex = endIndex > itemList.length ? itemList.length : endIndex;
+    return itemList.sublist(startIndex, endIndex);
   }
 
   ///
-  Widget myPaging() {
-    return Column(
-      children: [
-        ///
-        // Expanded(
-        //   child: ListView.builder(
-        //     itemCount: getPageData().length,
-        //     itemBuilder: (context, index) {
-        //       return ListTile(
-        //         title: Text(getPageData()[index]),
-        //       );
-        //     },
-        //   ),
-        // ),
-        ///////////////////////////////////////////////////-------------
+  Widget myPaging({required List<ComicBook> myList}) {
+    return LayoutBuilder(builder: (cont, cons) {
+      double heightBottomPaging = cons.maxHeight * 0.08;
+      double heightBodyPaging = cons.maxHeight - heightBottomPaging;
 
-        ///
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+      return Container(
+        padding: BaseWidget().setLefRightPadding(pLR: 10),
+        width: cons.maxWidth,
+        height: cons.maxHeight,
+        child: Column(
           children: [
-            ElevatedButton(
-              onPressed: currentPage > 0
-                  ? () {
-                      setState(() {
-                        currentPage--;
-                      });
-                    }
-                  : null,
-              child: Text('Previous'),
-            ),
-            SizedBox(width: 16.0),
-            ElevatedButton(
-              onPressed: currentPage <
-                      (generateData().length / itemsPerPage - 1).floor()
-                  ? () {
-                      setState(() {
-                        currentPage++;
-                      });
-                    }
-                  : null,
-              child: Text('Next'),
+            // Content for the current page
+            Container(
+                height: heightBodyPaging,
+                child: Column(
+                  children: [
+                    for (ComicBook item
+                        in getCurrentPageItems(itemList: myList))
+                      itemPageView(
+                          comicBook: item, setBack: false, setBackBlur: false),
+                    if (getCurrentPageItems(itemList: myList).length <
+                        itemsPerPage)
+                      for (int i = getCurrentPageItems(itemList: myList).length;
+                          i < 4;
+                          i++)
+                        Expanded(child: Container()),
+                  ],
+                )
+
+                // SizedBox(height: 20),,
+                ),
+
+            // Pagination controls
+
+            Container(
+              width: cons.maxWidth,
+              height: heightBottomPaging,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          if (currentPage > 1) {
+                            setState(() {
+                              currentPage--;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 7,
+                    child: BaseWidget().setText(
+                        txt:
+                            '$currentPage/${(myList.length / itemsPerPage).ceil()}',
+                        fontSize: 16,
+                        color: Colors.white),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          int totalPages =
+                              (myList.length / itemsPerPage).ceil();
+                          // In a real application, you would check if there are more pages
+                          // before incrementing the currentPage.
+                          if (currentPage < totalPages) {
+                            setState(() {
+                              currentPage++;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
-      ],
-    );
+      );
+    });
   }
 
   ///
@@ -262,7 +311,8 @@ class _ListWidgetState extends State<ListWidget> {
   }
 
 /////////////-------------------------------------------
-  Widget itemPageView({required ComicBook comicBook, setBacBlur = true}) {
+  Widget itemPageView(
+      {required ComicBook comicBook, setBackBlur = true, setBack = true}) {
     BorderRadius borderRadius = BorderRadius.all(Radius.circular(10));
     /*child: myEventHandler(
                     child: BaseWidget().setImageAsset(comicBook.linkImage),
@@ -273,15 +323,19 @@ class _ListWidgetState extends State<ListWidget> {
         margin: BaseWidget().setTopBottomPadding(pTB: 5),
         decoration: BoxDecoration(
           borderRadius: borderRadius,
-          image: DecorationImage(
-              image: NetworkImage(
-                '${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}',
-              ),
-              fit: BoxFit.cover),
+          image: setBack
+              ? DecorationImage(
+                  image: NetworkImage(
+                      '${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}',
+                      headers: {
+                        'ngrok-skip-browser-warning': 'true',
+                      }),
+                  fit: BoxFit.cover)
+              : null,
         ),
         child: Stack(
           children: [
-            setBacBlur
+            setBackBlur
                 ? BackdropFilter(
                     filter: ImageFilter.blur(
                         sigmaX: 8, sigmaY: 8), // Adjust the blur intensity

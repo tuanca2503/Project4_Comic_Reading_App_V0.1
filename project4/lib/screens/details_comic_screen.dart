@@ -113,6 +113,8 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
               builder: (context, myProvider, child) {
             i++;
             if (i == 0) {
+              myProvider.showPartDetailsScreen = partComic;
+
               switch (widget.showButton) {
                 case 0:
                   myProvider.boxChapterDetailsScreen = true;

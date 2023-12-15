@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project4/config.dart';
 import 'package:project4/main.dart';
 import 'package:project4/repositories/base_repository.dart';
 import 'package:project4/repositories/user_repository.dart';
@@ -64,6 +65,10 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    bool checkUserLogin = widget.baseRepository.userRepository
+        .getUserData()
+        .refreshToken
+        .isNotEmpty;
     return Container(
       color: widget.colorTheme,
       padding: EdgeInsets.all(10),
@@ -92,10 +97,7 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
           ),
           itemBottom(
             itemUser: true,
-            pageTo: (widget.baseRepository.userRepository
-                    .getUserData()
-                    .refreshToken
-                    .isNotEmpty)
+            pageTo: (checkUserLogin)
                 ? UserScreen(
                     baseConstraints: widget.baseConstraints,
                     baseRepository: widget.baseRepository,
@@ -104,9 +106,14 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
                     baseConstraints: widget.baseConstraints,
                     baseRepository: widget.baseRepository,
                   ),
-            link: 'th.jpg',
+            link: checkUserLogin
+                ? widget.baseRepository.userRepository.getUserData().avatar ??
+                    'th.jpg'
+                : 'user.png',
             choose: myMap["user"] ?? false,
-            txt: 'User',
+            txt: checkUserLogin
+                ? widget.baseRepository.userRepository.getUserData().username
+                : 'Đăng nhập',
           ),
         ],
       ),
@@ -161,14 +168,14 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
                         child: itemUser
                             ? IntrinsicWidth(
                                 child: Container(
-                                  alignment: Alignment.center,
-                                  clipBehavior: Clip.hardEdge,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(20))),
-                                  child: BaseWidget().setImageAsset(thislink),
-                                ),
+                                    alignment: Alignment.center,
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20))),
+                                    child: BaseWidget().setImageAsset(thislink)
+                                    // .setImageNetwork(link: thislink),
+                                    ),
                               )
                             : BaseWidget().handleEventNavigation(
                                 child: BaseWidget().setImageAsset(thislink),

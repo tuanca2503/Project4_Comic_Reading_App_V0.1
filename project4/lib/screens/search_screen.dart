@@ -163,16 +163,6 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget resultSearchBox() {
-    return Column(
-      children: [
-        Container(
-          child: BaseWidget().setText(txt: "tim kiem nhanh"),
-        ),
-      ],
-    );
-  }
-
   Widget fillterSearch({required double heightFillterSearchBox}) {
     return Container(
       child: Stack(

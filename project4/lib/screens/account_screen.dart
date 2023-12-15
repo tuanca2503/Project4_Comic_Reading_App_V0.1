@@ -169,7 +169,7 @@ class _AccountScreenState extends State<AccountScreen> {
           height: baseConstraints.maxHeight * 0.1,
           child: Center(
             child: Text(
-              key ? 'Sign up now' : 'Sign in now',
+              key ? 'Đăng ký' : 'Đăng nhập',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Color(0xffd6dbe2),
@@ -230,7 +230,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       vertical: 20,
                       horizontal: 20,
                     ),
-                    suffixIcon: key
+                    suffixIcon: false
                         ? TextButton(
                             onPressed: () {
                               showDialog<String>(
@@ -370,7 +370,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'UserName',
+                        'Tên',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Color(0xffd6dbe2),
@@ -422,7 +422,7 @@ class _AccountScreenState extends State<AccountScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Password',
+                  'Mật khẩu',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Color(0xffd6dbe2),
@@ -488,7 +488,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           showDialog<String>(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
-                              title: const Text('Forgot Password'),
+                              title: const Text('Lấy lại mật khẩu'),
                               actions: <Widget>[
                                 (_errMess.isNotEmpty || _errMess.isBool)
                                     ? BaseWidget().setText(
@@ -510,7 +510,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.pop(context, 'Cancel'),
-                                      child: const Text('Cancel'),
+                                      child: const Text('Hủy'),
                                     ),
                                     TextButton(
                                       onPressed: () async {
@@ -540,7 +540,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                         }
                                         //
                                       },
-                                      child: const Text('Send'),
+                                      child: const Text('Gửi'),
                                     ),
                                   ],
                                 )
@@ -549,7 +549,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           );
                         },
                         child: Text(
-                          'Forgot your password?',
+                          'Quên mật khẩu ?',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Color(0xffd45d16),
@@ -574,7 +574,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Re password',
+                        'Nhập lại mật khẩu',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Color(0xffd6dbe2),
@@ -760,8 +760,8 @@ class _AccountScreenState extends State<AccountScreen> {
                       child: Center(
                         child: Text(
                           key
-                              ? 'CREATE FREE ACCOUWT'.toUpperCase()
-                              : 'Sign IN'.toUpperCase(),
+                              ? 'Tạo tài khoản'.toUpperCase()
+                              : 'Đăng nhập'.toUpperCase(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Color(0xffd6dbe2),
@@ -874,44 +874,49 @@ class _AccountScreenState extends State<AccountScreen> {
                     ),
                   ),
                   Container(
-                      width: double.infinity,
-                      height: screenHeight * 0.08,
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(),
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            key = true;
-                            chooseScreen = true;
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFFe78b34),
-                            borderRadius:
-                                BorderRadius.circular(20), // Đặt độ bo tròn
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                // Để căn giữa nội dung trong Row
-                                child: Center(
-                                  // Để căn giữa văn bản
-                                  child: Text(
-                                    'CREATE FREE ACCOUNT',
-                                    style: TextStyle(
-                                      fontSize: fontSize,
-                                      color: Color(0xffd6dbe2),
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                    width: double.infinity,
+                    height: screenHeight * 0.08,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          // key = true;
+                          // chooseScreen = true;
+                          key = false;
+                          chooseScreen = true;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFFe78b34),
+                          borderRadius:
+                              BorderRadius.circular(20), // Đặt độ bo tròn
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              // Để căn giữa nội dung trong Row
+                              child: Center(
+                                // Để căn giữa văn bản
+                                child: Text(
+                                  // 'Tạo tài khoản',
+                                  'Đăng nhập với email',
+
+                                  style: TextStyle(
+                                    fontSize: fontSize,
+                                    color: Color.fromARGB(255, 47, 48, 49),
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      )),
+                      ),
+                    ),
+                  ),
                   Container(
                       width: double.infinity,
                       height: screenHeight * 0.08,
@@ -920,7 +925,9 @@ class _AccountScreenState extends State<AccountScreen> {
                       child: GestureDetector(
                         onTap: () {
                           setState(() {
-                            key = false;
+                            // key = false;
+                            // chooseScreen = true;
+                            key = true;
                             chooseScreen = true;
                           });
                         },
@@ -939,7 +946,9 @@ class _AccountScreenState extends State<AccountScreen> {
                                 child: Center(
                                   // Để căn giữa văn bản
                                   child: Text(
-                                    'SIGN IN WITH EMAIL',
+                                    'Tạo tài khoản',
+
+                                    // 'Đăng nhập với email',
                                     style: TextStyle(
                                       fontSize: fontSize,
                                       color: Color(0xffd6dbe2),
@@ -983,7 +992,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             ),
                             child: Center(
                               child: Text(
-                                'or continue with',
+                                'Hoặc đăng nhập bằng',
                                 style: TextStyle(
                                   fontSize: fontBac,
                                   color: Color(0xff767c86),
