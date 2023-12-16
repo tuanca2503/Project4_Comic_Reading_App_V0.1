@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
         setAppBar: 1,
         setBottomBar: true,
         chooseBottomicon: 1,
+        setMoveUp: true,
         setBody: bodyHomeScreen());
   }
 
@@ -70,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: EdgeInsets.all(thisPadding),
                 alignment: Alignment.centerLeft,
-                child: BaseWidget().setText(txt: "Mới cập nhật", fontSize: 15),
+                child: BaseWidget().setText(txt: "Bảng xếp hạng", fontSize: 15),
               ),
               BaseWidget().setFutureBuilder(
                 callback: (snapshot) {
@@ -85,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
                 repo: widget.baseRepository.comicsRepository
-                    .getAllComics(filter: 'LAST_UPDATED_DATE'),
+                    .getAllComics(filter: 'TOP_ALL'),
               ),
               // Container(
               //   height: 300,
@@ -118,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     .getAllComics(filter: 'TOP_FAVOURITE'),
               ),
 
-              //////////////////////////////////
+              //////////////////////////////////TOP_LIKE
               Container(
                 padding: EdgeInsets.all(thisPadding),
                 alignment: Alignment.centerLeft,
@@ -127,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
               BaseWidget().setFutureBuilder(
                 callback: (snapshot) {
                   return Container(
-                    height: 500,
+                    height: 800,
                     child: ListWidget(
                       baseRepository: widget.baseRepository,
                       setList: 2,
@@ -137,14 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
                 repo: widget.baseRepository.comicsRepository
-                    .getAllComics(filter: 'TOP_LIKE'),
-              ),
-
-              Container(
-                height: 100,
-                padding: EdgeInsets.all(thisPadding),
-                alignment: Alignment.bottomCenter,
-                // child: BaseWidget().setText(txt: "move up"),
+                    .getAllComics(filter: 'LAST_UPDATED_DATE'),
               ),
             ],
           );

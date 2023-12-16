@@ -153,9 +153,12 @@ class _ListWidgetState extends State<ListWidget> {
   }
 
 /////////////-------------------------------------------
-  final int itemsPerPage = 4;
+  final int itemsPerPage = 7;
   int currentPage = 1;
+
   //
+
+//////////////////////////////////////
 
   List<ComicBook> getCurrentPageItems({required List<ComicBook> itemList}) {
     int startIndex = (currentPage - 1) * itemsPerPage;
@@ -188,7 +191,7 @@ class _ListWidgetState extends State<ListWidget> {
                     if (getCurrentPageItems(itemList: myList).length <
                         itemsPerPage)
                       for (int i = getCurrentPageItems(itemList: myList).length;
-                          i < 4;
+                          i < itemsPerPage;
                           i++)
                         Expanded(child: Container()),
                   ],

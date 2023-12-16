@@ -21,6 +21,7 @@ class _SearchScreenState extends State<SearchScreen> {
   List<FillterComicBook> listFillters = FillterComicBook().seed();
   Map<FillterComicBook, bool> chooseItemFillter = {};
   List<String> items = [];
+  int selectedIdx = -1;
 
   ///
   ///
@@ -84,8 +85,9 @@ class _SearchScreenState extends State<SearchScreen> {
         children: [
           //
           searchBox(heightSearchBox: heightSearchBox),
+          fillterSearch(heightFillterSearchBox: heightFillterSearchBox),
           //
-          SizedBox(
+          Container(
             width: widget.baseConstraints.maxWidth,
             height: heightResultBox,
             child: LayoutBuilder(builder: (context, size) {
@@ -93,7 +95,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 clipBehavior: Clip.none,
                 children: [
                   Positioned(
-                    top: heightFillterSearchBox,
+                    top: 0,
                     child: Container(
                       width: size.maxWidth,
                       height: size.maxHeight,
@@ -148,11 +150,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   ),
 
-                  ///////////////////////
+                  /////////////////////
                   Positioned(
                     top: 0,
-                    child: fillterSearch(
-                        heightFillterSearchBox: heightFillterSearchBox),
+                    child: Container(),
                   ),
                 ],
               );
@@ -163,336 +164,48 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
+////////////////////////
+
   Widget fillterSearch({required double heightFillterSearchBox}) {
+    List<String> itemNames = ['Top ngày', 'Item 2', 'Item 3', 'Item 4'];
     return Container(
-      child: Stack(
-        // mainAxisAlignment: MainAxisAlignment.start,
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            height: heightFillterSearchBox,
-            width: widget.baseConstraints.maxWidth - 30,
-            child: LayoutBuilder(builder: (context, constraints) {
-              Color colorBackground = BaseWidget().color;
-              return ListView.builder(
-                clipBehavior: Clip.none,
-                scrollDirection: Axis.horizontal,
-
-                itemCount: listFillters.length,
-                itemBuilder: (context, index) {
-                  bool choose = chooseItemFillter[listFillters[index]] ?? false;
-                  bool l = (listFillters.first == listFillters[index]);
-                  bool r = (listFillters.last == listFillters[index]);
-                  bool c = (!l && !r);
-
-                  return handleChooseFillterEvent(
-                      fillterComicBook: listFillters[index],
-                      child: filltersItem(
-                          left: l,
-                          right: r,
-                          center: c,
-                          constraints: constraints,
-                          colorButton: Colors.white,
-                          colorChoose: Colors.orange,
-                          choose: choose,
-                          txt: listFillters[index].name,
-                          colorBackground: colorBackground));
-                },
-
-                // children: [
-
-                //   filltersItem(
-                //       constraints: constraints,
-                //       color: Colors.red,
-                //       choose: true,
-                //       txt: "Year",
-                //       colorBackground: colorBackground),
-                //   filltersItem(
-                //       constraints: constraints,
-                //       txt: "Category",
-                //       colorBackground: colorBackground),
-                //   filltersItem(
-                //       constraints: constraints,
-                //       txt: "Favort",
-                //       colorBackground: colorBackground),
-                //   filltersItem(
-                //       constraints: constraints,
-                //       txt: "Favort",
-                //       colorBackground: colorBackground),
-                // ],
-              );
-            }),
-          ),
-          // Positioned(
-          //   bottom: 0,
-          //   child: Container(
-          //     color: Colors.amber,
-          //     height: 200,
-          //     child: Row(
-          //       children: [
-          //         Container(
-          //           width: 100,
-          //           color: Colors.black,
-          //         )
-          //       ],
-          //     ),
-          //   ),
-          // )
-        ],
-      ),
-    );
-  }
-
-  Widget itemOfFillter() {
-    return SingleChildScrollView(
-      child: Wrap(
-        spacing: 2.0, // Khoảng cách giữa các Container
-        children: List.generate(
-          20, // Số lượng phần tử trong danh sách
-          (index) => Container(
-            width: 50.0,
-            height: 50.0,
-            color: Colors.blue,
-            margin: EdgeInsets.all(8.0),
-            child: Center(
-              child: Text('$index'),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget filltersItem({
-    required BoxConstraints constraints,
-    required Color colorButton,
-    required Color colorChoose,
-    bool choose = false,
-    required String txt,
-    required Color colorBackground,
-    bool left = false,
-    bool right = false,
-    bool center = false,
-  }) {
-    double padding = 10;
-    ////////////////
-    ///
-    ///
-    ///
-    double borderOutSide = padding;
-    double widthBoxFillter = constraints.maxWidth * 0.3;
-    return Container(
-      margin: EdgeInsets.only(bottom: choose ? 0 : padding, right: padding),
-      height: constraints.maxHeight,
-      width: widthBoxFillter,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            padding: EdgeInsets.only(bottom: choose ? padding : 0),
-            // boxfillter
-            decoration: BoxDecoration(
-                border: choose ? Border.all(color: colorChoose) : null,
-                color: choose ? colorChoose : colorButton,
-                borderRadius: choose
-                    ? BorderRadius.only(
-                        topRight: Radius.circular(padding / 2),
-                        topLeft: Radius.circular(padding / 2))
-                    : BorderRadius.all(Radius.circular(5))),
-            alignment: Alignment.center,
-            child: BaseWidget().setText(
-                txt: txt,
-                color: choose ? Colors.white : Colors.black,
-                fontWeight: choose ? FontWeight.bold : FontWeight.w300),
-          ),
-          /////////////////
-          ///box item
-
-          // choose
-          //     ? Transform.translate(
-          //         offset: Offset(0, 0),
-          //         child: ListView(
-          //           children: List.generate(
-          //             20,
-          //             (index) => ListTile(
-          //               title: Text('Item $index'),
-          //             ),
-          //           ),
-          //         ),
-          //       )
-          //     : Container(),
-
-          ///left
-          choose
-              //true
-              ? left
-                  ? leftOutSideBorderFillterBox(
-                      borderOutSide: borderOutSide,
-                      colorChoose: colorChoose,
-                      colorBackground: colorBackground)
-                  : right
-                      ? rightOutSideBorderFillterBox(
-                          borderOutSide: borderOutSide,
-                          colorChoose: colorChoose,
-                          colorBackground: colorBackground)
-                      : Container()
-              : Container(),
-
-          choose
-              ? center
-                  ? Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        rightOutSideBorderFillterBox(
-                            borderOutSide: borderOutSide,
-                            colorChoose: colorChoose,
-                            colorBackground: colorBackground),
-                        leftOutSideBorderFillterBox(
-                            borderOutSide: borderOutSide,
-                            colorChoose: colorChoose,
-                            colorBackground: colorBackground)
-                      ],
-                    )
-                  : Container()
-              : Container(),
-
-          choose
-              ? Positioned(
-                  bottom: -200,
-                  left: center
-                      //
-                      ? -(widthBoxFillter / 2 +
-                          ((widget.baseConstraints.maxWidth - 40) / 5))
-                      //
-                      : left
-                          ? 0
-                          : null,
-                  right: right ? 0 : null,
-                  child: Container(
-                    width: widget.baseConstraints.maxWidth - 40,
-                    height: 200,
-                    padding: EdgeInsets.all(10),
-
-                    //box item
-
-                    decoration: BoxDecoration(
-                      border: choose ? Border.all(color: colorChoose) : null,
-                      color: colorChoose,
-                      borderRadius: center
-                          ? BorderRadius.all(Radius.circular(padding / 2))
-                          : left
-                              ? BorderRadius.only(
-                                  bottomLeft: Radius.circular(padding / 2),
-                                  bottomRight: Radius.circular(padding / 2),
-                                  topRight: Radius.circular(padding / 2),
-                                )
-                              : right
-                                  ? BorderRadius.only(
-                                      bottomLeft: Radius.circular(padding / 2),
-                                      bottomRight: Radius.circular(padding / 2),
-                                      topLeft: Radius.circular(padding / 2),
-                                    )
-                                  : null,
+      height: heightFillterSearchBox,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: List.generate(4, (index) {
+          return Padding(
+            padding:
+                const EdgeInsets.only(top: 8, bottom: 8, right: 20, left: 20),
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  selectedIdx = index;
+                });
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: selectedIdx == index ? Colors.grey : Colors.black,
+                      width: 2.0,
                     ),
-                    child: itemOfFillter(),
                   ),
-                )
-              : Container(),
-        ],
-      ),
-    );
-  }
-
-  Widget leftOutSideBorderFillterBox({
-    required borderOutSide,
-    required colorChoose,
-    required colorBackground,
-  }) {
-    return Positioned(
-      bottom: -0,
-      right: -borderOutSide,
-      child: Container(
-        clipBehavior: Clip.none,
-        color: colorChoose,
-        width: borderOutSide,
-        height: borderOutSide,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned(
-              top: -borderOutSide,
-              right: -borderOutSide,
-              child: Container(
-                height: borderOutSide * 2,
-                width: borderOutSide * 2,
-                //outside border
-                decoration: BoxDecoration(
-                    color: colorBackground,
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(borderOutSide))),
+                ),
+                child: Center(
+                  child: Text(
+                    itemNames[index],
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
               ),
             ),
-          ],
-        ),
+          );
+        }),
       ),
     );
   }
 
-  Widget rightOutSideBorderFillterBox({
-    required borderOutSide,
-    required colorChoose,
-    required colorBackground,
-  }) {
-    return Positioned(
-      bottom: -0,
-      left: -borderOutSide,
-      child: Container(
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-          color: colorChoose,
-        ),
-        width: borderOutSide,
-        height: borderOutSide,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned(
-              top: -borderOutSide,
-              left: -borderOutSide,
-              child: Container(
-                height: borderOutSide * 2,
-                width: borderOutSide * 2,
-                //outside border
-                decoration: BoxDecoration(
-                    color: colorBackground,
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(borderOutSide))),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget handleChooseFillterEvent(
-      {required Widget child, required FillterComicBook fillterComicBook}) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          if (chooseItemFillter[fillterComicBook] == true) {
-            chooseItemFillter.update(fillterComicBook, (value) => false);
-
-            return;
-          }
-          chooseItemFillter.updateAll((key, value) => false);
-          chooseItemFillter.update(fillterComicBook, (value) => true);
-        });
-      },
-      child: child,
-    );
-  }
+/////////////////////////////////////
 
   Widget searchBox({required double heightSearchBox}) {
     Color borderColor = const Color(0xff232220);

@@ -14,18 +14,16 @@ class BaseScreen extends StatelessWidget {
       required this.setBody,
       this.setAppBar = 0,
       this.setBottomBar = false,
-      this.chooseBottomicon = 0});
+      this.chooseBottomicon = 0,
+      this.setMoveUp = false});
   final BoxConstraints baseConstraints;
   final int setAppBar;
   final Widget setBody;
   final bool setBottomBar;
+  final bool setMoveUp;
+
   final int chooseBottomicon;
   //send data ->base->bottom
-  testapi({required BaseRepository baseRepository}) async {
-    // ResultCallAPI response =
-    //     await baseRepository.comicsRepository.getAllComics();
-    // print(response.mess);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +31,8 @@ class BaseScreen extends StatelessWidget {
 
     double heightHeadBottom = baseConstraints.maxHeight * 0.09;
     final BaseRepository baseRepository = GetIt.instance<BaseRepository>();
-    testapi(baseRepository: baseRepository);
+
+    ScrollController _scrollController = ScrollController();
 
     /// base repo
     ///
@@ -48,6 +47,7 @@ class BaseScreen extends StatelessWidget {
         color: colorTheme,
 
         child: ListView(
+          controller: _scrollController,
           children: [
             //appBar
 
@@ -67,7 +67,35 @@ class BaseScreen extends StatelessWidget {
             // ),
 
             //body
-            setBody
+            setBody,
+
+            setMoveUp
+                ? Container(
+                    height: 50,
+                    // color: Colors.white,
+                    padding: EdgeInsets.all(10),
+                    alignment: Alignment.topCenter,
+                    child: GestureDetector(
+                      onTap: () {
+                        _scrollController.animateTo(
+                          0.0,
+                          duration: Duration(seconds: 1),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      child: const Text(
+                        "Lên đầu trang",
+                        style: TextStyle(
+                          color: Colors.white,
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w100,
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),
