@@ -6,34 +6,38 @@ class AppValid {
       {required String em,
       required String pw,
       bool key = false,
-      String rePw = ''}) {
-    if (!AppValid(data: em).isNotNull && !AppValid(data: pw).isNotNull) {
-      return 'Nhap email va password';
+      String rePw = '',
+      String name = ''}) {
+    if (!AppValid(data: em).isNotNull || !AppValid(data: pw).isNotNull) {
+      return 'Các trường không được để trống';
     } else if (!AppValid(data: em).isValidEmail) {
-      return 'Hay nhap dung dinh dang email';
+      return 'Hãy nhập đúng định dạng email';
     } else if (!AppValid(data: pw).isValidPassword) {
-      return 'Nhap mat khau lon hon 4 nho hon 10';
+      return 'Nhập mật khẩu lớn hơn 4 nhỏ hơn 20';
     } else if (key) {
-      if (pw != rePw) {
-        return 'Mat khau nhap lai k trung khop';
+      if (!AppValid(data: name).isValidName) {
+        return 'Hãy nhập tên lớn hơn 5 nhỏ hơn 30';
+      } else if (pw != rePw) {
+        return 'Mật khẩu nhập lại không trùng khớp';
       }
     }
     return true;
   }
 
   bool get isValidEmail {
-    final emailRegExp = RegExp(r"^[a-zA-Z0-9]+@[a-zA-Z0-9]+.[a-zA-Z]+");
+    final emailRegExp = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
     return emailRegExp.hasMatch(data);
   }
 
   bool get isValidName {
-    final nameRegExp =
-        RegExp(r"^\s* ([A-Za-z]{1,}([.,] |[-]]))+[A-Za-z]+.?\s*$");
+    final nameRegExp = RegExp(r'^[a-zA-Z]{5,30}$');
     return nameRegExp.hasMatch(data);
   }
 
   bool get isValidPassword {
-    final passwordRegExp = RegExp(r'^(?=.*?[a-z]).{4,10}$');
+    final passwordRegExp =
+        RegExp(r'^(?=.*[a-zA-Z])(?=.*\d?)(?=.*[!@#\$%^&*]?).{4,20}$');
+
     return passwordRegExp.hasMatch(data);
   }
 

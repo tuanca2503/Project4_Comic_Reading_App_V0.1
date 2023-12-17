@@ -676,7 +676,8 @@ class _AccountScreenState extends State<AccountScreen> {
                                 key: key,
                                 rePw: _rePassword.text,
                                 em: _email.text,
-                                pw: _password.text);
+                                pw: _password.text,
+                                name: _username.text);
                             //
                             if (validMess is bool && validMess) {
                               ResultCallAPI response = await widget
@@ -688,7 +689,9 @@ class _AccountScreenState extends State<AccountScreen> {
                               /////
                               print(response.mess);
                               if (!response.check || response.code == 400) {
-                                errorMess = "Email bi trung";
+                                setState(() {
+                                  errorMess = "Email bi trung";
+                                });
                               } else {
                                 await widget.baseRepository.userRepository
                                     .loginUser(

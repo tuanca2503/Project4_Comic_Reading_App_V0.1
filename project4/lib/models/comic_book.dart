@@ -60,7 +60,7 @@ class ComicBook {
         ComicBook(
           id: json['id'],
           title: utf8.decode(latin1.encode(json['title'])),
-          coverImage: json['coverImage'],
+          coverImage: json['coverImage'].toString().replaceAll('-/', '/'),
           createdDate:
               DateTime.fromMillisecondsSinceEpoch(json['createdDate']).year,
           lastUpdatedDate: json['lastUpdatedDate'],
@@ -286,5 +286,34 @@ class ChapterComicBook {
     for (var value in json['images']) {
       images.add(value);
     }
+  }
+}
+
+class FillterSearchBox {
+  final String nameFillter;
+  final String apiFillter;
+  String searchName;
+  bool choose;
+
+  FillterSearchBox(
+      {this.nameFillter = '',
+      this.apiFillter = '',
+      this.choose = false,
+      this.searchName = ''});
+
+  List<FillterSearchBox> seed() {
+    return [
+      FillterSearchBox(nameFillter: 'Tất cả', apiFillter: 'TOP_ALL'),
+      FillterSearchBox(nameFillter: 'Ngày tạo', apiFillter: 'CREATED_DATE'),
+      FillterSearchBox(
+          nameFillter: 'Ngày cập nhật', apiFillter: 'LAST_UPDATED_DATE'),
+      FillterSearchBox(nameFillter: 'Top ngày', apiFillter: 'TOP_DAY'),
+      FillterSearchBox(nameFillter: 'Top tuần', apiFillter: 'TOP_WEEK'),
+      FillterSearchBox(nameFillter: 'Top tháng', apiFillter: 'TOP_MONTH'),
+      FillterSearchBox(nameFillter: 'Top năm', apiFillter: 'TOP_YEAR'),
+      FillterSearchBox(nameFillter: 'Yêu thích', apiFillter: 'TOP_LIKE'),
+      FillterSearchBox(
+          nameFillter: 'Lượt theo dõi', apiFillter: 'TOP_FAVOURITE'),
+    ];
   }
 }

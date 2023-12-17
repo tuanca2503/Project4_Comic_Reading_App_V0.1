@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:project4/models/comic_book.dart';
 import 'package:project4/models/fillter_comic_book.dart';
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key, required this.baseConstraints});
+
   final BoxConstraints baseConstraints;
 
   @override
@@ -20,8 +22,10 @@ class _SearchScreenState extends State<SearchScreen> {
   ///seed fillter
   List<FillterComicBook> listFillters = FillterComicBook().seed();
   Map<FillterComicBook, bool> chooseItemFillter = {};
-  List<String> items = [];
+  List<ComicBook> comicBooks = [];
+  List<FillterSearchBox> itemsFillter = FillterSearchBox().seed();
   int selectedIdx = -1;
+  FillterSearchBox fillterSearchBox = FillterSearchBox().seed().first;
 
   ///
   ///
@@ -72,7 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget bodySearchScreen() {
-    double heightSearchBox = widget.baseConstraints.maxHeight * 0.1;
+    double heightSearchBox = widget.baseConstraints.maxHeight * 0.09;
     double heightFillterSearchBox = widget.baseConstraints.maxHeight * 0.07;
     //
     double heightResultBox = widget.baseConstraints.maxHeight -
@@ -115,7 +119,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           Container(
                             width: widget.baseConstraints.maxWidth,
                             height: heightResultBox * 0.95,
-                            child: items.isEmpty
+                            child: comicBooks.isEmpty
                                 ? const Center(
                                     child: Column(
                                       mainAxisAlignment:
@@ -137,10 +141,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
                                   )
                                 : ListView.builder(
-                                    itemCount: items.length,
+                                    itemCount: comicBooks.length,
                                     itemBuilder: (context, index) {
                                       return ListTile(
-                                        title: Text(items[index]),
+                                        title: Text(comicBooks[index].title),
                                       );
                                     },
                                   ),
@@ -167,35 +171,42 @@ class _SearchScreenState extends State<SearchScreen> {
 ////////////////////////
 
   Widget fillterSearch({required double heightFillterSearchBox}) {
-    List<String> itemNames = ['Top ngày', 'Item 2', 'Item 3', 'Item 4'];
+    itemsFillter.first.choose = true;
     return Container(
       height: heightFillterSearchBox,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        children: List.generate(4, (index) {
-          return Padding(
-            padding:
-                const EdgeInsets.only(top: 8, bottom: 8, right: 20, left: 20),
+        children: List.generate(itemsFillter.length, (index) {
+          return Container(
+            padding: const EdgeInsets.only(bottom: 5, right: 20, left: 20),
             child: InkWell(
               onTap: () {
-                setState(() {
-                  selectedIdx = index;
-                });
+                setState(
+                  () {
+                    // selectedIdx = index;
+                    for (FillterSearchBox item in itemsFillter) {
+                      item.choose = false;
+                    }
+                    itemsFillter[index].choose = true;
+                  },
+                );
               },
               child: Container(
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: selectedIdx == index ? Colors.grey : Colors.black,
-                      width: 2.0,
+                      color: itemsFillter[index].choose
+                          ? Colors.grey
+                          : Colors.transparent,
+                      width: 1.0,
                     ),
                   ),
                 ),
                 child: Center(
-                  child: Text(
-                    itemNames[index],
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+                  child: BaseWidget().setText(
+                      txt: itemsFillter[index].nameFillter,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w100),
                 ),
               ),
             ),
@@ -215,25 +226,27 @@ class _SearchScreenState extends State<SearchScreen> {
     BorderRadius borderRadius = BorderRadius.all(Radius.circular(ourRadius));
     return Container(
       padding: const EdgeInsets.only(bottom: 10, top: 20),
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: borderRadius,
-              border: Border.all(width: 2, color: borderColor),
-            ),
-            padding: EdgeInsets.all(scalePadding),
-            height: heightSearchBox / 1.5,
-            child: LayoutBuilder(builder: (context, constraints) {
-              return Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: borderColor,
-                  borderRadius:
-                      BorderRadius.all(Radius.circular(ourRadius / 2)),
-                ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          border: Border.all(width: 2, color: borderColor),
+        ),
+        padding: EdgeInsets.all(scalePadding),
+        height: heightSearchBox,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                border: Border.all(width: 1, color: borderColor),
+                color: borderColor,
+                borderRadius: BorderRadius.all(Radius.circular(ourRadius / 2)),
+              ),
+              child: SingleChildScrollView(
                 child: TextField(
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: constraints.maxHeight * 0.3),
                   focusNode: searchFocusNode,
                   textAlign: TextAlign.start,
                   controller: searchController,
@@ -252,10 +265,10 @@ class _SearchScreenState extends State<SearchScreen> {
                       hintText: 'Tìm kiếm ngay',
                       border: InputBorder.none),
                 ),
-              );
-            }),
-          )
-        ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
