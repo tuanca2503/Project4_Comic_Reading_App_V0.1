@@ -1,26 +1,20 @@
 import 'package:flutter/material.dart';
-
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:project4/models/app_valid.dart';
-import 'package:project4/models/handle_response_api.dart';
-import 'package:project4/models/user.dart';
-import 'package:project4/repositories/base_repository.dart';
-import 'package:project4/repositories/user_repository.dart';
+import 'package:project4/repositories/auth_repository.dart';
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/screens/home_screen.dart';
-
+import 'package:project4/utils/util_func.dart';
 import 'package:project4/widgets/base_widget.dart';
+
+import '../models/users/auth.dart';
+import '../utils/constants.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen(
-      {super.key,
-      required this.baseConstraints,
-      required this.baseRepository,
-      this.chooseScreen = false,
-      this.keyAS = false});
-  final BaseRepository baseRepository;
-  final BoxConstraints baseConstraints;
+      {super.key, this.chooseScreen = false, this.keyAS = false});
+
   final bool keyAS;
   final bool chooseScreen;
 
@@ -42,11 +36,12 @@ class _AccountScreenState extends State<AccountScreen> {
     6,
     (index) => TextEditingController(),
   );
-  TextEditingController _username = TextEditingController();
-  TextEditingController _email = TextEditingController();
+  final TextEditingController _username = TextEditingController();
+  final TextEditingController _email =
+      TextEditingController(text: "string@gmail.com");
 
-  TextEditingController _password = TextEditingController();
-  TextEditingController _rePassword = TextEditingController();
+  final TextEditingController _password = TextEditingController(text: "string");
+  final TextEditingController _rePassword = TextEditingController();
   String errorMess = '';
 
   //////////////////////////////////////
@@ -54,7 +49,7 @@ class _AccountScreenState extends State<AccountScreen> {
   void initState() {
     chooseScreen = widget.chooseScreen;
     key = widget.keyAS;
-    double screenWidth = widget.baseConstraints.maxWidth;
+    double screenWidth = baseConstraints.maxWidth;
     ThemeData(colorSchemeSeed: const Color(0xFF3b4149), useMaterial3: true);
     fontSize = screenWidth * 0.03;
     fontFour = screenWidth * 0.04;
@@ -69,19 +64,15 @@ class _AccountScreenState extends State<AccountScreen> {
 
   bool _isObscured = true;
   bool isObscured = true;
+
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-        baseConstraints: widget.baseConstraints,
         setAppBar: 3,
         setBottomBar: false,
         setBody: chooseScreen
-            ? bodyAccountScreen(
-                key: key,
-                context: context,
-                baseConstraints: widget.baseConstraints)
-            : bodyChooseScreen(
-                context: context, baseConstraints: widget.baseConstraints));
+            ? bodyAccountScreen(key: key, context: context)
+            : bodyChooseScreen(context: context));
   }
 
   ////////////////////////////////////////
@@ -119,7 +110,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 keyboardType: TextInputType.number,
                 maxLength: 1,
                 // maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   counterText: "",
                   border: OutlineInputBorder(),
                 ),
@@ -131,15 +122,12 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
 ///////////////////////////////////////////////////////////acc
-  Widget bodyAccountScreen(
-      {required BuildContext context,
-      bool key = false,
-      required BoxConstraints baseConstraints}) {
+  Widget bodyAccountScreen({required BuildContext context, bool key = false}) {
     return Container(
       width: baseConstraints.maxWidth,
       height: baseConstraints.maxHeight,
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(10),
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           colors: [
@@ -172,7 +160,7 @@ class _AccountScreenState extends State<AccountScreen> {
               key ? 'Đăng ký' : 'Đăng nhập',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Color(0xffd6dbe2),
+                color: const Color(0xffd6dbe2),
                 fontSize: fontBack,
               ),
             ),
@@ -190,7 +178,7 @@ class _AccountScreenState extends State<AccountScreen> {
           //   border: Border.all(width: 1, color: Colors.white),
           // ),
           child: Padding(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
                 bottom: 0.001), // You can adjust the value as needed
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,34 +187,34 @@ class _AccountScreenState extends State<AccountScreen> {
                   'Email',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Color(0xffd6dbe2),
+                    color: const Color(0xffd6dbe2),
                     fontSize: fontFour,
                   ),
                 ),
-                SizedBox(height: 8.0), // Add some vertical space
+                const SizedBox(height: 8.0), // Add some vertical space
                 TextField(
                   controller: _email,
-                  style:
-                      TextStyle(color: Color(0xffd6dbe2), fontSize: fontSize),
+                  style: TextStyle(
+                      color: const Color(0xffd6dbe2), fontSize: fontSize),
                   decoration: InputDecoration(
-                    fillColor: Color(0xff1f1b19),
+                    fillColor: const Color(0xff1f1b19),
                     filled: true,
                     hintText: 'name@gmail.com',
                     hintStyle: TextStyle(
-                      color: Color(0xff49575e),
+                      color: const Color(0xff49575e),
                       fontSize: fontSize,
                     ),
-                    enabledBorder: OutlineInputBorder(
+                    enabledBorder: const OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Color(0xFF242830),
                         width: 1,
                       ),
                     ),
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(0xFF3b4149), width: 2),
                     ),
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                       vertical: 20,
                       horizontal: 20,
                     ),
@@ -278,7 +266,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
-                                                                color: Color(
+                                                                color: const Color(
                                                                     0xff737373),
                                                                 decoration:
                                                                     TextDecoration
@@ -330,18 +318,18 @@ class _AccountScreenState extends State<AccountScreen> {
                                   );
                             },
                             child: Container(
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                   color: Colors.transparent,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5))),
-                              padding: EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(5),
                               child: Transform(
                                 transform: Matrix4.identity()
                                   ..rotateZ(-20 *
                                       (3.14159265358979323846 /
                                           180)) // Xoay 45 độ
                                   ..translate(-5, 0),
-                                child: Icon(
+                                child: const Icon(
                                   Icons.send, // Mã biểu tượng email
                                   size: 20.0,
                                   color: Colors.white,
@@ -364,7 +352,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 //   border: Border.all(width: 1, color: Colors.white),
                 // ),
                 child: Padding(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                       bottom: 0.001), // You can adjust the value as needed
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -373,26 +361,27 @@ class _AccountScreenState extends State<AccountScreen> {
                         'Tên',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Color(0xffd6dbe2),
+                          color: const Color(0xffd6dbe2),
                           fontSize: fontFour,
                         ),
                       ),
-                      SizedBox(height: 8.0), // Add some vertical space
+                      const SizedBox(height: 8.0), // Add some vertical space
                       TextField(
                         controller: _username,
                         style: TextStyle(
-                            color: Color(0xffd6dbe2), fontSize: fontSize),
+                            color: const Color(0xffd6dbe2), fontSize: fontSize),
                         decoration: InputDecoration(
-                          fillColor: Color(0xff1f1b19),
+                          fillColor: const Color(0xff1f1b19),
                           filled: true,
                           hintText: 'Your name',
                           hintStyle: TextStyle(
-                              color: Color(0xff49575e), fontSize: fontSize),
-                          enabledBorder: OutlineInputBorder(
+                              color: const Color(0xff49575e),
+                              fontSize: fontSize),
+                          enabledBorder: const OutlineInputBorder(
                             borderSide:
                                 BorderSide(color: Color(0xFF242830), width: 1),
                           ),
-                          focusedBorder: OutlineInputBorder(
+                          focusedBorder: const OutlineInputBorder(
                             borderSide:
                                 BorderSide(color: Color(0xFF3b4149), width: 2),
                           ),
@@ -416,7 +405,7 @@ class _AccountScreenState extends State<AccountScreen> {
           //   border: Border.all(width: 1, color: Colors.white),
           // ),
           child: Padding(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
                 bottom: 0.001), // You can adjust the value as needed
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -425,26 +414,26 @@ class _AccountScreenState extends State<AccountScreen> {
                   'Mật khẩu',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Color(0xffd6dbe2),
+                    color: const Color(0xffd6dbe2),
                     fontSize: fontFour,
                   ),
                 ),
-                SizedBox(height: 8.0), // Add some vertical space
+                const SizedBox(height: 8.0), // Add some vertical space
                 TextField(
                   controller: _password,
-                  style:
-                      TextStyle(color: Color(0xffd6dbe2), fontSize: fontSize),
+                  style: TextStyle(
+                      color: const Color(0xffd6dbe2), fontSize: fontSize),
                   decoration: InputDecoration(
-                    fillColor: Color(0xff1f1b19),
+                    fillColor: const Color(0xff1f1b19),
                     filled: true,
                     hintText: 'Password',
-                    hintStyle:
-                        TextStyle(color: Color(0xff49575e), fontSize: fontSize),
-                    enabledBorder: OutlineInputBorder(
+                    hintStyle: TextStyle(
+                        color: const Color(0xff49575e), fontSize: fontSize),
+                    enabledBorder: const OutlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(0xFF242830), width: 1),
                     ),
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(0xFF3b4149), width: 2),
                     ),
@@ -499,12 +488,12 @@ class _AccountScreenState extends State<AccountScreen> {
                                 TextField(
                                   controller: _forgotPass,
                                   keyboardType: TextInputType.emailAddress,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     labelText: 'Email',
                                     hintText: 'Enter your email',
                                   ),
                                 ),
-                                SizedBox(height: 16.0),
+                                const SizedBox(height: 16.0),
                                 Row(
                                   children: [
                                     TextButton(
@@ -522,15 +511,13 @@ class _AccountScreenState extends State<AccountScreen> {
                                                 : "Hay nhap dung email";
                                         //
                                         if (validMess is bool && validMess) {
-                                          ResultCallAPI response = await widget
-                                              .baseRepository.userRepository
-                                              .forgotPassword(
-                                                  email: _forgotPass.text);
-                                          /////
-                                          print(response.mess);
-                                          if (!response.check ||
-                                              response.code == 400) {
-                                            errorMess = response.mess;
+                                          try {
+                                            await GetIt.instance<
+                                                    AuthRepository>()
+                                                .forgotPassword(
+                                                    email: _forgotPass.text);
+                                          } catch (e) {
+                                            errorMess = e.toString();
                                           }
                                           Navigator.pop(context);
                                         } else {
@@ -552,7 +539,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           'Quên mật khẩu ?',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Color(0xffd45d16),
+                            color: const Color(0xffd45d16),
                             fontSize: fontSize,
                           ),
                         ),
@@ -568,7 +555,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 //   border: Border.all(width: 1, color: Colors.white),
                 // ),
                 child: Padding(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                       bottom: 0.001), // You can adjust the value as needed
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -577,26 +564,27 @@ class _AccountScreenState extends State<AccountScreen> {
                         'Nhập lại mật khẩu',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Color(0xffd6dbe2),
+                          color: const Color(0xffd6dbe2),
                           fontSize: fontFour,
                         ),
                       ),
-                      SizedBox(height: 8.0), // Add some vertical space
+                      const SizedBox(height: 8.0), // Add some vertical space
                       TextField(
                         controller: _rePassword,
                         style: TextStyle(
-                            color: Color(0xffd6dbe2), fontSize: fontSize),
+                            color: const Color(0xffd6dbe2), fontSize: fontSize),
                         decoration: InputDecoration(
-                          fillColor: Color(0xff1f1b19),
+                          fillColor: const Color(0xff1f1b19),
                           filled: true,
                           hintText: 'Password',
                           hintStyle: TextStyle(
-                              color: Color(0xff49575e), fontSize: fontSize),
-                          enabledBorder: OutlineInputBorder(
+                              color: const Color(0xff49575e),
+                              fontSize: fontSize),
+                          enabledBorder: const OutlineInputBorder(
                             borderSide:
                                 BorderSide(color: Color(0xFF242830), width: 1),
                           ),
-                          focusedBorder: OutlineInputBorder(
+                          focusedBorder: const OutlineInputBorder(
                             borderSide:
                                 BorderSide(color: Color(0xFF3b4149), width: 2),
                           ),
@@ -628,7 +616,7 @@ class _AccountScreenState extends State<AccountScreen> {
               )
             : Container(),
 
-        Container(
+        SizedBox(
           width: baseConstraints.maxWidth,
           height: baseConstraints.maxHeight * 0.08,
           // decoration: BoxDecoration(
@@ -639,7 +627,7 @@ class _AccountScreenState extends State<AccountScreen> {
               Expanded(
                 flex: 5,
                 child: Padding(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -650,14 +638,16 @@ class _AccountScreenState extends State<AccountScreen> {
                     child: Container(
                       height: double.infinity,
                       decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Color(0xFF455258)),
+                        border: Border.all(
+                            width: 2, color: const Color(0xFF455258)),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(
                         child: Text(
                           '<',
                           style: TextStyle(
-                              color: Color(0xffd6dbe2), fontSize: fontBack),
+                              color: const Color(0xffd6dbe2),
+                              fontSize: fontBack),
                         ),
                       ),
                     ),
@@ -667,11 +657,10 @@ class _AccountScreenState extends State<AccountScreen> {
               Expanded(
                 flex: 5,
                 child: Padding(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   child: GestureDetector(
                     onTap: key
                         ? () async {
-//
                             dynamic validMess = AppValid().isValidAccount(
                                 key: key,
                                 rePw: _rePassword.text,
@@ -680,20 +669,13 @@ class _AccountScreenState extends State<AccountScreen> {
                                 name: _username.text);
                             //
                             if (validMess is bool && validMess) {
-                              ResultCallAPI response = await widget
-                                  .baseRepository.userRepository
-                                  .registerUser(
-                                      email: _email.text,
-                                      password: _password.text,
-                                      userName: _username.text);
-                              /////
-                              print(response.mess);
-                              if (!response.check || response.code == 400) {
-                                setState(() {
-                                  errorMess = "Email bi trung";
-                                });
-                              } else {
-                                await widget.baseRepository.userRepository
+                              try {
+                                await GetIt.instance<AuthRepository>()
+                                    .registerUser(
+                                        email: _email.text,
+                                        password: _password.text,
+                                        userName: _username.text);
+                                await GetIt.instance<AuthRepository>()
                                     .loginUser(
                                         email: _email.text,
                                         password: _password.text);
@@ -701,12 +683,13 @@ class _AccountScreenState extends State<AccountScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => HomeScreen(
-                                        baseRepository: widget.baseRepository,
-                                        baseConstraints: baseConstraints,
-                                      ),
+                                      builder: (context) => const HomeScreen(),
                                     ),
                                   );
+                                });
+                              } catch (e) {
+                                setState(() {
+                                  errorMess = "Email đã tồn tại";
                                 });
                               }
                             } else {
@@ -716,31 +699,22 @@ class _AccountScreenState extends State<AccountScreen> {
                             }
                           }
                         : () async {
-                            //
-
                             dynamic validMess = AppValid().isValidAccount(
                                 key: key, em: _email.text, pw: _password.text);
 
                             if (validMess is bool && validMess) {
-                              ResultCallAPI response = await widget
-                                  .baseRepository.userRepository
+                              Auth auth = await GetIt.instance<AuthRepository>()
                                   .loginUser(
                                       email: _email.text,
                                       password: _password.text);
-                              /////
                               setState(() {
-                                if (!response.check || response.code == 401) {
-                                  errorMess = 'Sai email hoac mat khau';
+                                if (!checkStringIsNotEmpty(auth.accessToken)) {
+                                  errorMess = 'Email hoặc mật khẩu không đúng';
                                 } else {
-                                  // print(widget.userRepository
-                                  //     .fetchUserData()
-                                  //     .email);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => HomeScreen(
-                                          baseRepository: widget.baseRepository,
-                                          baseConstraints: baseConstraints),
+                                      builder: (context) => const HomeScreen(),
                                     ),
                                   );
                                 }
@@ -757,7 +731,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     child: Container(
                       height: double.infinity,
                       decoration: BoxDecoration(
-                        color: Color(0xFFd98118),
+                        color: const Color(0xFFd98118),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(
@@ -767,7 +741,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               : 'Đăng nhập'.toUpperCase(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Color(0xffd6dbe2),
+                            color: const Color(0xffd6dbe2),
                             fontSize: create,
                           ),
                         ),
@@ -809,13 +783,11 @@ class _AccountScreenState extends State<AccountScreen> {
 
 ///////////////////////////////////////////////////////////lo
 
-  Widget bodyChooseScreen(
-      {required BuildContext context,
-      required BoxConstraints baseConstraints}) {
+  Widget bodyChooseScreen({required BuildContext context}) {
     double screenWidth = baseConstraints.maxWidth;
     double screenHeight = baseConstraints.maxHeight;
 
-    return Container(
+    return SizedBox(
       width: screenWidth,
       height: screenHeight,
       child: Stack(
@@ -855,13 +827,13 @@ class _AccountScreenState extends State<AccountScreen> {
               child: Container(
                 width: screenWidth,
                 height: screenHeight * 0.58,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     color: Color(0xFF1f252e),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30), // Bo tròn góc trái trên
                       topRight: Radius.circular(30), //Bo tròn góc phai trên
                     )),
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Column(children: [
                   Container(
                     width: double.infinity,
@@ -870,8 +842,8 @@ class _AccountScreenState extends State<AccountScreen> {
                     //   border: Border.all(width: 1, color: Colors.white),
                     // ),
                     child: Transform.scale(
-                      scale:
-                          0.7, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                      scale: 0.7,
+                      // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                       child: BaseWidget().setImageAsset(
                           'logo_white.png'), // Đường dẫn đến ảnh của bạn
                     ),
@@ -879,8 +851,8 @@ class _AccountScreenState extends State<AccountScreen> {
                   Container(
                     width: double.infinity,
                     height: screenHeight * 0.08,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(),
+                    padding: const EdgeInsets.all(10),
+                    decoration: const BoxDecoration(),
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -892,7 +864,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Color(0xFFe78b34),
+                          color: const Color(0xFFe78b34),
                           borderRadius:
                               BorderRadius.circular(20), // Đặt độ bo tròn
                         ),
@@ -909,7 +881,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
                                   style: TextStyle(
                                     fontSize: fontSize,
-                                    color: Color.fromARGB(255, 47, 48, 49),
+                                    color:
+                                        const Color.fromARGB(255, 47, 48, 49),
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -923,8 +896,8 @@ class _AccountScreenState extends State<AccountScreen> {
                   Container(
                       width: double.infinity,
                       height: screenHeight * 0.08,
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(),
+                      padding: const EdgeInsets.all(10),
+                      decoration: const BoxDecoration(),
                       child: GestureDetector(
                         onTap: () {
                           setState(() {
@@ -939,7 +912,8 @@ class _AccountScreenState extends State<AccountScreen> {
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                                 width: 2,
-                                color: Color(0xFF3b4149)), // Đặt độ bo tròn
+                                color:
+                                    const Color(0xFF3b4149)), // Đặt độ bo tròn
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -954,7 +928,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     // 'Đăng nhập với email',
                                     style: TextStyle(
                                       fontSize: fontSize,
-                                      color: Color(0xffd6dbe2),
+                                      color: const Color(0xffd6dbe2),
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -974,23 +948,23 @@ class _AccountScreenState extends State<AccountScreen> {
                       children: [
                         Expanded(
                           child: Padding(
-                            padding: EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                               top: 17,
                               left: 10,
                             ),
                             child: Container(
                               height: 1,
                               decoration: BoxDecoration(
-                                color: Color(0xFF3b4149),
+                                color: const Color(0xFF3b4149),
                                 border: Border.all(
-                                    width: 1, color: Color(0xFF3b4149)),
+                                    width: 1, color: const Color(0xFF3b4149)),
                               ),
                             ),
                           ),
                         ),
                         Expanded(
                           child: Padding(
-                            padding: EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                               top: 17,
                             ),
                             child: Center(
@@ -998,7 +972,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                 'Hoặc đăng nhập bằng',
                                 style: TextStyle(
                                   fontSize: fontBac,
-                                  color: Color(0xff767c86),
+                                  color: const Color(0xff767c86),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -1007,13 +981,13 @@ class _AccountScreenState extends State<AccountScreen> {
                         ),
                         Expanded(
                           child: Padding(
-                            padding: EdgeInsets.only(top: 17, right: 10),
+                            padding: const EdgeInsets.only(top: 17, right: 10),
                             child: Container(
                               height: 1,
                               decoration: BoxDecoration(
-                                color: Color(0xFF3b4149),
+                                color: const Color(0xFF3b4149),
                                 border: Border.all(
-                                    width: 1, color: Color(0xFF3b4149)),
+                                    width: 1, color: const Color(0xFF3b4149)),
                               ),
                             ),
                           ),
@@ -1031,19 +1005,19 @@ class _AccountScreenState extends State<AccountScreen> {
                       children: [
                         Expanded(
                           child: Padding(
-                            padding: EdgeInsets.all(
+                            padding: const EdgeInsets.all(
                                 5), // Adjust the padding as needed
                             child: Container(
                               height: double.infinity,
                               decoration: BoxDecoration(
-                                color: Color(0xFF181c1f),
+                                color: const Color(0xFF181c1f),
                                 border: Border.all(
-                                    width: 3, color: Color(0xFF242830)),
+                                    width: 3, color: const Color(0xFF242830)),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Transform.scale(
-                                scale:
-                                    0.6, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                                scale: 0.6,
+                                // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                                 child: BaseWidget().setImageAsset(
                                     'logo_google.png'), // Đường dẫn đến ảnh của bạn
                               ),
@@ -1052,18 +1026,18 @@ class _AccountScreenState extends State<AccountScreen> {
                         ),
                         Expanded(
                           child: Padding(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Container(
                               height: double.infinity,
                               decoration: BoxDecoration(
-                                color: Color(0xFF181c1f),
+                                color: const Color(0xFF181c1f),
                                 border: Border.all(
-                                    width: 3, color: Color(0xFF242830)),
+                                    width: 3, color: const Color(0xFF242830)),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Transform.scale(
-                                scale:
-                                    0.4, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                                scale: 0.4,
+                                // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                                 child: BaseWidget().setImageAsset(
                                     'logo_facebook.png'), // Đường dẫn đến ảnh của bạn
                               ),
@@ -1072,18 +1046,18 @@ class _AccountScreenState extends State<AccountScreen> {
                         ),
                         Expanded(
                           child: Padding(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Container(
                               height: double.infinity,
                               decoration: BoxDecoration(
-                                color: Color(0xFF181c1f),
+                                color: const Color(0xFF181c1f),
                                 border: Border.all(
-                                    width: 3, color: Color(0xFF242830)),
+                                    width: 3, color: const Color(0xFF242830)),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Transform.scale(
-                                scale:
-                                    0.5, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                                scale: 0.5,
+                                // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                                 child: BaseWidget().setImageAsset(
                                     'logo_apple.png'), // Đường dẫn đến ảnh của bạn
                               ),
@@ -1092,18 +1066,18 @@ class _AccountScreenState extends State<AccountScreen> {
                         ),
                         Expanded(
                           child: Padding(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Container(
                               height: double.infinity,
                               decoration: BoxDecoration(
-                                color: Color(0xFF181c1f),
+                                color: const Color(0xFF181c1f),
                                 border: Border.all(
-                                    width: 3, color: Color(0xFF242830)),
+                                    width: 3, color: const Color(0xFF242830)),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Transform.scale(
-                                scale:
-                                    0.6, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                                scale: 0.6,
+                                // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                                 child: BaseWidget().setImageAsset(
                                     'logo_twitter.png'), // Đường dẫn đến ảnh của bạn
                               ),
@@ -1125,7 +1099,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         '@ 2023 VanBac | v1.0.157',
                         style: TextStyle(
                           fontSize: fontBac,
-                          color: Color(0xff565a61),
+                          color: const Color(0xff565a61),
                         ),
                       ),
                     ),

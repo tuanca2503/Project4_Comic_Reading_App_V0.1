@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:get/get.dart';
 import 'package:project4/screens/base_screen.dart';
 
 class CreateScreen extends StatelessWidget {
   @override
-  const CreateScreen({Key? key, required this.constraints});
-  final BoxConstraints constraints;
+  const CreateScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final fontSize = screenWidth * 0.03;
-    final fontBac = screenWidth * 0.02;
     final fontBack = screenWidth * 0.05;
     final create = screenWidth * 0.025;
 
     return BaseScreen(
-      baseConstraints: constraints,
       setBottomBar: false,
       setBody: Container(
         padding: EdgeInsets.all(10),
@@ -51,8 +46,10 @@ class CreateScreen extends StatelessWidget {
                   style:
                       TextStyle(color: Color(0xffd6dbe2), fontSize: fontSize),
                   decoration: InputDecoration(
-                    filled: true, // Đánh dấu rằng TextField có màu nền
-                    fillColor: Color(0xFF181c1f), // Đặt màu nền của TextField
+                    filled: true,
+                    // Đánh dấu rằng TextField có màu nền
+                    fillColor: Color(0xFF181c1f),
+                    // Đặt màu nền của TextField
                     hintText: 'name@gmail.com',
                     hintStyle: TextStyle(
                       color: Color(0xff49575e),
@@ -92,8 +89,10 @@ class CreateScreen extends StatelessWidget {
                   style:
                       TextStyle(color: Color(0xffd6dbe2), fontSize: fontSize),
                   decoration: InputDecoration(
-                    filled: true, // Đánh dấu rằng TextField có màu nền
-                    fillColor: Color(0xFF181c1f), // Đặt màu nền của TextField
+                    filled: true,
+                    // Đánh dấu rằng TextField có màu nền
+                    fillColor: Color(0xFF181c1f),
+                    // Đặt màu nền của TextField
                     hintText: 'Password',
                     hintStyle: TextStyle(
                       color: Color(0xff49575e),

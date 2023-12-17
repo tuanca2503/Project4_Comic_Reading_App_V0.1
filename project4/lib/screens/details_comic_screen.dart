@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:project4/config.dart';
+import 'package:get_it/get_it.dart';
+import 'package:project4/config/environment.dart';
 import 'package:project4/main.dart';
-import 'package:project4/models/comic_book.dart';
+import 'package:project4/models/comic/comic_book.dart';
 
-import 'package:project4/repositories/base_repository.dart';
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/screens/reading_screen.dart';
 import 'package:project4/screens/search_screen.dart';
+import 'package:project4/utils/util_func.dart';
 import 'package:project4/widgets/base_widget.dart';
 import 'package:provider/provider.dart';
+
+import '../repositories/comics_repository.dart';
+import '../utils/constants.dart';
 
 class DetailsComicScreen extends StatefulWidget {
   const DetailsComicScreen(
       {super.key,
       required this.comicBook,
-      required this.baseConstraints,
-      this.showButton = 0,
-      required this.baseRepository});
-  final BaseRepository baseRepository;
+      this.showButton = 0});
   final ComicBook comicBook;
-  final BoxConstraints baseConstraints;
   final int showButton;
 
   @override
@@ -33,7 +33,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
     // TODO: implement initState
     super.initState();
     // setSwitchEvent(showButton: widget.showButton);
-    partComic = 'Phan 1';
+    partComic = 'Danh sách chương';
   }
 
   String partComic = '';
@@ -72,34 +72,34 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
   Widget build(BuildContext context) {
     return BaseScreen(
         setAppBar: 2,
-        baseConstraints: widget.baseConstraints,
         setBody: bodyDetailsComicScreen());
   }
 
   Widget bodyDetailsComicScreen() {
-    double heightBackgroundBox = widget.baseConstraints.maxHeight * 0.6;
-    double heightContentBox = widget.baseConstraints.maxHeight * 0.6;
+    double heightBackgroundBox = baseConstraints.maxHeight * 0.6;
+    double heightContentBox = baseConstraints.maxHeight * 0.6;
 
     return BaseWidget().setFutureBuilder(
         callback: (snapshot) {
+          debug(snapshot);
           return Column(
             children: [
               backgroundBox(
                   heightBackgroundBox: heightBackgroundBox,
-                  comicBook: snapshot.data!.data),
+                  comicBook: snapshot.data),
               contentBox(
                   heightContentBox: heightContentBox,
-                  comicBook: snapshot.data!.data)
+                  comicBook: snapshot.data)
             ],
           );
         },
-        repo: widget.baseRepository.comicsRepository
+        repo: GetIt.instance<ComicsRepository>()
             .getDetailsComics(thisComicBook: widget.comicBook));
   }
 
   Widget contentBox(
       {required double heightContentBox, required ComicBook comicBook}) {
-    Color borderColor = Color(0xff1A1114);
+    Color borderColor = const Color(0xff1A1114);
     double ourRadius = 10;
     double scalePadding = 7;
     BorderRadius borderRadius = BorderRadius.all(Radius.circular(ourRadius));
@@ -172,7 +172,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
 
                 ////////////////////////////////////////
                 Container(
-                  padding: EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.only(top: 20),
                   height: constraints.maxHeight * 0.84,
 
                   ///
@@ -189,7 +189,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 comicBook.description,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.grey,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w100),
@@ -203,7 +203,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                 Expanded(
                                   flex: 10,
                                   child: Container(
-                                    padding: EdgeInsets.only(top: 0),
+                                    padding: const EdgeInsets.only(top: 0),
                                     child: LayoutBuilder(
                                       builder: (context, constraints) {
                                         return ListView(
@@ -222,7 +222,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                         partComic);
                                                   },
                                                   child: Container(
-                                                    margin: EdgeInsets.only(
+                                                    margin: const EdgeInsets.only(
                                                         bottom: 0),
                                                     clipBehavior: Clip.hardEdge,
                                                     height:
@@ -231,14 +231,14 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                     decoration: BoxDecoration(
                                                         image: DecorationImage(
                                                             image: NetworkImage(
-                                                                '${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}'),
+                                                                '${Environment.apiUrl}/${comicBook.coverImage}'),
                                                             fit: BoxFit.cover),
                                                         borderRadius:
                                                             borderRadius),
                                                     child: Container(
                                                       padding:
-                                                          EdgeInsets.all(10),
-                                                      color: Color.fromARGB(
+                                                          const EdgeInsets.all(10),
+                                                      color: const Color.fromARGB(
                                                           200, 0, 0, 0),
                                                       child: Row(
                                                         children: [
@@ -258,6 +258,64 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                                                 partComic),
                                                                   ),
                                                                 ),
+                                                                comicBook.currentReadChapterId != null ?
+                                                                Expanded(
+                                                                  child:
+                                                                  BaseWidget()
+                                                                      .handleEventNavigation(
+                                                                      child:
+                                                                      Container(
+                                                                        padding:
+                                                                        const EdgeInsets.all(
+                                                                            10),
+                                                                        height: constraints
+                                                                            .maxHeight *
+                                                                            0.25,
+                                                                        child:
+                                                                        Column(
+                                                                          children: [
+                                                                            Expanded(
+                                                                              // width: double.infinity,
+                                                                              // height: double.infinity,
+                                                                              child:
+                                                                              Row(
+                                                                                children: [
+                                                                                  Column(
+                                                                                    children: [
+                                                                                      Expanded(
+                                                                                        child: Container(
+                                                                                          alignment: Alignment.centerLeft,
+                                                                                          child: BaseWidget().setText(txt: 'Chapter đang đọc: ${comicBook.currentReadChapterName ?? ''}', color: Colors.white, fontSize: 15),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                            Container(
+                                                                              width:
+                                                                              double.infinity,
+                                                                              height:
+                                                                              2,
+                                                                              decoration:
+                                                                              const BoxDecoration(
+                                                                                color: Color(0xff16120F),
+                                                                                borderRadius: BorderRadius.all(
+                                                                                  Radius.circular(2),
+                                                                                ),
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                      pageTo: ReadingScreen(
+                                                                        chapterComicBook:
+                                                                        comicBook
+                                                                            .listChapters.firstWhere((c) => c.id == comicBook.currentReadChapterId),),
+                                                                      context:
+                                                                      context),
+                                                                ) : Container(),
                                                                 Expanded(
                                                                   child:
                                                                       Container(
@@ -266,7 +324,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                                             .centerLeft,
                                                                     child: BaseWidget().setText(
                                                                         txt:
-                                                                            "${comicBook.totalChapters} chuong",
+                                                                            "${comicBook.totalChapters} chương",
                                                                         color: Colors
                                                                             .grey,
                                                                         fontSize:
@@ -314,7 +372,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                                     child:
                                                                         Container(
                                                                       padding:
-                                                                          EdgeInsets.all(
+                                                                          const EdgeInsets.all(
                                                                               10),
                                                                       height: constraints
                                                                               .maxHeight *
@@ -330,7 +388,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                                               child: Row(
                                                                                 children: [
                                                                                   Expanded(
-                                                                                    flex: 9,
+                                                                                    flex: 7,
                                                                                     child: Column(
                                                                                       children: [
                                                                                         Expanded(
@@ -343,7 +401,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                                                     ),
                                                                                   ),
                                                                                   Expanded(
-                                                                                    flex: 2,
+                                                                                    flex: 3,
                                                                                     child: Container(
                                                                                       child: BaseWidget().setText(txt: valueChapterComic.lastUpdatedDate.toString(), color: Colors.white, fontSize: 10),
                                                                                     ),
@@ -358,7 +416,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                                             height:
                                                                                 2,
                                                                             decoration:
-                                                                                BoxDecoration(
+                                                                                const BoxDecoration(
                                                                               color: Color(0xff16120F),
                                                                               borderRadius: BorderRadius.all(
                                                                                 Radius.circular(2),
@@ -370,13 +428,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                                     ),
                                                                     pageTo: ReadingScreen(
                                                                         chapterComicBook:
-                                                                            valueChapterComic,
-                                                                        baseRepository:
-                                                                            widget
-                                                                                .baseRepository,
-                                                                        baseConstraints:
-                                                                            widget
-                                                                                .baseConstraints),
+                                                                            valueChapterComic,),
                                                                     context:
                                                                         context)
                                                           ////////////////////////////
@@ -440,17 +492,17 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                           borderRadius: BorderRadius.all(
                             Radius.circular(ourRadius / 2),
                           ),
-                          color: Color(0xffD0480A),
+                          color: const Color(0xffD0480A),
                         )
-                      : BoxDecoration()
+                      : const BoxDecoration()
                   : screenProvider.boxDetailDetailsScreen
                       ? BoxDecoration(
                           borderRadius: BorderRadius.all(
                             Radius.circular(ourRadius / 2),
                           ),
-                          color: Color(0xffD0480A),
+                          color: const Color(0xffD0480A),
                         )
-                      : BoxDecoration(),
+                      : const BoxDecoration(),
 
               //
               child: BaseWidget().setText(txt: txt, fontSize: scalePadding * 2),
@@ -464,7 +516,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
   backgroundBox(
       {required double heightBackgroundBox, required ComicBook comicBook}) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       width: double.infinity,
       height: heightBackgroundBox,
       child: LayoutBuilder(
@@ -510,7 +562,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                     txt: comicBook.author,
                     fontWeight: FontWeight.w100,
                     fontSize: 18,
-                    color: Color.fromARGB(255, 197, 197, 197)),
+                    color: const Color.fromARGB(255, 197, 197, 197)),
               ),
             ),
             Expanded(
@@ -518,10 +570,10 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
               child: Container(
                 alignment: Alignment.center,
                 child: BaseWidget().setText(
-                    txt: "Năm phát hành - ${comicBook.createdDate}",
+                    txt: "Thời gian tải lên - ${formatDateFromTs(comicBook.createdDate)}",
                     fontWeight: FontWeight.w100,
                     fontSize: 15,
-                    color: Color.fromARGB(255, 116, 116, 116)),
+                    color: const Color.fromARGB(255, 116, 116, 116)),
               ),
             ),
             Expanded(
@@ -530,7 +582,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                 alignment: Alignment.center,
                 child: Container(
                   width: constraints.maxWidth / 2,
-                  padding: EdgeInsets.all(3),
+                  padding: const EdgeInsets.all(3),
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
@@ -540,7 +592,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                           fit: BoxFit.cover,
                           child: Container(
                             // height: constraints.maxHeight / 2 - 5,
-                            margin: EdgeInsets.only(right: 2),
+                            margin: const EdgeInsets.only(right: 2),
                             padding: const EdgeInsets.all(3),
                             decoration: const BoxDecoration(
                                 borderRadius:
@@ -577,7 +629,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
             context: context,
             child: Container(
               // height: constraints.maxHeight * 0.1,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               decoration: const BoxDecoration(
                 color: Color(0xffA2DCF7),
                 borderRadius: BorderRadius.all(
@@ -586,11 +638,11 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
               ),
               child: BaseWidget().setText(
                   txt: "Top ${1} bảng xếp hạng",
-                  color: Color.fromARGB(255, 0, 0, 0),
+                  color: const Color.fromARGB(255, 0, 0, 0),
                   fontWeight: FontWeight.w200,
                   fontSize: 12),
             ),
-            pageTo: SearchScreen(baseConstraints: widget.baseConstraints)));
+            pageTo: const SearchScreen()));
   }
 
   Widget backgroundDetails(
@@ -605,7 +657,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
       child: FittedBox(
         fit: BoxFit.cover,
         child: Image.network(
-            '${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}'),
+            '${Environment.apiUrl}/${comicBook.coverImage}'),
       ),
     );
   }
@@ -622,7 +674,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
             begin: Alignment.topCenter,
             colors: [
               Colors.transparent,
-              Color(0xFF080401).withOpacity(1),
+              const Color(0xFF080401).withOpacity(1),
             ],
           ),
         ),

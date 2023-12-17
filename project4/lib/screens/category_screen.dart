@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:get/get.dart';
 import 'package:project4/screens/base_screen.dart';
+import 'package:project4/utils/constants.dart';
 
 class CategoryScreen extends StatelessWidget {
   @override
-  const CategoryScreen({Key? key, required this.constraints});
-  final BoxConstraints constraints;
+  const CategoryScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +18,9 @@ class CategoryScreen extends StatelessWidget {
     final fontOne = screenWidth * 0.1;
 
     return BaseScreen(
-      baseConstraints: constraints,
       setBody: Container(
-        width: constraints.maxWidth,
-        height: constraints.maxHeight,
+        width: baseConstraints.maxWidth,
+        height: baseConstraints.maxHeight,
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -37,7 +34,7 @@ class CategoryScreen extends StatelessWidget {
         ),
         child: Column(children: [
           Container(
-              width: constraints.maxWidth,
+              width: baseConstraints.maxWidth,
               height: screenHeight * 0.2,
               // decoration: BoxDecoration(
               //   border: Border.all(width: 1, color: Colors.black),
@@ -64,7 +61,7 @@ class CategoryScreen extends StatelessWidget {
                 ],
               ))),
           Container(
-            width: constraints.maxWidth,
+            width: baseConstraints.maxWidth,
             height: screenHeight * 0.18,
             // decoration: BoxDecoration(
             //   border: Border.all(width: 1, color: Colors.black),
@@ -85,8 +82,8 @@ class CategoryScreen extends StatelessWidget {
                           Container(
                             height: screenHeight * 0.1,
                             child: Transform.scale(
-                              scale:
-                                  0.5, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                              scale: 0.5,
+                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                               child: Image.asset(
                                   '/images/fire.png'), // Đường dẫn đến ảnh của bạn
                             ),
@@ -116,8 +113,8 @@ class CategoryScreen extends StatelessWidget {
                           Container(
                             height: screenHeight * 0.1,
                             child: Transform.scale(
-                              scale:
-                                  0.5, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                              scale: 0.5,
+                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                               child: Image.asset(
                                   '/images/crying.png'), // Đường dẫn đến ảnh của bạn
                             ),
@@ -147,8 +144,8 @@ class CategoryScreen extends StatelessWidget {
                           Container(
                             height: screenHeight * 0.1,
                             child: Transform.scale(
-                              scale:
-                                  0.5, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                              scale: 0.5,
+                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                               child: Image.asset(
                                   '/images/ghost.png'), // Đường dẫn đến ảnh của bạn
                             ),
@@ -168,7 +165,7 @@ class CategoryScreen extends StatelessWidget {
             ),
           ),
           Container(
-            width: constraints.maxWidth,
+            width: baseConstraints.maxWidth,
             height: screenHeight * 0.18,
             // decoration: BoxDecoration(
             //   border: Border.all(width: 1, color: Colors.black),
@@ -189,8 +186,8 @@ class CategoryScreen extends StatelessWidget {
                           Container(
                             height: screenHeight * 0.1,
                             child: Transform.scale(
-                              scale:
-                                  0.5, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                              scale: 0.5,
+                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                               child: Image.asset(
                                   '/images/heart.png'), // Đường dẫn đến ảnh của bạn
                             ),
@@ -220,8 +217,8 @@ class CategoryScreen extends StatelessWidget {
                           Container(
                             height: screenHeight * 0.1,
                             child: Transform.scale(
-                              scale:
-                                  0.5, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                              scale: 0.5,
+                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                               child: Image.asset(
                                   '/images/crown.png'), // Đường dẫn đến ảnh của bạn
                             ),
@@ -251,8 +248,8 @@ class CategoryScreen extends StatelessWidget {
                           Container(
                             height: screenHeight * 0.1,
                             child: Transform.scale(
-                              scale:
-                                  0.5, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                              scale: 0.5,
+                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                               child: Image.asset(
                                   '/images/unicorn.png'), // Đường dẫn đến ảnh của bạn
                             ),
@@ -272,7 +269,7 @@ class CategoryScreen extends StatelessWidget {
             ),
           ),
           Container(
-            width: constraints.maxWidth,
+            width: baseConstraints.maxWidth,
             height: screenHeight * 0.18,
             // decoration: BoxDecoration(
             //   border: Border.all(width: 1, color: Colors.black),
@@ -293,8 +290,8 @@ class CategoryScreen extends StatelessWidget {
                           Container(
                             height: screenHeight * 0.1,
                             child: Transform.scale(
-                              scale:
-                                  0.5, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                              scale: 0.5,
+                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                               child: Image.asset(
                                   '/images/laughing.png'), // Đường dẫn đến ảnh của bạn
                             ),
@@ -324,8 +321,8 @@ class CategoryScreen extends StatelessWidget {
                           Container(
                             height: screenHeight * 0.1,
                             child: Transform.scale(
-                              scale:
-                                  0.5, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                              scale: 0.5,
+                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                               child: Image.asset(
                                   '/images/magic-ball.png'), // Đường dẫn đến ảnh của bạn
                             ),
@@ -355,8 +352,8 @@ class CategoryScreen extends StatelessWidget {
                           Container(
                             height: screenHeight * 0.1,
                             child: Transform.scale(
-                              scale:
-                                  0.5, // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
+                              scale: 0.5,
+                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
                               child: Image.asset(
                                   '/images/mistery.png'), // Đường dẫn đến ảnh của bạn
                             ),
@@ -376,7 +373,7 @@ class CategoryScreen extends StatelessWidget {
             ),
           ),
           Container(
-            width: constraints.maxWidth,
+            width: baseConstraints.maxWidth,
             height: screenHeight * 0.07,
             // decoration: BoxDecoration(
             //   border: Border.all(width: 1, color: Colors.black),
@@ -403,7 +400,7 @@ class CategoryScreen extends StatelessWidget {
             ),
           ),
           Container(
-            width: constraints.maxWidth,
+            width: baseConstraints.maxWidth,
             height: screenHeight * 0.07,
             child: Center(
                 child: Text(

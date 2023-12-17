@@ -1,21 +1,17 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:project4/config.dart';
-import 'package:project4/models/comic_book.dart';
-import 'package:project4/repositories/base_repository.dart';
+import 'package:project4/config/environment.dart';
+import 'package:project4/models/comic/comic_book.dart';
 import 'package:project4/screens/details_comic_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
+
+import '../utils/constants.dart';
 
 class CustomSlideWidget extends StatefulWidget {
   final List<ComicBook> comicBooks;
 
-  final BoxConstraints baseConstraints;
-  final BaseRepository baseRepository;
-
   const CustomSlideWidget(
-      {required this.comicBooks,
-      required this.baseConstraints,
-      required this.baseRepository});
+      {required this.comicBooks});
 
   @override
   _CustomSlideWidgetState createState() => _CustomSlideWidgetState();
@@ -37,7 +33,7 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
                 return Stack(
                   children: [
                     Image.network(
-                      "${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}",
+                      "${Environment.apiUrl}/${comicBook.coverImage}",
                       fit: BoxFit.cover,
                       width: constraints.maxWidth,
                       height: constraints.maxWidth * 2,
@@ -82,7 +78,7 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
         // initialPage: 4,   //// anh bat dau
         autoPlayInterval: Duration(seconds: 5),
 
-        height: widget.baseConstraints.maxWidth *
+        height: baseConstraints.maxWidth *
             1.2, // Set the height of the carousel
       ),
     );
@@ -128,9 +124,7 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
           ),
         ),
         pageTo: DetailsComicScreen(
-            baseRepository: widget.baseRepository,
             showButton: showButton,
-            baseConstraints: widget.baseConstraints,
             comicBook: comicBook),
       ),
     );

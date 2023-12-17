@@ -1,38 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:project4/models/handle_response_api.dart';
-import 'package:project4/repositories/base_repository.dart';
-import 'package:project4/repositories/user_repository.dart';
-import 'package:project4/widgets/base_widget.dart';
 import 'package:project4/widgets/bottom_bar_widget.dart';
 import 'package:project4/widgets/header_bar_widgeet.dart';
+
+import '../utils/constants.dart';
 
 class BaseScreen extends StatelessWidget {
   const BaseScreen(
       {super.key,
-      required this.baseConstraints,
       required this.setBody,
       this.setAppBar = 0,
       this.setBottomBar = false,
-      this.chooseBottomicon = 0,
+      this.chooseBottomIcon = 0,
       this.setMoveUp = false});
-  final BoxConstraints baseConstraints;
+
   final int setAppBar;
   final Widget setBody;
   final bool setBottomBar;
   final bool setMoveUp;
 
-  final int chooseBottomicon;
+  final int chooseBottomIcon;
+
   //send data ->base->bottom
 
   @override
   Widget build(BuildContext context) {
-    Color colorTheme = Color(0xFF080401);
+    Color colorTheme = const Color(0xFF080401);
 
     double heightHeadBottom = baseConstraints.maxHeight * 0.09;
-    final BaseRepository baseRepository = GetIt.instance<BaseRepository>();
 
-    ScrollController _scrollController = ScrollController();
+    ScrollController scrollController = ScrollController();
 
     /// base repo
     ///
@@ -47,7 +43,7 @@ class BaseScreen extends StatelessWidget {
         color: colorTheme,
 
         child: ListView(
-          controller: _scrollController,
+          controller: scrollController,
           children: [
             //appBar
 
@@ -57,8 +53,7 @@ class BaseScreen extends StatelessWidget {
               padding: 10,
               colorTheme: colorTheme,
               baseConstraints: baseConstraints,
-            ),
-            // SizedBox(
+            ), // SizedBox(
             //   child: LayoutBuilder(
             //     builder: (context, constraints) {
             //       return ;
@@ -73,13 +68,13 @@ class BaseScreen extends StatelessWidget {
                 ? Container(
                     height: 50,
                     // color: Colors.white,
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     alignment: Alignment.topCenter,
                     child: GestureDetector(
                       onTap: () {
-                        _scrollController.animateTo(
+                        scrollController.animateTo(
                           0.0,
-                          duration: Duration(seconds: 1),
+                          duration: const Duration(seconds: 1),
                           curve: Curves.easeInOut,
                         );
                       },
@@ -107,12 +102,9 @@ class BaseScreen extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return BottomBarWidget(
-                    baseRepository: baseRepository,
-                    constraints: constraints,
-                    chooseBottomicon: chooseBottomicon,
+                    chooseBottomIcon: chooseBottomIcon,
                     padding: 10,
                     colorTheme: colorTheme,
-                    baseConstraints: baseConstraints,
                   );
                 },
               ),

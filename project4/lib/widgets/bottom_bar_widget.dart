@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:project4/config.dart';
 import 'package:project4/main.dart';
-import 'package:project4/repositories/base_repository.dart';
-import 'package:project4/repositories/user_repository.dart';
 import 'package:project4/screens/account_screen.dart';
 import 'package:project4/screens/follow_comic_screen.dart';
 import 'package:project4/screens/home_screen.dart';
 import 'package:project4/screens/search_screen.dart';
 import 'package:project4/screens/user_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
+import 'package:provider/provider.dart';
+
+import '../utils/constants.dart';
+import '../utils/util_func.dart';
 
 class BottomBarWidget extends StatefulWidget {
   const BottomBarWidget(
       {super.key,
-      required this.baseConstraints,
       required this.colorTheme,
       required this.padding,
-      required this.chooseBottomicon,
-      required this.baseRepository,
-      required this.constraints});
-  final BoxConstraints constraints;
+      required this.chooseBottomIcon});
+
   final double padding;
-  final BoxConstraints baseConstraints;
   final Color colorTheme;
-  final int chooseBottomicon;
-  final BaseRepository baseRepository;
+  final int chooseBottomIcon;
 
   @override
   State<BottomBarWidget> createState() => _BottomBarWidgetState();
@@ -37,14 +33,14 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
     'follow': false,
     'user': false,
   };
+
   @override
   void initState() {
     myMap.updateAll((key, value) => false);
 
-    switch (widget.chooseBottomicon) {
+    switch (widget.chooseBottomIcon) {
       case 1:
         myMap["home"] = true;
-
         break;
       case 2:
         myMap["search"] = true;
@@ -65,55 +61,46 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    bool checkUserLogin = widget.baseRepository.userRepository
-        .getUserData()
-        .refreshToken
-        .isNotEmpty;
     return Container(
       color: widget.colorTheme,
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Row(
         children: [
           itemBottom(
-            pageTo: HomeScreen(
-              baseConstraints: widget.baseConstraints,
-              baseRepository: widget.baseRepository,
-            ),
+            pageTo: const HomeScreen(),
             link: 'home',
             choose: myMap["home"] ?? false,
             txt: 'Trang chủ',
           ),
           itemBottom(
-            pageTo: SearchScreen(baseConstraints: widget.baseConstraints),
+            pageTo: const SearchScreen(),
             link: 'loupe',
             choose: myMap["search"] ?? false,
             txt: 'Tìm kiếm',
           ),
           itemBottom(
-            pageTo: FollowScreen(baseConstraints: widget.baseConstraints),
+            pageTo: const FollowScreen(),
             link: 'heart',
             choose: myMap["follow"] ?? false,
             txt: 'Theo dõi',
           ),
-          itemBottom(
-            itemUser: true,
-            pageTo: (checkUserLogin)
-                ? UserScreen(
-                    baseConstraints: widget.baseConstraints,
-                    baseRepository: widget.baseRepository,
-                  )
-                : AccountScreen(
-                    baseConstraints: widget.baseConstraints,
-                    baseRepository: widget.baseRepository,
-                  ),
-            link: checkUserLogin
-                ? widget.baseRepository.userRepository.getUserData().avatar ??
-                    'th.jpg'
-                : 'user.png',
-            choose: myMap["user"] ?? false,
-            txt: checkUserLogin
-                ? widget.baseRepository.userRepository.getUserData().username
-                : 'Đăng nhập',
+          Consumer<ScreenProvider>(
+            builder: (BuildContext context, myProvider, Widget? child) {
+              bool checkUserLogin = checkStringIsNotEmpty(myProvider.email);
+              return itemBottom(
+                itemUser: true,
+                pageTo: checkStringIsNotEmpty(myProvider.email)
+                    ? const UserScreen()
+                    : const AccountScreen(),
+                link: updateAvatarUrl(),
+                choose: myMap["user"] ?? false,
+                txt: checkUserLogin
+                    ? sharedPreferences
+                            .getString(SharedPreferencesEnum.username.name) ??
+                        ''
+                    : 'Đăng nhập',
+              );
+            },
           ),
         ],
       ),
@@ -129,7 +116,7 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
     Color colorChoose = Colors.orange;
 
     Color color = choose ? Colors.white : Colors.grey;
-    String thislink = itemUser
+    String thisLink = itemUser
         ? link
         : choose
             ? link += '_white.png'
@@ -147,18 +134,19 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
                       return Container(
                         width: constraints.maxWidth,
                         height: constraints.maxHeight,
-                        padding: EdgeInsets.all(3),
+                        padding: const EdgeInsets.all(3),
                         alignment: Alignment.center,
                         decoration: choose
                             ? BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
-                                    color: colorChoose, // Màu sắc của bóng
-                                    offset: Offset(
-                                        0,
-                                        constraints.maxHeight *
-                                            2), // Độ dịch chuyển (đặt 0 cho trục x để không có dịch chuyển ngang)
-                                    blurRadius: 40.0, // Độ mờ của bóng
+                                    color: colorChoose,
+                                    // Màu sắc của bóng
+                                    offset:
+                                        Offset(0, constraints.maxHeight * 2),
+                                    // Độ dịch chuyển (đặt 0 cho trục x để không có dịch chuyển ngang)
+                                    blurRadius: 40.0,
+                                    // Độ mờ của bóng
                                     spreadRadius:
                                         6, // Khoảng cách mở rộng của bóng (0 cho bóng bao quanh phần tử)
                                   )
@@ -170,15 +158,16 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
                                 child: Container(
                                     alignment: Alignment.center,
                                     clipBehavior: Clip.hardEdge,
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(20))),
-                                    child: BaseWidget().setImageAsset(thislink)
-                                    // .setImageNetwork(link: thislink),
-                                    ),
+                                    child: link.startsWith('http')
+                                        ? BaseWidget()
+                                            .setImageNetwork(link: thisLink)
+                                        : BaseWidget().setImageAsset(thisLink)),
                               )
                             : BaseWidget().handleEventNavigation(
-                                child: BaseWidget().setImageAsset(thislink),
+                                child: BaseWidget().setImageAsset(thisLink),
                                 pageTo: pageTo,
                                 context: context),
                       );

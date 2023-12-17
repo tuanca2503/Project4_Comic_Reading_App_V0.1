@@ -1,8 +1,8 @@
-import 'package:project4/models/chapter_comic_book.dart';
+import 'package:project4/models/comic/chapter_comic_book.dart';
 
 class PartComicBook {
   final String partName;
-  final List<ChapterComicBook> chapter;
+  final List<ChapterComic> chapter;
 
   PartComicBook({required this.partName, required this.chapter});
 }

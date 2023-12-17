@@ -1,35 +1,24 @@
-import 'dart:collection';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:project4/utils/constants.dart';
 
 class User {
-  String id;
   String username;
   String email;
   String? avatar;
-  String idUser;
-  String accessToken;
-  String refreshToken;
-  //
-  int exp;
-  int iat;
-  //
+  bool isReceiveNotification;
+
   final List<Language> languages = Language().seed();
   final List<ThemeApp> themeApp = ThemeApp().seed();
   Notification notification = Notification();
-  User({
-    this.id = '',
-    this.refreshToken = '',
-    this.accessToken = '',
-    this.idUser = '',
-    this.username = '',
-    this.email = '',
-    this.exp = 0,
-    this.iat = 0,
-    this.avatar = 'th.jpg',
-  });
+
+  User.empty()
+      : username = '',
+        email = '',
+        avatar = null,
+        isReceiveNotification = false;
+
   ThemeApp switchTheme({required bool choose}) {
     ThemeApp data;
     (themeApp.length == 2)
@@ -41,38 +30,23 @@ class User {
     return data;
   }
 
-  //
-  List<User> seed() {
-    return List.generate(
-      10,
-      (index) => User(
-        //
-        idUser: "MTU${Random().nextInt(200) + 10 + index}",
-        username: "MTU${index + 1}",
-
-        email: "User${index + 1}@MTU.com",
-
-        ///
-      ),
-    );
-  }
-
-  void setDataFromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    username = json['username'];
-    email = json['email'];
-    avatar = json['avatar'];
-  }
+  User.fromJson(Map<String, dynamic> json)
+      : username = json['username'],
+        email = json['email'],
+        avatar = json['avatar'],
+        isReceiveNotification = json['isReceiveNotification'] ?? false;
 }
 /////
 
 class Language {
   final String key;
   final String name;
+
   Language({
     this.key = '',
     this.name = '',
   });
+
   List<Language> seed() {
     return [
       Language(key: 'vie', name: 'Việt Nam'),
@@ -85,12 +59,14 @@ class ThemeApp {
   final String themeName;
   final Color backgroundColor;
   final Color textColor;
+
   /////
   ThemeApp({
     this.themeName = "",
     this.backgroundColor = Colors.black,
     this.textColor = Colors.white,
   });
+
   //
   List<ThemeApp> seed() {
     return [
@@ -109,6 +85,7 @@ class ThemeApp {
 class Notification {
   bool enabled;
   List<NotificationData> notificationDatas;
+
   Notification({
     this.enabled = true,
     this.notificationDatas = const [],
@@ -126,6 +103,7 @@ class NotificationData {
   final String date;
   final String chapter;
   final String part;
+
   NotificationData({
     this.id = 0,
     this.imgAuthor = "",
@@ -134,6 +112,7 @@ class NotificationData {
     this.chapter = "",
     this.part = "",
   });
+
   List<NotificationData> seed() {
     return List.generate(10, (index) {
       return NotificationData(

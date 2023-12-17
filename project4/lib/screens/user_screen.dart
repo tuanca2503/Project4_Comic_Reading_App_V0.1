@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:project4/models/comic_book.dart';
-import 'package:project4/repositories/base_repository.dart';
-
+import 'package:get_it/get_it.dart';
+import 'package:project4/models/comic/comic_book.dart';
+import 'package:project4/repositories/auth_repository.dart';
 import 'package:project4/screens/base_screen.dart';
+import 'package:project4/utils/constants.dart';
 import 'package:project4/widgets/base_widget.dart';
 import 'package:project4/widgets/list_widget.dart';
+
+import '../utils/util_func.dart';
 
 // ignore: must_be_immutable
 
 class UserScreen extends StatefulWidget {
-  const UserScreen({
-    super.key,
-    required this.baseRepository,
-    required this.baseConstraints,
-  });
-  final BaseRepository baseRepository;
-
-  final BoxConstraints baseConstraints;
+  const UserScreen({super.key});
 
   @override
   State<UserScreen> createState() => _AccountScreenState();
@@ -29,7 +23,7 @@ class _AccountScreenState extends State<UserScreen> {
   _AccountScreenState({
     Key? key,
   });
-  BoxConstraints constraints = BoxConstraints();
+
   bool DarkSwitched = true;
   bool NotificationsSwitched = true;
   double fontSize = 0;
@@ -45,13 +39,14 @@ class _AccountScreenState extends State<UserScreen> {
   ///
   double screenWidth = 0;
   double screenHeight = 0;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     chooseScreen = true;
-    screenWidth = widget.baseConstraints.maxWidth;
-    screenHeight = widget.baseConstraints.maxHeight;
+    screenWidth = baseConstraints.maxWidth;
+    screenHeight = baseConstraints.maxHeight;
     fontSize = screenWidth * 0.03;
     fontFour = screenWidth * 0.04;
     fontBac = screenWidth * 0.02;
@@ -63,37 +58,29 @@ class _AccountScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-        chooseBottomicon: 4,
-        baseConstraints: widget.baseConstraints,
+        chooseBottomIcon: 4,
         setAppBar: 3,
         setBottomBar: true,
         setBody: chooseScreen
-            ? settingUser(
-                key: key,
-                context: context,
-                baseConstraints: widget.baseConstraints)
-            : inforUser(
-                context: context, baseConstraints: widget.baseConstraints));
+            ? _userSettingWidget(key: key, context: context)
+            : _userInfoWidget(context: context));
   }
 
-  Widget inforUser(
-      {required BuildContext context,
-      bool key = false,
-      required BoxConstraints baseConstraints}) {
-    double heightBackgroundBox = widget.baseConstraints.maxHeight * 0.6;
-    double heightContentBox = widget.baseConstraints.maxHeight * 0.37;
+  Widget _userInfoWidget({required BuildContext context, bool key = false}) {
+    double heightBackgroundBox = baseConstraints.maxHeight * 0.6;
+    double heightContentBox = baseConstraints.maxHeight * 0.37;
 
     return Container(
       width: screenWidth,
       height: screenHeight,
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       color: Colors.black,
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Column(
             children: [
               ///
-              Container(
+              SizedBox(
                 height: heightBackgroundBox,
                 child: Stack(
                   children: [
@@ -106,7 +93,7 @@ class _AccountScreenState extends State<UserScreen> {
                 ),
               ),
 
-              Container(
+              SizedBox(
                 height: heightContentBox,
                 child: Stack(
                   children: [
@@ -129,19 +116,18 @@ class _AccountScreenState extends State<UserScreen> {
   Widget boxBotomBack({
     required BoxConstraints constraints,
   }) {
-    return Container(
-        child: GestureDetector(
+    return GestureDetector(
       onTap: () {
         setState(() {
           chooseScreen = true;
         });
       },
-      child: Container(
+      child: SizedBox(
         width: screenWidth * 0.06,
         height: screenHeight * 0.06,
         child: BaseWidget().setImageAsset('back_white.png'),
       ),
-    ));
+    );
   }
 
 //////////////////////////////////////
@@ -152,9 +138,9 @@ class _AccountScreenState extends State<UserScreen> {
       children: [
         Expanded(
           flex: 2,
-          child: Container(
-            width: constraints.maxWidth,
-            height: constraints.maxHeight,
+          child: SizedBox(
+            width: baseConstraints.maxWidth,
+            height: baseConstraints.maxHeight,
             child: Row(
               children: [
                 Expanded(
@@ -171,7 +157,7 @@ class _AccountScreenState extends State<UserScreen> {
                   child: Text(
                     'Xem tất cả',
                     style: TextStyle(
-                      color: Color(0xffd1480b),
+                      color: const Color(0xffd1480b),
                       fontSize: fontSize,
                       fontWeight: FontWeight.bold,
                     ),
@@ -182,18 +168,17 @@ class _AccountScreenState extends State<UserScreen> {
             ),
           ),
         ),
-        Expanded(
-          flex: 8,
-          child: Container(
-            height: 300,
-            child: ListWidget(
-              baseRepository: widget.baseRepository,
-              baseConstraints: widget.baseConstraints,
-              setList: 1,
-              comicBooks: ComicBook().Seed(),
-            ),
-          ),
-        )
+        // hidden code
+        // Expanded(
+        //   flex: 8,
+        //   child: SizedBox(
+        //     height: 300,
+        //     child: ListWidget(
+        //       setList: 1,
+        //       comicBooks: ComicBook().Seed(),
+        //     ),
+        //   ),
+        // )
       ],
     );
   }
@@ -204,9 +189,9 @@ class _AccountScreenState extends State<UserScreen> {
   }) {
     return Positioned(
       bottom: 5,
-      child: Container(
-        width: constraints.maxWidth,
-        height: constraints.maxHeight * 0.4,
+      child: SizedBox(
+        width: baseConstraints.maxWidth,
+        height: baseConstraints.maxHeight * 0.4,
         child: Column(
           children: [
             // Padding(
@@ -220,9 +205,9 @@ class _AccountScreenState extends State<UserScreen> {
                     width: cs.maxHeight,
                     height: cs.maxHeight,
                     clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(120))),
-                    child: BaseWidget().setImageAsset("th.jpg"),
+                    child: getAvatarWidget(),
                   );
                 }),
               ),
@@ -230,7 +215,8 @@ class _AccountScreenState extends State<UserScreen> {
             Expanded(
               flex: 2,
               child: Text(
-                'Hoài Nam',
+                sharedPreferences
+                    .getString(SharedPreferencesEnum.username.name)!,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: fontBack,
@@ -253,7 +239,7 @@ class _AccountScreenState extends State<UserScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
+                      const Text(
                         'Người đăng ký',
                         style: TextStyle(
                           color: Color(0xff736b68),
@@ -263,8 +249,7 @@ class _AccountScreenState extends State<UserScreen> {
                   )),
                 ),
                 Expanded(
-                  child: Container(
-                      child: Column(
+                  child: Column(
                     children: [
                       Text(
                         '43',
@@ -274,14 +259,14 @@ class _AccountScreenState extends State<UserScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
+                      const Text(
                         ' Manga đã đọc',
                         style: TextStyle(
                           color: Color(0xff736b68),
                         ),
                       )
                     ],
-                  )),
+                  ),
                 ),
                 Expanded(
                   child: Container(
@@ -295,7 +280,7 @@ class _AccountScreenState extends State<UserScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
+                      const Text(
                         'Người theo dõi',
                         style: TextStyle(
                           color: Color(0xff736b68),
@@ -320,11 +305,11 @@ class _AccountScreenState extends State<UserScreen> {
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
-      width: constraints.maxWidth,
-      height: constraints.maxHeight,
+      width: baseConstraints.maxWidth,
+      height: baseConstraints.maxHeight,
       child: FittedBox(
         fit: BoxFit.cover,
-        child: BaseWidget().setImageAsset('th.jpg'),
+        child: getAvatarWidget(),
       ),
     );
   }
@@ -333,15 +318,15 @@ class _AccountScreenState extends State<UserScreen> {
     return Positioned(
       bottom: -1,
       child: Container(
-        width: constraints.maxWidth,
-        height: constraints.maxHeight,
+        width: baseConstraints.maxWidth,
+        height: baseConstraints.maxHeight,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             end: Alignment.bottomCenter,
             begin: Alignment.topCenter,
             colors: [
               Colors.transparent,
-              Color(0xFF080401).withOpacity(1),
+              const Color(0xFF080401).withOpacity(1),
             ],
           ),
         ),
@@ -351,15 +336,12 @@ class _AccountScreenState extends State<UserScreen> {
 
   ///////////////////////////////////////////////////////////
 
-  Widget settingUser(
-      {required BuildContext context,
-      bool key = false,
-      required BoxConstraints baseConstraints}) {
+  Widget _userSettingWidget({required BuildContext context, bool key = false}) {
     return Container(
-      width: constraints.maxWidth,
+      width: baseConstraints.maxWidth,
       height: screenHeight * 0.91,
       padding: EdgeInsets.all(screenHeight * 0.03),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           colors: [
@@ -370,8 +352,8 @@ class _AccountScreenState extends State<UserScreen> {
         ),
       ),
       child: ListView(children: [
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.06,
           // decoration: BoxDecoration(
           //   border: Border.all(width: 1, color: Colors.white),
@@ -384,8 +366,8 @@ class _AccountScreenState extends State<UserScreen> {
                 fontSize: fontBack),
           ),
         ),
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.08,
           child: Row(children: [
             Expanded(
@@ -397,9 +379,9 @@ class _AccountScreenState extends State<UserScreen> {
                       width: cs.maxHeight,
                       height: cs.maxHeight,
                       clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(120))),
-                      child: BaseWidget().setImageAsset("th.jpg"),
+                      child: getAvatarWidget(),
                     );
                   }),
                 )),
@@ -412,13 +394,14 @@ class _AccountScreenState extends State<UserScreen> {
                   });
                 },
                 child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  padding: EdgeInsets.only(left: 20),
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
+                  padding: const EdgeInsets.only(left: 20),
                   child: ListView(
                     children: [
                       Text(
-                        'Hoài Nam',
+                        sharedPreferences
+                            .getString(SharedPreferencesEnum.username.name)!,
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -427,7 +410,7 @@ class _AccountScreenState extends State<UserScreen> {
                       Text(
                         'Sửa thông tin',
                         style: TextStyle(
-                            color: Color(0xff575757), fontSize: fontFour),
+                            color: const Color(0xff575757), fontSize: fontFour),
                       ),
                     ],
                   ),
@@ -436,9 +419,9 @@ class _AccountScreenState extends State<UserScreen> {
             ),
             Expanded(
                 flex: 2,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                child: SizedBox(
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
                   child: Transform.scale(
                     scale: 0.25,
                     child: BaseWidget().setImageAsset('next-white.png'),
@@ -446,19 +429,19 @@ class _AccountScreenState extends State<UserScreen> {
                 )),
           ]),
         ),
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.04,
         ),
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.07,
           child: Row(children: [
             Expanded(
                 flex: 2,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                child: SizedBox(
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
                   child: Transform.scale(
                     scale: 0.7,
                     child: BaseWidget().setImageAsset('moon.png'),
@@ -467,9 +450,9 @@ class _AccountScreenState extends State<UserScreen> {
             Expanded(
                 flex: 6,
                 child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  padding: EdgeInsets.only(left: 20),
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
+                  padding: const EdgeInsets.only(left: 20),
                   child: Center(
                     child: Stack(
                       children: [
@@ -490,9 +473,9 @@ class _AccountScreenState extends State<UserScreen> {
                 )),
             Expanded(
               flex: 2,
-              child: Container(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight,
+              child: SizedBox(
+                width: baseConstraints.maxWidth,
+                height: baseConstraints.maxHeight,
                 child: Center(
                   child: Switch(
                     value: DarkSwitched,
@@ -511,8 +494,8 @@ class _AccountScreenState extends State<UserScreen> {
             ),
           ]),
         ),
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.06,
           child: Center(
             child: Stack(
@@ -523,7 +506,7 @@ class _AccountScreenState extends State<UserScreen> {
                   child: Text(
                     'Thông tin',
                     style: TextStyle(
-                        color: Color(0xff595959),
+                        color: const Color(0xff595959),
                         fontWeight: FontWeight.bold,
                         fontSize: fontFour),
                   ),
@@ -532,15 +515,15 @@ class _AccountScreenState extends State<UserScreen> {
             ),
           ),
         ),
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.07,
           child: Row(children: [
             Expanded(
                 flex: 2,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                child: SizedBox(
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
                   child: Transform.scale(
                     scale: 0.8,
                     child: BaseWidget().setImageAsset('clock.png'),
@@ -549,9 +532,9 @@ class _AccountScreenState extends State<UserScreen> {
             Expanded(
                 flex: 6,
                 child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  padding: EdgeInsets.only(left: 20),
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
+                  padding: const EdgeInsets.only(left: 20),
                   child: Center(
                     child: Stack(
                       children: [
@@ -572,9 +555,9 @@ class _AccountScreenState extends State<UserScreen> {
                 )),
             Expanded(
                 flex: 2,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                child: SizedBox(
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
                   child: Transform.scale(
                     scale: 0.25,
                     child: BaseWidget().setImageAsset('next-white.png'),
@@ -582,15 +565,15 @@ class _AccountScreenState extends State<UserScreen> {
                 )),
           ]),
         ),
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.07,
           child: Row(children: [
             Expanded(
                 flex: 2,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                child: SizedBox(
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
                   child: Transform.scale(
                     scale: 0.7,
                     child: BaseWidget().setImageAsset('padlock.png'),
@@ -599,9 +582,9 @@ class _AccountScreenState extends State<UserScreen> {
             Expanded(
                 flex: 6,
                 child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  padding: EdgeInsets.only(left: 20),
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
+                  padding: const EdgeInsets.only(left: 20),
                   child: Center(
                     child: Stack(
                       children: [
@@ -622,9 +605,9 @@ class _AccountScreenState extends State<UserScreen> {
                 )),
             Expanded(
                 flex: 2,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                child: SizedBox(
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
                   child: Transform.scale(
                     scale: 0.25,
                     child: BaseWidget().setImageAsset('next-white.png'),
@@ -632,8 +615,8 @@ class _AccountScreenState extends State<UserScreen> {
                 )),
           ]),
         ),
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.06,
           child: Center(
             child: Stack(
@@ -644,7 +627,7 @@ class _AccountScreenState extends State<UserScreen> {
                   child: Text(
                     'Thông báo',
                     style: TextStyle(
-                        color: Color(0xff595959),
+                        color: const Color(0xff595959),
                         fontWeight: FontWeight.bold,
                         fontSize: fontFour),
                   ),
@@ -653,15 +636,15 @@ class _AccountScreenState extends State<UserScreen> {
             ),
           ),
         ),
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.07,
           child: Row(children: [
             Expanded(
                 flex: 2,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                child: SizedBox(
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
                   child: Transform.scale(
                     scale: 0.7,
                     child: BaseWidget().setImageAsset('notification-bell.png'),
@@ -670,9 +653,9 @@ class _AccountScreenState extends State<UserScreen> {
             Expanded(
                 flex: 6,
                 child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  padding: EdgeInsets.only(left: 20),
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
+                  padding: const EdgeInsets.only(left: 20),
                   child: Center(
                     child: Stack(
                       children: [
@@ -693,9 +676,9 @@ class _AccountScreenState extends State<UserScreen> {
                 )),
             Expanded(
                 flex: 2,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                child: SizedBox(
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
                   child: Center(
                     child: Switch(
                       activeColor: Colors.white,
@@ -713,8 +696,8 @@ class _AccountScreenState extends State<UserScreen> {
                 )),
           ]),
         ),
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.06,
           child: Center(
             child: Stack(
@@ -725,7 +708,7 @@ class _AccountScreenState extends State<UserScreen> {
                   child: Text(
                     'Tương tác',
                     style: TextStyle(
-                        color: Color(0xff595959),
+                        color: const Color(0xff595959),
                         fontWeight: FontWeight.bold,
                         fontSize: fontFour),
                   ),
@@ -734,15 +717,15 @@ class _AccountScreenState extends State<UserScreen> {
             ),
           ),
         ),
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.07,
           child: Row(children: [
             Expanded(
                 flex: 2,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                child: SizedBox(
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
                   child: Transform.scale(
                     scale: 0.7,
                     child: BaseWidget().setImageAsset('language.png'),
@@ -751,9 +734,9 @@ class _AccountScreenState extends State<UserScreen> {
             Expanded(
                 flex: 6,
                 child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  padding: EdgeInsets.only(left: 20),
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
+                  padding: const EdgeInsets.only(left: 20),
                   child: Center(
                     child: Stack(
                       children: [
@@ -774,9 +757,9 @@ class _AccountScreenState extends State<UserScreen> {
                 )),
             Expanded(
                 flex: 2,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                child: SizedBox(
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
                   child: Transform.scale(
                     scale: 0.25,
                     child: BaseWidget().setImageAsset('next-white.png'),
@@ -784,16 +767,16 @@ class _AccountScreenState extends State<UserScreen> {
                 )),
           ]),
         ),
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.07,
           // child: BaseWidget().handleEventNavigation(
           child: Row(children: [
             Expanded(
                 flex: 2,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                child: SizedBox(
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
                   child: Transform.scale(
                     scale: 0.7,
                     child: BaseWidget().setImageAsset('logout.png'),
@@ -801,33 +784,39 @@ class _AccountScreenState extends State<UserScreen> {
                 )),
             Expanded(
                 flex: 6,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  padding: EdgeInsets.only(left: 20),
-                  child: Center(
-                    child: Stack(
-                      children: [
-                        Align(
-                          alignment: Alignment
-                              .centerLeft, // Đặt vị trí về giữa bên trái
-                          child: Text(
-                            'Đăng xuất',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: fontFour),
+                child: GestureDetector(
+                  onTap: () async {
+                    await GetIt.instance<AuthRepository>().logout();
+                    Navigator.pop(context, 'Cancel');
+                  },
+                  child: Container(
+                    width: baseConstraints.maxWidth,
+                    height: baseConstraints.maxHeight,
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Center(
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment
+                                .centerLeft, // Đặt vị trí về giữa bên trái
+                            child: Text(
+                              'Đăng xuất',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: fontFour),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 )),
             Expanded(
                 flex: 2,
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                child: SizedBox(
+                  width: baseConstraints.maxWidth,
+                  height: baseConstraints.maxHeight,
                   child: Transform.scale(
                     scale: 0.25,
                     child: BaseWidget().setImageAsset('next-white.png'),
@@ -837,15 +826,16 @@ class _AccountScreenState extends State<UserScreen> {
           // pageTo: AccountScreen(baseConstraints: baseConstraints),
           // context: context),
         ),
-        Container(
-          width: constraints.maxWidth,
+        SizedBox(
+          width: baseConstraints.maxWidth,
           height: screenHeight * 0.08,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center, // Căn giữa dọc
             children: [
               Text(
                 'App ver 0.1',
-                style: TextStyle(color: Color(0xff595959), fontSize: fontFour),
+                style: TextStyle(
+                    color: const Color(0xff595959), fontSize: fontFour),
               ),
             ],
           ),

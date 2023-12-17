@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:project4/utils/util_func.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class ComicBook {
@@ -15,7 +16,7 @@ class ComicBook {
   int totalLike;
   int totalFavourite;
   String? currentReadChapterName;
-  int? currentReadChapterId;
+  String? currentReadChapterId;
   //
   List<Genre> genres;
 //
@@ -36,7 +37,7 @@ class ComicBook {
     this.id = "",
     this.title = "",
     this.coverImage = "c4.jpg",
-    this.createdDate = 1999,
+    this.createdDate = 1702693982000,
     this.lastUpdatedDate = 0,
     this.author = "Unknow",
     this.totalChapters = 0,
@@ -52,6 +53,27 @@ class ComicBook {
   }) {
     // setPartComicBook(part: listPart, chapter: listChapters);
   }
+
+  // Constructor từ JsonMap
+  ComicBook.fromJson(Map<String, dynamic> json)
+      : currentReadChapterId = json['currentReadChapterId'],
+  currentReadChapterName = json['currentReadChapterName'],
+  id = json['id'],
+  title = json['title'],
+  coverImage = json['coverImage'],
+  createdDate = json['createdDate'],
+  lastUpdatedDate = json['lastUpdatedDate'],
+  author = json['author'] ?? '',
+  totalChapters = json['totalChapters'],
+  totalRead = json['totalRead'],
+  totalLike = json['totalLike'],
+  totalFavourite = json['totalFavourite'],
+  description = json['description']  ?? '',
+  genres = (json['genres'] as List).map((itemJson) => Genre.fromJson(itemJson)).toList(),
+  like = json['like']  ?? false,
+  favourite = json['favourite']  ?? false
+  ;
+
   ///////
   List<ComicBook> getAllDataFromJson({required List<dynamic> jsons}) {
     List<ComicBook> datas = [];
@@ -59,8 +81,9 @@ class ComicBook {
       datas.add(
         ComicBook(
           id: json['id'],
-          title: utf8.decode(latin1.encode(json['title'])),
-          coverImage: json['coverImage'].toString().replaceAll('-/', '/'),
+          title: json['title'],
+          // title: utf8.decode(latin1.encode(json['title'])),
+          coverImage: json['coverImage'],
           createdDate:
               DateTime.fromMillisecondsSinceEpoch(json['createdDate']).year,
           lastUpdatedDate: json['lastUpdatedDate'],
@@ -78,8 +101,10 @@ class ComicBook {
   }
 
   void setDetailsDataFromJson({required Map<String, dynamic> json}) {
-    author = utf8.decode(latin1.encode(json['author']));
-    description = utf8.decode(latin1.encode(json['description']));
+    // author = utf8.decode(latin1.encode(json['author']));
+    // description = utf8.decode(latin1.encode(json['description']));
+    author = json['author'];
+    description = json['description'];
     currentReadChapterName = json['currentReadChapterName'];
     currentReadChapterId = json['currentReadChapterId'];
 
@@ -149,46 +174,9 @@ class ComicBook {
             'The story revolves around the life of a young girl named Hương. Born and raised in a small village in Vietnam, Hương dreams of exploring the world beyond her humble beginnings. However, her life takes a dramatic turn when her family falls into financial hardship, forcing her to put her dreams on hold.Despite the challenges, Hương remains resilient. She takes on various jobs to support her family, all the while nurturing her dream of traveling. Her determination and hard work eventually pay off when she receives a scholarship to study abroad.',
         coverImage: 'c$index.jpg',
         genres: Genre().seed(),
-        // listPart: ["Phần 1"],
-        // listChapters: [
-        //   List.generate(
-        //       Random().nextInt(20) + 5,
-        //       (chapterIndex) => ChapterComicBook(
-        //           id: '0',
-        //           name: 'Chương ${chapterIndex + 1}',
-        //           lastUpdatedDate: 0))
-        // ],
       ),
     );
 
-// //////test model
-//     comicBooks.addAll([
-//       //error
-//       ComicBook(
-//         listPart: ["p1", "p2"],
-//         listChapters: [
-//           [ChapterComicBook(name: "c1", chapterDate: "1-1-1111")]
-//         ],
-//       ),
-//       ComicBook(
-//         listPart: ["p1", "p2"],
-//         listChapters: [
-//           List.generate(
-//               Random().nextInt(20) + 5,
-//               (chapterIndex) => ChapterComicBook(
-//                   chapterName: 'Chapter ${chapterIndex + 1}',
-//                   chapterDate:
-//                       '${Random().nextInt(31)}-${Random().nextInt(12)}-${Random().nextInt(25) + 1999}')),
-//           List.generate(
-//               Random().nextInt(20) + 5,
-//               (chapterIndex) => ChapterComicBook(
-//                   chapterName: 'Chapter ${chapterIndex + 1}',
-//                   chapterDate:
-//                       '${Random().nextInt(31)}-${Random().nextInt(12)}-${Random().nextInt(25) + 1999}'))
-//         ],
-//       ),
-//       ComicBook(),
-//     ]);
     return comicBooks;
   }
 
@@ -212,12 +200,19 @@ class Genre {
   String id;
   String genresName;
   Genre({this.id = '', this.genresName = ''});
+
+  // Constructor từ JsonMap
+  Genre.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        genresName = json['genresName']
+  ;
   List<Genre> getAllDataFromJson({required List<dynamic> jsons}) {
     List<Genre> datas = [];
     for (var json in jsons) {
       datas.add(
         Genre(
           id: json['id'],
+          // genresName: json['genresName'],
           genresName: utf8.decode(latin1.encode(json['genresName'])),
         ),
       );
@@ -260,13 +255,10 @@ class ChapterComicBook {
       this.id = '',
       this.images = const []});
   ChapterComicBook setChapterFromJson({required Map<String, dynamic> json}) {
-    DateTime dateTime =
-        DateTime.fromMillisecondsSinceEpoch(json['lastUpdatedDate']);
     return ChapterComicBook(
         id: json['id'],
-        name: utf8.decode(latin1.encode(json['name'])),
-        lastUpdatedDate: '${dateTime.day}/${dateTime.month}/${dateTime.year}');
-    //DateTime.fromMillisecondsSinceEpoch(json['createdDate']).year
+        name: json['name'],
+        lastUpdatedDate: formatDateFromTs(json['lastUpdatedDate']));
   }
 
   List<ChapterComicBook> setListChapterFormJson(

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:project4/models/comic_book.dart';
-import 'package:project4/models/fillter_comic_book.dart';
+import 'package:project4/models/comic/filter_comic_book.dart';
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
 
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key, required this.baseConstraints});
+import '../models/comic/comic_book.dart';
+import '../utils/constants.dart';
 
-  final BoxConstraints baseConstraints;
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -18,12 +17,13 @@ class _SearchScreenState extends State<SearchScreen> {
   TextEditingController searchController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
   bool focusSearch = false;
+
   ////////////////////////////////////////////////
   ///seed fillter
   List<FillterComicBook> listFillters = FillterComicBook().seed();
   Map<FillterComicBook, bool> chooseItemFillter = {};
   List<ComicBook> comicBooks = [];
-  List<FillterSearchBox> itemsFillter = FillterSearchBox().seed();
+  List<FillterSearchBox> itemsFilter = FillterSearchBox().seed();
   int selectedIdx = -1;
   FillterSearchBox fillterSearchBox = FillterSearchBox().seed().first;
 
@@ -64,24 +64,21 @@ class _SearchScreenState extends State<SearchScreen> {
     searchFocusNode.dispose();
     super.dispose();
   }
+
   ///////////////////////////////
 
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-        setBottomBar: true,
-        chooseBottomicon: 2,
-        baseConstraints: widget.baseConstraints,
-        setBody: bodySearchScreen());
+        setBottomBar: true, chooseBottomIcon: 2, setBody: bodySearchScreen());
   }
 
   Widget bodySearchScreen() {
-    double heightSearchBox = widget.baseConstraints.maxHeight * 0.09;
-    double heightFillterSearchBox = widget.baseConstraints.maxHeight * 0.07;
+    double heightSearchBox = baseConstraints.maxHeight * 0.1;
+    double heightFillterSearchBox = baseConstraints.maxHeight * 0.07;
     //
-    double heightResultBox = widget.baseConstraints.maxHeight -
-        heightFillterSearchBox -
-        heightSearchBox;
+    double heightResultBox =
+        baseConstraints.maxHeight - heightFillterSearchBox - heightSearchBox;
 
     return Container(
       padding: BaseWidget().setLefRightPadding(pLR: 20),
@@ -91,8 +88,8 @@ class _SearchScreenState extends State<SearchScreen> {
           searchBox(heightSearchBox: heightSearchBox),
           fillterSearch(heightFillterSearchBox: heightFillterSearchBox),
           //
-          Container(
-            width: widget.baseConstraints.maxWidth,
+          SizedBox(
+            width: baseConstraints.maxWidth,
             height: heightResultBox,
             child: LayoutBuilder(builder: (context, size) {
               return Stack(
@@ -100,24 +97,23 @@ class _SearchScreenState extends State<SearchScreen> {
                 children: [
                   Positioned(
                     top: 0,
-                    child: Container(
+                    child: SizedBox(
                       width: size.maxWidth,
                       height: size.maxHeight,
                       child: Column(
                         children: [
-                          Container(
-                            width: widget.baseConstraints.maxWidth,
+                          SizedBox(
+                            width: baseConstraints.maxWidth,
                             height: heightResultBox * 0.05,
                             child: Text(
                               'Kết quả tìm kiếm',
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize:
-                                      widget.baseConstraints.maxWidth * 0.05),
+                                  fontSize: baseConstraints.maxWidth * 0.05),
                             ),
                           ),
-                          Container(
-                            width: widget.baseConstraints.maxWidth,
+                          SizedBox(
+                            width: baseConstraints.maxWidth,
                             height: heightResultBox * 0.95,
                             child: comicBooks.isEmpty
                                 ? const Center(
@@ -171,12 +167,12 @@ class _SearchScreenState extends State<SearchScreen> {
 ////////////////////////
 
   Widget fillterSearch({required double heightFillterSearchBox}) {
-    itemsFillter.first.choose = true;
-    return Container(
+    itemsFilter.first.choose = true;
+    return SizedBox(
       height: heightFillterSearchBox,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        children: List.generate(itemsFillter.length, (index) {
+        children: List.generate(itemsFilter.length, (index) {
           return Container(
             padding: const EdgeInsets.only(bottom: 5, right: 20, left: 20),
             child: InkWell(
@@ -184,10 +180,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 setState(
                   () {
                     // selectedIdx = index;
-                    for (FillterSearchBox item in itemsFillter) {
+                    for (FillterSearchBox item in itemsFilter) {
                       item.choose = false;
                     }
-                    itemsFillter[index].choose = true;
+                    itemsFilter[index].choose = true;
                   },
                 );
               },
@@ -195,7 +191,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: itemsFillter[index].choose
+                      color: itemsFilter[index].choose
                           ? Colors.grey
                           : Colors.transparent,
                       width: 1.0,
@@ -204,7 +200,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 child: Center(
                   child: BaseWidget().setText(
-                      txt: itemsFillter[index].nameFillter,
+                      txt: itemsFilter[index].nameFillter,
                       fontSize: 13,
                       fontWeight: FontWeight.w100),
                 ),
@@ -259,7 +255,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                       // contentPadding: EdgeInsets.all(scalePadding),
                       hintStyle: TextStyle(
-                          color: Color(0xffA4A3A1),
+                          color: const Color(0xffA4A3A1),
                           fontWeight: FontWeight.w300,
                           fontSize: constraints.maxHeight * 0.3),
                       hintText: 'Tìm kiếm ngay',
@@ -273,6 +269,5 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 }
-
 
 //////////

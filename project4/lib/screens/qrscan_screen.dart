@@ -19,14 +19,13 @@ class _QRScanScreenState extends State<QRScanScreen> {
   Widget build(BuildContext context) {
     return BaseScreen(
         setAppBar: 1,
-        baseConstraints: widget.baseConstraints,
         setBody: bodyQRScanScreen());
   }
 
   Widget bodyQRScanScreen() {
     return Container(
       color: Colors.amber,
-      child: Column(
+      child: const Column(
         children: <Widget>[
           // Expanded(
           //   flex: 5,

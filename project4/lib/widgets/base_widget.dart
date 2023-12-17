@@ -1,15 +1,13 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:project4/config.dart';
-import 'package:project4/main.dart';
+import 'package:project4/config/environment.dart';
 
 // import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:project4/models/comic_book.dart';
-import 'package:provider/provider.dart';
+import 'package:project4/models/comic/comic_book.dart';
+import 'package:project4/utils/util_func.dart';
 
 typedef void CallbackColor(Color color);
 typedef void CallBackConstraints(BoxConstraints constraints);
@@ -51,7 +49,7 @@ class BaseWidget {
 
   Image setImageNetwork({required String link, BoxFit fit = BoxFit.cover}) {
     return Image.network(
-      '${AppConfig.apiIP}${AppConfig.apiPort}$link',
+      link.startsWith('http') ? link : '${Environment.apiUrl}/$link',
       headers: const {
         'ngrok-skip-browser-warning': 'true',
       },
@@ -82,14 +80,16 @@ class BaseWidget {
       future: repo,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
+          print('hasError: $snapshot');
           return Text('Error: ${snapshot.error}');
         } else if (snapshot.connectionState == ConnectionState.done) {
           return callback(snapshot);
 
           // Using await here is allowed because it's inside an async function
         } else {
+          print('ELSE: $snapshot');
           return Text('Unexpected ConnectionState');
         }
       },
@@ -343,7 +343,7 @@ class BaseWidget {
     ComicBook? comicBook,
   }) {
     return Container(
-      margin: EdgeInsetsDirectional.only(end: 20),
+      margin: const EdgeInsetsDirectional.only(end: 20),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Column(

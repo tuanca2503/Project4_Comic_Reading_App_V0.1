@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:project4/models/comic_book.dart';
-import 'package:project4/models/handle_response_api.dart';
-import 'package:project4/repositories/base_repository.dart';
+import 'package:get_it/get_it.dart';
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
 import 'package:project4/widgets/custom_slide_widget.dart';
 import 'package:project4/widgets/list_widget.dart';
 
+import '../repositories/comics_repository.dart';
+import '../utils/constants.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen(
-      {super.key, required this.baseConstraints, required this.baseRepository});
-  final BoxConstraints baseConstraints;
-  final BaseRepository baseRepository;
+      {super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -28,10 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-        baseConstraints: widget.baseConstraints,
         setAppBar: 1,
         setBottomBar: true,
-        chooseBottomicon: 1,
+        chooseBottomIcon: 1,
         setMoveUp: true,
         setBody: bodyHomeScreen());
   }
@@ -55,15 +52,13 @@ class _HomeScreenState extends State<HomeScreen> {
               BaseWidget().setFutureBuilder(
                 callback: (snapshot) {
                   return Container(
-                    margin: EdgeInsets.only(bottom: 20),
+                    margin: const EdgeInsets.only(bottom: 20),
                     child: CustomSlideWidget(
-                      baseRepository: widget.baseRepository,
                       comicBooks: snapshot.data!.data,
-                      baseConstraints: widget.baseConstraints,
                     ),
                   );
                 },
-                repo: widget.baseRepository.comicsRepository.getAllComics(),
+                repo: GetIt.instance<ComicsRepository>().getAllComics(),
               ),
 
               //end slide
@@ -75,17 +70,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               BaseWidget().setFutureBuilder(
                 callback: (snapshot) {
-                  return Container(
+                  return SizedBox(
                     height: 300,
                     child: ListWidget(
-                      baseRepository: widget.baseRepository,
                       setList: 0,
                       comicBooks: snapshot.data!.data,
-                      baseConstraints: widget.baseConstraints,
                     ),
                   );
                 },
-                repo: widget.baseRepository.comicsRepository
+                repo: GetIt.instance<ComicsRepository>()
                     .getAllComics(filter: 'TOP_ALL'),
               ),
               // Container(
@@ -105,17 +98,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               BaseWidget().setFutureBuilder(
                 callback: (snapshot) {
-                  return Container(
+                  return SizedBox(
                     height: 300,
                     child: ListWidget(
-                      baseRepository: widget.baseRepository,
                       setList: 1,
                       comicBooks: snapshot.data!.data,
-                      baseConstraints: widget.baseConstraints,
                     ),
                   );
                 },
-                repo: widget.baseRepository.comicsRepository
+                repo: GetIt.instance<ComicsRepository>()
                     .getAllComics(filter: 'TOP_FAVOURITE'),
               ),
 
@@ -127,18 +118,23 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               BaseWidget().setFutureBuilder(
                 callback: (snapshot) {
-                  return Container(
+                  return SizedBox(
                     height: 800,
                     child: ListWidget(
-                      baseRepository: widget.baseRepository,
                       setList: 2,
                       comicBooks: snapshot.data!.data,
-                      baseConstraints: widget.baseConstraints,
                     ),
                   );
                 },
-                repo: widget.baseRepository.comicsRepository
+                repo: GetIt.instance<ComicsRepository>()
                     .getAllComics(filter: 'LAST_UPDATED_DATE'),
+              ),
+
+              Container(
+                height: 100,
+                padding: EdgeInsets.all(thisPadding),
+                alignment: Alignment.bottomCenter,
+                // child: BaseWidget().setText(txt: "move up"),
               ),
             ],
           );

@@ -1,26 +1,20 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
-import 'package:project4/config.dart';
-import 'package:project4/models/comic_book.dart';
-import 'package:project4/models/handle_response_api.dart';
-import 'package:project4/repositories/base_repository.dart';
+import 'package:get_it/get_it.dart';
+import 'package:project4/config/environment.dart';
+import 'package:project4/models/comic/comic_book.dart';
 import 'package:project4/screens/details_comic_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
 
+import '../repositories/comics_repository.dart';
+
 class ListWidget extends StatefulWidget {
-  ListWidget(
-      {super.key,
-      required this.setList,
-      required this.comicBooks,
-      required this.baseConstraints,
-      required this.baseRepository});
-  final BaseRepository baseRepository;
+  const ListWidget(
+      {super.key, required this.setList, required this.comicBooks});
+
   final int setList;
   final List<ComicBook> comicBooks;
-  final BoxConstraints baseConstraints;
 
   @override
   State<ListWidget> createState() => _ListWidgetState();
@@ -34,7 +28,6 @@ class _ListWidgetState extends State<ListWidget> {
     switch (widget.setList) {
       case 0:
         return myPageView(myList: widget.comicBooks);
-
       case 1:
         return mylistView(myList: widget.comicBooks);
       case 2:
@@ -42,7 +35,7 @@ class _ListWidgetState extends State<ListWidget> {
       default:
         return Container(
           child: BaseWidget().setText(
-              txt: "0 is Pageview,1 is list view not ${widget.setList}"),
+              txt: "0 is PageView,1 is list view not ${widget.setList}"),
         );
     }
   }
@@ -60,7 +53,7 @@ class _ListWidgetState extends State<ListWidget> {
             flex: 11,
             child: Container(
               clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               width: double.infinity,
               child: FittedBox(
@@ -104,7 +97,7 @@ class _ListWidgetState extends State<ListWidget> {
                           child: Align(
                             alignment: Alignment.center,
                             child: BaseWidget().setText(
-                                color: Color(0xffD8d8d8),
+                                color: const Color(0xffD8d8d8),
                                 txt: value.genresName,
                                 fontSize: 6,
                                 fontWeight: FontWeight.w100),
@@ -213,7 +206,7 @@ class _ListWidgetState extends State<ListWidget> {
                     child: Container(
                       alignment: Alignment.centerRight,
                       child: IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.arrow_back,
                           color: Colors.white,
                         ),
@@ -240,7 +233,7 @@ class _ListWidgetState extends State<ListWidget> {
                     child: Container(
                       alignment: Alignment.centerLeft,
                       child: IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.arrow_forward,
                           color: Colors.white,
                         ),
@@ -271,17 +264,18 @@ class _ListWidgetState extends State<ListWidget> {
   Widget buildLoadMoreButton() {
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
         onPressed: () {
           currentPage++;
           // Refresh the UI to load the next page
           // This can be done using setState in a StatefulWidget
         },
-        child: Text('Load More'),
+        child: const Text('Load More'),
       ),
     );
   }
+
 /////////////-------------------------------------------
 
   Widget myPageView({required List myList, int limit = 10}) {
@@ -298,7 +292,7 @@ class _ListWidgetState extends State<ListWidget> {
       itemBuilder: (context, index) {
         // final comicBook = comicBooks[index];
         return Container(
-          padding: EdgeInsets.only(right: 10),
+          padding: const EdgeInsets.only(right: 10),
           child: Column(
             children: [
               for (var comicBook in chunks[index])
@@ -316,7 +310,7 @@ class _ListWidgetState extends State<ListWidget> {
 /////////////-------------------------------------------
   Widget itemPageView(
       {required ComicBook comicBook, setBackBlur = true, setBack = true}) {
-    BorderRadius borderRadius = BorderRadius.all(Radius.circular(10));
+    BorderRadius borderRadius = const BorderRadius.all(Radius.circular(10));
     /*child: myEventHandler(
                     child: BaseWidget().setImageAsset(comicBook.linkImage),
                     comicBook: comicBook), */
@@ -329,10 +323,8 @@ class _ListWidgetState extends State<ListWidget> {
           image: setBack
               ? DecorationImage(
                   image: NetworkImage(
-                      '${AppConfig.apiIP}${AppConfig.apiPort}${comicBook.coverImage}',
-                      headers: {
-                        'ngrok-skip-browser-warning': 'true',
-                      }),
+                    '${Environment.apiUrl}/${comicBook.coverImage}',
+                  ),
                   fit: BoxFit.cover)
               : null,
         ),
@@ -353,7 +345,7 @@ class _ListWidgetState extends State<ListWidget> {
             ////////////////////////////////////////////////////
             myEventHandler(
                 child: Container(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   child: Row(
                     children: [
                       Expanded(
@@ -365,7 +357,7 @@ class _ListWidgetState extends State<ListWidget> {
                             child: BaseWidget()
                                 .setImageNetwork(link: comicBook.coverImage)),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 5,
                       ),
                       Expanded(
@@ -390,7 +382,7 @@ class _ListWidgetState extends State<ListWidget> {
                                       double spacingWrap = 3;
                                       return Container(
                                         clipBehavior: Clip.hardEdge,
-                                        decoration: BoxDecoration(),
+                                        decoration: const BoxDecoration(),
                                         child: Wrap(
                                           spacing: spacingWrap,
                                           runSpacing: spacingWrap,
@@ -421,7 +413,7 @@ class _ListWidgetState extends State<ListWidget> {
                                                     alignment: Alignment.center,
                                                     child: BaseWidget().setText(
                                                         color:
-                                                            Color(0xffD8d8d8),
+                                                            const Color(0xffD8d8d8),
                                                         txt: value.genresName,
                                                         fontSize: 8,
                                                         fontWeight:
@@ -444,7 +436,7 @@ class _ListWidgetState extends State<ListWidget> {
                                       txt: "${comicBook.totalChapters} Chương",
                                       fontSize: 10,
                                       fontWeight: FontWeight.w100,
-                                      color: Color(0xFFd8d8d8)),
+                                      color: const Color(0xFFd8d8d8)),
                                 ),
                               ),
                               Expanded(
@@ -457,7 +449,7 @@ class _ListWidgetState extends State<ListWidget> {
                                         children: [
                                           Container(
                                             padding:
-                                                EdgeInsets.only(right: 10.0),
+                                                const EdgeInsets.only(right: 10.0),
                                             alignment: Alignment.bottomLeft,
                                             child: Row(
                                               children: [
@@ -479,7 +471,7 @@ class _ListWidgetState extends State<ListWidget> {
                                           ),
                                           Container(
                                             padding:
-                                                EdgeInsets.only(right: 10.0),
+                                                const EdgeInsets.only(right: 10.0),
                                             alignment: Alignment.bottomLeft,
                                             child: Row(
                                               children: [
@@ -497,7 +489,7 @@ class _ListWidgetState extends State<ListWidget> {
                                           ),
                                           Container(
                                             padding:
-                                                EdgeInsets.only(right: 10.0),
+                                                const EdgeInsets.only(right: 10.0),
                                             alignment: Alignment.bottomLeft,
                                             child: Row(
                                               children: [
@@ -531,6 +523,7 @@ class _ListWidgetState extends State<ListWidget> {
       ),
     );
   }
+
   /////////////-------------------------------------------
   ///
   ///
@@ -547,18 +540,15 @@ class _ListWidgetState extends State<ListWidget> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailsComicScreen(
-                baseRepository: widget.baseRepository,
-                comicBook: comicBook,
-                baseConstraints: widget.baseConstraints),
+            builder: (context) => DetailsComicScreen(comicBook: comicBook),
           ),
         );
       },
       onLongPress: () async {
-        ResultCallAPI response = await widget.baseRepository.comicsRepository
+        ComicBook comic = await GetIt.instance<ComicsRepository>()
             .getDetailsComics(thisComicBook: comicBook);
 
-        comicBook = response.data;
+        comicBook = comic;
         showModalBottomSheet(
           backgroundColor: Colors.transparent,
           // backgroundColor: Color(0xff22211F),
@@ -638,7 +628,7 @@ class _ListWidgetState extends State<ListWidget> {
                               Expanded(
                                 flex: 6,
                                 child: Container(
-                                  padding: EdgeInsets.only(left: 10),
+                                  padding: const EdgeInsets.only(left: 10),
                                   child: Column(
                                     children: [
                                       /////////////////////
@@ -663,7 +653,7 @@ class _ListWidgetState extends State<ListWidget> {
                                                   "${comicBook.totalChapters} Chương ",
                                               fontSize: 10,
                                               fontWeight: FontWeight.w100,
-                                              color: Color(0xFFd8d8d8)),
+                                              color: const Color(0xFFd8d8d8)),
                                         ),
                                       ),
                                       ///////////////////////////////////////////
@@ -711,7 +701,7 @@ class _ListWidgetState extends State<ListWidget> {
                                                             alignment: Alignment
                                                                 .center,
                                                             child: BaseWidget().setText(
-                                                                color: Color(
+                                                                color: const Color(
                                                                     0xffD8d8d8),
                                                                 txt: value
                                                                     .genresName,
@@ -733,11 +723,11 @@ class _ListWidgetState extends State<ListWidget> {
                                       Expanded(
                                         flex: 3,
                                         child: Container(
-                                          padding: EdgeInsets.only(top: 10),
+                                          padding: const EdgeInsets.only(top: 10),
                                           alignment: Alignment.topLeft,
                                           child: Text(
                                             comicBook.description,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 color: Color(0xffd8d8d8),
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.w100),
@@ -770,11 +760,11 @@ class _ListWidgetState extends State<ListWidget> {
                                             flex: 8,
                                             child: Container(
                                               margin:
-                                                  EdgeInsets.only(bottom: 5),
+                                                  const EdgeInsets.only(bottom: 5),
                                               width: double.infinity,
                                               height: double.infinity,
                                               alignment: Alignment.center,
-                                              decoration: BoxDecoration(
+                                              decoration: const BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(10)),
@@ -790,7 +780,7 @@ class _ListWidgetState extends State<ListWidget> {
                                                   "${comicBook.totalLike} lượt thích",
                                               fontSize: 13,
                                               fontWeight: FontWeight.w100,
-                                              color: Color(0xffd8d8d8),
+                                              color: const Color(0xffd8d8d8),
                                             ),
                                           ),
                                         ],
@@ -809,11 +799,11 @@ class _ListWidgetState extends State<ListWidget> {
                                             flex: 8,
                                             child: Container(
                                               margin:
-                                                  EdgeInsets.only(bottom: 5),
+                                                  const EdgeInsets.only(bottom: 5),
                                               width: double.infinity,
                                               height: double.infinity,
                                               alignment: Alignment.center,
-                                              decoration: BoxDecoration(
+                                              decoration: const BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(10)),
@@ -829,7 +819,7 @@ class _ListWidgetState extends State<ListWidget> {
                                                     "${comicBook.totalRead} lượt xem",
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.w100,
-                                                color: Color(0xffd8d8d8)),
+                                                color: const Color(0xffd8d8d8)),
                                           ),
                                         ],
                                       ),
@@ -847,12 +837,12 @@ class _ListWidgetState extends State<ListWidget> {
                                               Expanded(
                                                 flex: 8,
                                                 child: Container(
-                                                  margin: EdgeInsets.only(
+                                                  margin: const EdgeInsets.only(
                                                       bottom: 5),
                                                   width: double.infinity,
                                                   height: double.infinity,
                                                   alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
+                                                  decoration: const BoxDecoration(
                                                       borderRadius:
                                                           BorderRadius.all(
                                                               Radius.circular(
@@ -870,7 +860,7 @@ class _ListWidgetState extends State<ListWidget> {
                                                     txt: "Chia sẻ",
                                                     fontSize: 13,
                                                     fontWeight: FontWeight.w100,
-                                                    color: Color(0xffd8d8d8)),
+                                                    color: const Color(0xffd8d8d8)),
                                               ),
                                             ],
                                           ),
@@ -893,7 +883,7 @@ class _ListWidgetState extends State<ListWidget> {
                                     child: Container(
                                       width: double.infinity,
                                       alignment: Alignment.center,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                           color: Color(0xffD0480A),
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(5))),
@@ -902,7 +892,7 @@ class _ListWidgetState extends State<ListWidget> {
                                           children: [
                                             BaseWidget().setText(
                                                 txt: "Đọc ngay", fontSize: 15),
-                                            SizedBox(
+                                            const SizedBox(
                                               width: 5,
                                             ),
                                             BaseWidget().setImageIcon(
@@ -912,10 +902,7 @@ class _ListWidgetState extends State<ListWidget> {
                                       ),
                                     ),
                                     pageTo: DetailsComicScreen(
-                                        baseRepository: widget.baseRepository,
-                                        comicBook: comicBook,
-                                        baseConstraints:
-                                            widget.baseConstraints),
+                                        comicBook: comicBook),
                                     context: context),
                               ),
                               Container(
@@ -925,7 +912,7 @@ class _ListWidgetState extends State<ListWidget> {
                                 child: Container(
                                   width: double.infinity,
                                   alignment: Alignment.center,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                       color: Colors.black,
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(5))),
@@ -937,7 +924,7 @@ class _ListWidgetState extends State<ListWidget> {
                                                 ? "Theo dõi ngay"
                                                 : "Hủy theo dõi",
                                             fontSize: 15),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 5,
                                         ),
                                         BaseWidget().setImageIcon(

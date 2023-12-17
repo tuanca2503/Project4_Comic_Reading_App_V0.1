@@ -31,7 +31,7 @@ class FillterComicBook {
     data.addAll(List.generate(
       3,
       (index) => FillterComicBook(
-        name: "fillter $index",
+        name: "filter $index",
         fillterItem: List.generate(
           Random().nextInt(5) + 1, // Generating a list with 1 to 5 items
           (itemIndex) => 'Item $itemIndex',

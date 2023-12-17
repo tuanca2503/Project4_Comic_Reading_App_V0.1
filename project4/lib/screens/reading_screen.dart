@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:project4/config.dart';
+import 'package:get_it/get_it.dart';
+import 'package:project4/config/environment.dart';
 import 'package:project4/main.dart';
-import 'package:project4/models/comic_book.dart';
-import 'package:project4/repositories/base_repository.dart';
+import 'package:project4/models/comic/comic_book.dart';
+import 'package:project4/repositories/chapter_repository.dart';
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../utils/constants.dart';
+
 class ReadingScreen extends StatefulWidget {
   const ReadingScreen(
       {super.key,
-      required this.baseConstraints,
-      required this.baseRepository,
       required this.chapterComicBook});
-  final BoxConstraints baseConstraints;
-  final BaseRepository baseRepository;
+
   final ChapterComicBook chapterComicBook;
 
   @override
@@ -25,8 +24,8 @@ class ReadingScreen extends StatefulWidget {
 class _ReadingScreenState extends State<ReadingScreen> {
   @override
   void initState() {
-    double screenWidth = widget.baseConstraints.maxWidth;
-    double screenHeight = widget.baseConstraints.maxHeight;
+    super.initState();
+    double screenWidth = baseConstraints.maxWidth;
     fontSize = screenWidth * 0.03;
     fontFour = screenWidth * 0.04;
     fontBac = screenWidth * 0.02;
@@ -41,24 +40,23 @@ class _ReadingScreenState extends State<ReadingScreen> {
   double? create;
 
   bool showBars = true;
+
 ////////////////////////////////////////
 ////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      baseConstraints: widget.baseConstraints,
       setBody: BaseWidget().setFutureBuilder(
         callback: (snapshot) {
-          return bodyReadingScreen(chapterComicBook: snapshot.data!.data);
+          return bodyReadingScreen(chapterComicBook: snapshot.data);
         },
-        repo: widget.baseRepository.comicsRepository
-            .getChapterComic(chapter: widget.chapterComicBook),
+        repo: GetIt.instance<ChapterRepository>().getChapterComic(chapter: widget.chapterComicBook),
       ),
     );
   }
 
   Widget bodyReadingScreen({required ChapterComicBook chapterComicBook}) {
-    double heightHeadBott = widget.baseConstraints.maxHeight * 0.08;
+    double heightHeadBott = baseConstraints.maxHeight * 0.08;
     // print(chapterComicBook.images.length);
     // final visibilityProvider = context.read<VisibilityProvider>();
 
@@ -74,15 +72,15 @@ class _ReadingScreenState extends State<ReadingScreen> {
                 //   showBars = !showBars;
                 // });
               },
-              child: Container(
-                height: widget.baseConstraints.maxHeight,
-                width: widget.baseConstraints.maxWidth,
+              child: SizedBox(
+                height: baseConstraints.maxHeight,
+                width: baseConstraints.maxWidth,
                 child: ListView.builder(
                   itemCount: chapterComicBook.images.length,
                   itemBuilder: (context, index) {
                     return IntrinsicHeight(
                       child: Image.network(
-                          '${AppConfig.apiIP}${AppConfig.apiPort}${chapterComicBook.images[index]}'),
+                          '${Environment.apiUrl}/${chapterComicBook.images[index]}'),
                     );
                   },
                 ),
@@ -115,6 +113,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
       },
     );
   }
+
 //
 
 //
@@ -127,7 +126,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
           Expanded(
               flex: 1,
               child: BaseWidget().handleEventBackNavigation(
-                  child: Container(
+                  child: SizedBox(
                     height: heightHeadBott,
                     child: Transform.scale(
                       scale: 0.5,
@@ -137,16 +136,14 @@ class _ReadingScreenState extends State<ReadingScreen> {
                   context: context)),
           Expanded(
             flex: 8,
-            child: Container(
-              child: Text(
-                chapterName,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: fontFour,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
+            child: Text(
+              chapterName,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: fontFour,
+                fontWeight: FontWeight.bold,
               ),
+              textAlign: TextAlign.center,
             ),
           ),
           Expanded(
@@ -166,7 +163,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
         children: [
           Expanded(
             flex: 1,
-            child: Container(
+            child: SizedBox(
               height: heightHeadBott,
               child: Transform.scale(
                 scale: 0.5,
@@ -176,14 +173,12 @@ class _ReadingScreenState extends State<ReadingScreen> {
           ),
           Expanded(
             flex: 8,
-            child: Container(
-              child: Text(
-                'Trước',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: fontFour,
-                  fontWeight: FontWeight.bold,
-                ),
+            child: Text(
+              'Trước',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: fontFour,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
