@@ -53,8 +53,7 @@ class _HeaderBarWidgetState extends State<HeaderBarWidget> {
             image: LayoutBuilder(
               builder: (context, constraints) {
                 return myEventHandler(
-                  child: BaseWidget().setImageIcon(
-                      link: "back_white.png", iconWH: constraints.maxWidth / 2),
+                  child: BaseWidget().setIcon(iconData: Icons.navigate_before),
                 );
               },
             ),
@@ -66,8 +65,7 @@ class _HeaderBarWidgetState extends State<HeaderBarWidget> {
           headerIcon(
             image: LayoutBuilder(
               builder: (context, constraints) {
-                return BaseWidget().setImageIcon(
-                    link: "menu_white.png", iconWH: constraints.maxWidth / 2);
+                return BaseWidget().setIcon(iconData: Icons.menu);
               },
             ),
           ),
@@ -105,9 +103,7 @@ class _HeaderBarWidgetState extends State<HeaderBarWidget> {
             image: LayoutBuilder(
               builder: (context, constraints) {
                 return myEventHandler(
-                  child: BaseWidget().setImageIcon(
-                      link: "scanner_white.png",
-                      iconWH: (constraints.maxWidth / 2)),
+                  child: BaseWidget().setIcon(iconData: Icons.qr_code_scanner),
                 );
               },
             ),
@@ -118,9 +114,7 @@ class _HeaderBarWidgetState extends State<HeaderBarWidget> {
                 return Stack(
                   children: [
                     myHandelNotification(
-                      child: BaseWidget().setImageIcon(
-                          link: "notification_white.png",
-                          iconWH: (constraints.maxWidth / 2).toDouble()),
+                      child: BaseWidget().setIcon(iconData: Icons.notifications_outlined),
                     ),
                     //
                   ],

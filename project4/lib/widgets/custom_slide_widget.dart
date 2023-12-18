@@ -10,8 +10,7 @@ import '../utils/constants.dart';
 class CustomSlideWidget extends StatefulWidget {
   final List<ComicBook> comicBooks;
 
-  const CustomSlideWidget(
-      {required this.comicBooks});
+  const CustomSlideWidget({super.key, required this.comicBooks});
 
   @override
   _CustomSlideWidgetState createState() => _CustomSlideWidgetState();
@@ -24,7 +23,7 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
       items: widget.comicBooks.map(
         (comicBook) {
           return ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 double widthBox = constraints.maxWidth * 0.7;
@@ -49,14 +48,14 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
                             itemButtonSlide(
                                 color: const Color(0xffD0480A),
                                 txt: "Đọc",
-                                link: "books_white.png",
+                                iconData: Icons.local_library_outlined,
                                 comicBook: comicBook,
                                 showButton: 0),
                             Expanded(flex: 1, child: Container()),
                             itemButtonSlide(
                                 color: const Color(0xff232220),
                                 txt: "Chi tiết",
-                                link: "info_white.png",
+                                iconData: Icons.info_outline,
                                 comicBook: comicBook,
                                 showButton: 1),
                           ],
@@ -71,15 +70,19 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
         },
       ).toList(),
       options: CarouselOptions(
-        autoPlay: true, // Enable auto-play
-        enlargeCenterPage: true, // Make the current image larger
-        aspectRatio: 16 / 9, // Set the aspect ratio
-        viewportFraction: 0.8, // Set the fraction of the viewport to show
+        autoPlay: true,
+        // Enable auto-play
+        enlargeCenterPage: true,
+        // Make the current image larger
+        aspectRatio: 16 / 9,
+        // Set the aspect ratio
+        viewportFraction: 0.8,
+        // Set the fraction of the viewport to show
         // initialPage: 4,   //// anh bat dau
-        autoPlayInterval: Duration(seconds: 5),
+        autoPlayInterval: const Duration(seconds: 5),
 
-        height: baseConstraints.maxWidth *
-            1.2, // Set the height of the carousel
+        height:
+            baseConstraints.maxWidth * 1.2, // Set the height of the carousel
       ),
     );
   }
@@ -88,7 +91,7 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
   Widget itemButtonSlide(
       {required Color color,
       required String txt,
-      required String link,
+      required IconData iconData,
       required ComicBook comicBook,
       required int showButton}) {
     return Expanded(
@@ -97,7 +100,7 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
         context: context,
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(6)),
+            borderRadius: const BorderRadius.all(Radius.circular(6)),
             color: color,
           ),
           height: double.infinity,
@@ -117,15 +120,14 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
                 flex: 3,
                 child: Align(
                   alignment: Alignment.center,
-                  child: BaseWidget().setImageAsset(link),
+                  child: BaseWidget().setIcon(iconData: iconData),
                 ),
               ),
             ],
           ),
         ),
-        pageTo: DetailsComicScreen(
-            showButton: showButton,
-            comicBook: comicBook),
+        pageTo:
+            DetailsComicScreen(showButton: showButton, comicBook: comicBook),
       ),
     );
   }

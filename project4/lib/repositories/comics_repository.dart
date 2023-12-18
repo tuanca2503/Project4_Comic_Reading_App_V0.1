@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:project4/config/environment.dart';
 import 'package:project4/models/comic/comic_book.dart';
+import 'package:project4/models/comic/comic_home.dart';
 import 'package:project4/models/page_data.dart';
 import 'package:project4/utils/util_func.dart';
 
@@ -10,14 +11,6 @@ class ComicsRepository {
   final String _apiBase = '${Environment.apiUrl}/api/mangas';
 
   ComicsRepository();
-
-  final List<ComicBook> _comicBook = ComicBook().Seed();
-
-  List<ComicBook> getComicsData() {
-    // Make an API call to fetch user data using the stored token
-
-    return _comicBook;
-  }
 
   Future<PageData<ComicBook>> getAllComics(
       {String filter = 'CREATED_DATE'}) async {
@@ -34,6 +27,17 @@ class ComicsRepository {
     // return PageData<ComicBook>.fromJson(
     //     jsonDecode(const Utf8Decoder().convert(response.bodyBytes)),
     //     (json) => ComicBook.fromJson(json));
+  }
+
+  Future<ComicHome> getAllComicsForHome() async {
+    final Response response = await dio.get(
+      '$_apiBase/free/home',
+    );
+    if (response.statusCode != 200) {
+      debug("///ERROR getAllComicsForHome: ${response.data}///");
+      return ComicHome.empty();
+    }
+    return ComicHome.fromJson(response.data);
   }
 
   Future<ComicBook> getDetailsComics({required ComicBook thisComicBook}) async {

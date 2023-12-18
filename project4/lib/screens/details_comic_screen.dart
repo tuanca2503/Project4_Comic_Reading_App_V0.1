@@ -3,7 +3,6 @@ import 'package:get_it/get_it.dart';
 import 'package:project4/config/environment.dart';
 import 'package:project4/main.dart';
 import 'package:project4/models/comic/comic_book.dart';
-
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/screens/reading_screen.dart';
 import 'package:project4/screens/search_screen.dart';
@@ -16,9 +15,8 @@ import '../utils/constants.dart';
 
 class DetailsComicScreen extends StatefulWidget {
   const DetailsComicScreen(
-      {super.key,
-      required this.comicBook,
-      this.showButton = 0});
+      {super.key, required this.comicBook, this.showButton = 0});
+
   final ComicBook comicBook;
   final int showButton;
 
@@ -37,6 +35,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
   }
 
   String partComic = '';
+
   //////////////////////////////////////////
 
   // void setSwitchEvent({required int showButton}) {
@@ -70,9 +69,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseScreen(
-        setAppBar: 2,
-        setBody: bodyDetailsComicScreen());
+    return BaseScreen(setAppBar: 2, setBody: bodyDetailsComicScreen());
   }
 
   Widget bodyDetailsComicScreen() {
@@ -88,8 +85,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                   heightBackgroundBox: heightBackgroundBox,
                   comicBook: snapshot.data),
               contentBox(
-                  heightContentBox: heightContentBox,
-                  comicBook: snapshot.data)
+                  heightContentBox: heightContentBox, comicBook: snapshot.data)
             ],
           );
         },
@@ -222,8 +218,9 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                         partComic);
                                                   },
                                                   child: Container(
-                                                    margin: const EdgeInsets.only(
-                                                        bottom: 0),
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            bottom: 0),
                                                     clipBehavior: Clip.hardEdge,
                                                     height:
                                                         constraints.maxHeight *
@@ -237,9 +234,11 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                             borderRadius),
                                                     child: Container(
                                                       padding:
-                                                          const EdgeInsets.all(10),
-                                                      color: const Color.fromARGB(
-                                                          200, 0, 0, 0),
+                                                          const EdgeInsets.all(
+                                                              10),
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              200, 0, 0, 0),
                                                       child: Row(
                                                         children: [
                                                           Expanded(
@@ -258,7 +257,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                                                 partComic),
                                                                   ),
                                                                 ),
-                                                                comicBook.currentReadChapterId != null ?
+                                                                /*comicBook.currentReadChapterId != null ?
                                                                 Expanded(
                                                                   child:
                                                                   BaseWidget()
@@ -315,7 +314,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                                             .listChapters.firstWhere((c) => c.id == comicBook.currentReadChapterId),),
                                                                       context:
                                                                       context),
-                                                                ) : Container(),
+                                                                ) : Container(),*/
                                                                 Expanded(
                                                                   child:
                                                                       Container(
@@ -340,14 +339,8 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                               child: (myProvider
                                                                           .showPartDetailsScreen ==
                                                                       partComic)
-                                                                  ? BaseWidget()
-                                                                      .setImageIcon(
-                                                                          link:
-                                                                              "up_orange.png")
-                                                                  : BaseWidget()
-                                                                      .setImageIcon(
-                                                                          link:
-                                                                              "down_orange.png"),
+                                                                  ? BaseWidget().setIcon(iconData: Icons.arrow_drop_up, color: Colors.orange)
+                                                                  : BaseWidget().setIcon(iconData: Icons.arrow_drop_down, color: Colors.orange),
                                                             ),
                                                           ),
                                                         ],
@@ -371,9 +364,9 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                                 .handleEventNavigation(
                                                                     child:
                                                                         Container(
-                                                                      padding:
-                                                                          const EdgeInsets.all(
-                                                                              10),
+                                                                      padding: const EdgeInsets
+                                                                          .all(
+                                                                          10),
                                                                       height: constraints
                                                                               .maxHeight *
                                                                           0.25,
@@ -426,9 +419,11 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    pageTo: ReadingScreen(
-                                                                        chapterComicBook:
-                                                                            valueChapterComic,),
+                                                                    pageTo:
+                                                                        ReadingScreen(
+                                                                      chapterComicBook:
+                                                                          valueChapterComic,
+                                                                    ),
                                                                     context:
                                                                         context)
                                                           ////////////////////////////
@@ -570,7 +565,8 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
               child: Container(
                 alignment: Alignment.center,
                 child: BaseWidget().setText(
-                    txt: "Thời gian tải lên - ${formatDateFromTs(comicBook.createdDate)}",
+                    txt:
+                        "Thời gian tải lên - ${formatDateFromTs(comicBook.createdDate)}",
                     fontWeight: FontWeight.w100,
                     fontSize: 15,
                     color: const Color.fromARGB(255, 116, 116, 116)),
@@ -656,8 +652,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
       height: constraints.maxHeight,
       child: FittedBox(
         fit: BoxFit.cover,
-        child: Image.network(
-            '${Environment.apiUrl}/${comicBook.coverImage}'),
+        child: Image.network('${Environment.apiUrl}/${comicBook.coverImage}'),
       ),
     );
   }

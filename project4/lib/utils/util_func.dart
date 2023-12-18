@@ -61,7 +61,7 @@ Future<void> clearAllSharedPreferences() async {
   await sharedPreferences.remove(SharedPreferencesEnum.username.name);
 }
 
-Future<void> updateToken(String accessToken, String refreshToken) async {
+Future<void> updateTokenStorage(String accessToken, String refreshToken) async {
   final flutterSecureStorage = GetIt.instance<FlutterSecureStorage>();
   await flutterSecureStorage.write(
       key: FlutterSecureStorageEnum.accessToken.name, value: accessToken);

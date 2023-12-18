@@ -7,7 +7,6 @@ import 'package:project4/config/environment.dart';
 
 // import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:project4/models/comic/comic_book.dart';
-import 'package:project4/utils/util_func.dart';
 
 typedef void CallbackColor(Color color);
 typedef void CallBackConstraints(BoxConstraints constraints);
@@ -57,6 +56,15 @@ class BaseWidget {
     );
   }
 
+  Icon setIcon(
+      {required IconData iconData, Color color = Colors.white, size = 24}) {
+    return Icon(
+      iconData,
+      color: color,
+      size: size,
+    );
+  }
+
   Container setImageIcon(
       {double iconWH = 20.0,
       double padding = 0.0,
@@ -90,7 +98,7 @@ class BaseWidget {
           // Using await here is allowed because it's inside an async function
         } else {
           print('ELSE: $snapshot');
-          return Text('Unexpected ConnectionState');
+          return const Text('Unexpected ConnectionState');
         }
       },
     );
