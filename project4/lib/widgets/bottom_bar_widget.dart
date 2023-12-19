@@ -68,19 +68,19 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
         children: [
           itemBottom(
             pageTo: const HomeScreen(),
-            link: 'home',
+            iconData: Icons.home,
             choose: myMap["home"] ?? false,
             txt: 'Trang chủ',
           ),
           itemBottom(
             pageTo: const SearchScreen(),
-            link: 'loupe',
+            iconData: Icons.search,
             choose: myMap["search"] ?? false,
             txt: 'Tìm kiếm',
           ),
           itemBottom(
             pageTo: const FollowScreen(),
-            link: 'heart',
+            iconData: Icons.favorite_outlined,
             choose: myMap["follow"] ?? false,
             txt: 'Theo dõi',
           ),
@@ -92,7 +92,7 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
                 pageTo: checkStringIsNotEmpty(myProvider.email)
                     ? const UserScreen()
                     : const AccountScreen(),
-                link: updateAvatarUrl(),
+                iconData: Icons.manage_accounts_outlined,
                 choose: myMap["user"] ?? false,
                 txt: checkUserLogin
                     ? sharedPreferences
@@ -108,7 +108,7 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
   }
 
   Widget itemBottom(
-      {required String link,
+      {required IconData iconData,
       bool itemUser = false,
       required bool choose,
       required String txt,
@@ -116,11 +116,6 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
     Color colorChoose = Colors.orange;
 
     Color color = choose ? Colors.white : Colors.grey;
-    String thisLink = itemUser
-        ? link
-        : choose
-            ? link += '_white.png'
-            : link += '_grey.png';
     return Expanded(
       child: BaseWidget().handleEventNavigation(
           child: SizedBox(
@@ -156,18 +151,17 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
                         child: itemUser
                             ? IntrinsicWidth(
                                 child: Container(
-                                    alignment: Alignment.center,
-                                    clipBehavior: Clip.hardEdge,
-                                    decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))),
-                                    child: link.startsWith('http')
-                                        ? BaseWidget()
-                                            .setImageNetwork(link: thisLink)
-                                        : BaseWidget().setImageAsset(thisLink)),
+                                  alignment: Alignment.center,
+                                  clipBehavior: Clip.hardEdge,
+                                  decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20))),
+                                  child: getAvatarWidget(),
+                                ),
                               )
                             : BaseWidget().handleEventNavigation(
-                                child: BaseWidget().setImageAsset(thisLink),
+                                child: BaseWidget()
+                                    .setIcon(iconData: iconData, color: color),
                                 pageTo: pageTo,
                                 context: context),
                       );
