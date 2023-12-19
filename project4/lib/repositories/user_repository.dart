@@ -27,4 +27,19 @@ class UserRepository {
     }
     return user;
   }
+
+  Future<void> updateUserInfo({required String userName}) async {
+    try {
+      final Response response =
+          await dio.post('$_apiBase/update-information', data: {
+        'username': userName,
+      });
+      if (response.statusCode != 200) {
+        debug("///ERROR at updateUserInfo: ${response.data}///");
+        throw Exception(response.data);
+      }
+    } catch (e) {
+      debug("///ERROR at updateUserInfo: $e///");
+    }
+  }
 }
