@@ -62,6 +62,7 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: baseConstraints.maxWidth,
       color: widget.colorTheme,
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -87,6 +88,7 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
           Consumer<ScreenProvider>(
             builder: (BuildContext context, myProvider, Widget? child) {
               bool checkUserLogin = checkStringIsNotEmpty(myProvider.email);
+
               return itemBottom(
                 itemUser: true,
                 pageTo: checkStringIsNotEmpty(myProvider.email)

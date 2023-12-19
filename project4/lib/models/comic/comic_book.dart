@@ -57,33 +57,35 @@ class ComicBook {
   // Constructor từ JsonMap
   ComicBook.fromJson(Map<String, dynamic> json)
       : currentReadChapterId = json['currentReadChapterId'],
-  currentReadChapterName = json['currentReadChapterName'],
-  id = json['id'],
-  title = json['title'],
-  coverImage = json['coverImage'],
-  createdDate = json['createdDate'],
-  lastUpdatedDate = json['lastUpdatedDate'],
-  author = json['author'] ?? '',
-  totalChapters = json['totalChapters'],
-  totalRead = json['totalRead'],
-  totalLike = json['totalLike'],
-  totalFavourite = json['totalFavourite'],
-  description = json['description']  ?? '',
-  genres = (json['genres'] as List).map((itemJson) => Genre.fromJson(itemJson)).toList(),
-  like = json['like']  ?? false,
-  favourite = json['favourite']  ?? false
-  ;
+        currentReadChapterName = json['currentReadChapterName'],
+        id = json['id'],
+        title = json['title'],
+        coverImage = json['coverImage'].toString().replaceAll('-/', '/'),
+        createdDate = json['createdDate'],
+        lastUpdatedDate = json['lastUpdatedDate'],
+        author = json['author'] ?? '',
+        totalChapters = json['totalChapters'],
+        totalRead = json['totalRead'],
+        totalLike = json['totalLike'],
+        totalFavourite = json['totalFavourite'],
+        description = json['description'] ?? '',
+        genres = (json['genres'] as List)
+            .map((itemJson) => Genre.fromJson(itemJson))
+            .toList(),
+        like = json['like'] ?? false,
+        favourite = json['favourite'] ?? false;
 
   ///////
   List<ComicBook> getAllDataFromJson({required List<dynamic> jsons}) {
     List<ComicBook> datas = [];
+
     for (var json in jsons) {
       datas.add(
         ComicBook(
           id: json['id'],
           title: json['title'],
           // title: utf8.decode(latin1.encode(json['title'])),
-          coverImage: json['coverImage'],
+          coverImage: json['coverImage'].toString().replaceAll('-/', '/'),
           createdDate:
               DateTime.fromMillisecondsSinceEpoch(json['createdDate']).year,
           lastUpdatedDate: json['lastUpdatedDate'],
@@ -204,8 +206,7 @@ class Genre {
   // Constructor từ JsonMap
   Genre.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        genresName = json['genresName']
-  ;
+        genresName = json['genresName'];
   List<Genre> getAllDataFromJson({required List<dynamic> jsons}) {
     List<Genre> datas = [];
     for (var json in jsons) {

@@ -25,6 +25,7 @@ class AuthRepository {
         'email': email,
         'password': password,
       });
+
       if (response.statusCode != 200) {
         debug(
             "///ERROR at loginUser with statusCode = ${response.statusCode}, error = ${response.data}///");

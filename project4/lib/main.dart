@@ -59,6 +59,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        scaffoldBackgroundColor:
+            Colors.transparent, // Đặt màu nền của Scaffold là trong suốt
+        appBarTheme: AppBarTheme(
+          backgroundColor:
+              Colors.transparent, // Đặt màu nền của AppBar là trong suốt
+        ),
+      ),
       debugShowCheckedModeBanner: false,
       title: 'Comic Reading App',
       home: LayoutBuilder(

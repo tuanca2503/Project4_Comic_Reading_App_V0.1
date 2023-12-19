@@ -4,7 +4,7 @@ import 'package:project4/widgets/header_bar_widgeet.dart';
 
 import '../utils/constants.dart';
 
-class BaseScreen extends StatelessWidget {
+class BaseScreen extends StatefulWidget {
   const BaseScreen(
       {super.key,
       required this.setBody,
@@ -12,7 +12,6 @@ class BaseScreen extends StatelessWidget {
       this.setBottomBar = false,
       this.chooseBottomIcon = 0,
       this.setMoveUp = false});
-
   final int setAppBar;
   final Widget setBody;
   final bool setBottomBar;
@@ -20,7 +19,32 @@ class BaseScreen extends StatelessWidget {
 
   final int chooseBottomIcon;
 
+  @override
+  State<BaseScreen> createState() => _BaseScreenState();
+}
+
+// class _BaseScreenState extends State<BaseScreen> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return const Placeholder();
+//   }
+// }
+
+class _BaseScreenState extends State<BaseScreen> {
   //send data ->base->bottom
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      setState(() {
+        // Hiển thị hoặc ẩn nút dựa vào vị trí cuộn
+        _showToTopButton = scrollController.offset > 400;
+      });
+    });
+  }
+
+  ScrollController scrollController = ScrollController();
+  bool _showToTopButton = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +52,13 @@ class BaseScreen extends StatelessWidget {
 
     double heightHeadBottom = baseConstraints.maxHeight * 0.09;
 
-    ScrollController scrollController = ScrollController();
-
     /// base repo
     ///
     ///
     ///
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(0, 0, 0, 0),
       /////////////////////////////////
 
       body: Container(
@@ -49,7 +72,7 @@ class BaseScreen extends StatelessWidget {
 
             HeaderBarWidget(
               heightHead: heightHeadBottom,
-              typeHeader: setAppBar,
+              typeHeader: widget.setAppBar,
               padding: 10,
               colorTheme: colorTheme,
               baseConstraints: baseConstraints,
@@ -62,49 +85,86 @@ class BaseScreen extends StatelessWidget {
             // ),
 
             //body
-            setBody,
-
-            setMoveUp
-                ? Container(
-                    height: 50,
-                    // color: Colors.white,
-                    padding: const EdgeInsets.all(10),
-                    alignment: Alignment.topCenter,
-                    child: GestureDetector(
-                      onTap: () {
-                        scrollController.animateTo(
-                          0.0,
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                      child: const Text(
-                        "Lên đầu trang",
-                        style: TextStyle(
-                          color: Colors.white,
-                          decoration: TextDecoration.underline,
-                          decorationColor: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w100,
-                        ),
-                      ),
-                    ),
-                  )
-                : Container(),
+            widget.setBody,
           ],
         ),
       ),
 
       ////////////////////////////////////
-      bottomNavigationBar: setBottomBar
-          ? SizedBox(
+      bottomNavigationBar: widget.setBottomBar
+          ? Container(
+              color: const Color.fromARGB(0, 0, 0, 0),
               height: heightHeadBottom,
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  return BottomBarWidget(
-                    chooseBottomIcon: chooseBottomIcon,
-                    padding: 10,
-                    colorTheme: colorTheme,
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned(
+                        bottom: 0,
+                        child: Container(
+                          color: Colors.transparent,
+                          height: constraints.maxHeight,
+                          child: BottomBarWidget(
+                            chooseBottomIcon: widget.chooseBottomIcon,
+                            padding: 10,
+                            colorTheme: colorTheme,
+                          ),
+                        ),
+                      ),
+                      _showToTopButton
+                          ? Positioned(
+                              // offset: Offset(
+                              //     baseConstraints.maxWidth / 2 - (50 / 2), -60),
+                              top: -20,
+                              left: baseConstraints.maxWidth / 2 - (50 / 2),
+
+                              child: ClipRect(
+                                child: widget.setMoveUp
+                                    ? InkWell(
+                                        onTap: () {
+                                          // Xử lý sự kiện khi nút được nhấn
+
+                                          scrollController.animateTo(
+                                            scrollController
+                                                .position.minScrollExtent,
+                                            duration:
+                                                Duration(milliseconds: 500),
+                                            curve: Curves.easeInOut,
+                                          );
+                                        },
+                                        child: Container(
+                                          width: 50.0,
+                                          height: 50.0,
+                                          decoration: BoxDecoration(
+                                              // shape: BoxShape.circle,
+                                              color: colorTheme,
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                topLeft: Radius.circular(
+                                                    25.0), // Bán kính của góc trái trên
+                                                topRight: Radius.circular(
+                                                    25.0), // Bán kính của góc phải trên
+                                              ),
+                                              border: const Border(
+                                                top: BorderSide(
+                                                    width: 2,
+                                                    color: Colors.orange),
+                                              ) // Viền xung quanh hình tròn
+                                              ),
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.arrow_upward,
+                                              color: Colors.orange,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
+                              ),
+                            )
+                          : Container(),
+                    ],
                   );
                 },
               ),
@@ -114,3 +174,7 @@ class BaseScreen extends StatelessWidget {
     );
   }
 }
+
+
+/////
+///
