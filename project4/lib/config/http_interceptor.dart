@@ -25,11 +25,13 @@ void interceptor() {
 
     bool tokenIsValid = await checkTokenIsValid();
     if (!tokenIsValid) {
-      await clearToken();
+      await _clearToken();
       String? refreshToken = await _flutterSecureStorage.read(
           key: FlutterSecureStorageEnum.refreshToken.name);
       if (refreshToken != null) {
         await _refreshToken();
+        accessToken = await _flutterSecureStorage.read(
+            key: FlutterSecureStorageEnum.accessToken.name);
       }
     }
 
@@ -133,10 +135,9 @@ Future<bool> _refreshToken() async {
       throw Exception(response.data);
     }
     auth = Auth.fromJson(response.data);
-    auth = Auth.fromJson(response.data);
-    await updateToken(auth.accessToken, auth.refreshToken);
+    await updateTokenStorage(auth.accessToken, auth.refreshToken);
     Map<String, dynamic> tokenPayload = convertJwtToken(auth.accessToken);
-    updateSharedPreferences(tokenPayload);
+    await updateSharedPreferences(tokenPayload);
     return true;
   } catch (e) {
     debug("///ERROR _refreshToken: $e///");
@@ -144,7 +145,7 @@ Future<bool> _refreshToken() async {
   }
 }
 
-Future<void> clearToken() async {
+Future<void> _clearToken() async {
   String? accessToken = await _flutterSecureStorage.read(
       key: FlutterSecureStorageEnum.accessToken.name);
   if (accessToken != null) {
@@ -164,7 +165,7 @@ Future<bool> checkTokenIsValid() async {
 
   final Map<String, dynamic> payloadData = convertJwtToken(accessToken);
   return DateTime.now()
-      .isBefore(DateTime.fromMillisecondsSinceEpoch(payloadData['exp'] * 1000));
+      .isBefore(DateTime.fromMillisecondsSinceEpoch(payloadData['exp'] * 1000 - 5000));
 }
 
 String? getTokenFromAuthorize(String headerAuth) {

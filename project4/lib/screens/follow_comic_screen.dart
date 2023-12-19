@@ -111,7 +111,7 @@ class _RankFollowScreen extends State<FollowScreen> {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: BaseWidget().setImageIcon(link: 'back_white.png'),
+                    child: BaseWidget().setIcon(iconData: Icons.navigate_before),
                   ),
                   Expanded(
                     flex: 8,
@@ -121,7 +121,7 @@ class _RankFollowScreen extends State<FollowScreen> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: BaseWidget().setImageIcon(link: 'next_white.png'),
+                    child: BaseWidget().setIcon(iconData: Icons.navigate_next),
                   ),
                 ],
               ),

@@ -130,7 +130,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                     height: heightHeadBott,
                     child: Transform.scale(
                       scale: 0.5,
-                      child: BaseWidget().setImageAsset('back_white.png'),
+                      child: BaseWidget().setIcon(iconData: Icons.navigate_before),
                     ),
                   ),
                   context: context)),
@@ -167,7 +167,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
               height: heightHeadBott,
               child: Transform.scale(
                 scale: 0.5,
-                child: BaseWidget().setImageAsset('left_arrow.png'),
+                child: BaseWidget().setIcon(iconData: Icons.arrow_back),
               ),
             ),
           ),

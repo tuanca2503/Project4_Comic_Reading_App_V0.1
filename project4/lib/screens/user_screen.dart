@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:project4/models/comic/comic_book.dart';
 import 'package:project4/repositories/auth_repository.dart';
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/utils/constants.dart';
 import 'package:project4/widgets/base_widget.dart';
-import 'package:project4/widgets/list_widget.dart';
 
 import '../utils/util_func.dart';
 
@@ -125,7 +123,7 @@ class _AccountScreenState extends State<UserScreen> {
       child: SizedBox(
         width: screenWidth * 0.06,
         height: screenHeight * 0.06,
-        child: BaseWidget().setImageAsset('back_white.png'),
+        child: BaseWidget().setIcon(iconData: Icons.navigate_before),
       ),
     );
   }
@@ -422,10 +420,7 @@ class _AccountScreenState extends State<UserScreen> {
                 child: SizedBox(
                   width: baseConstraints.maxWidth,
                   height: baseConstraints.maxHeight,
-                  child: Transform.scale(
-                    scale: 0.25,
-                    child: BaseWidget().setImageAsset('next-white.png'),
-                  ),
+                  child: BaseWidget().setIcon(iconData: Icons.navigate_next),
                 )),
           ]),
         ),
@@ -442,10 +437,7 @@ class _AccountScreenState extends State<UserScreen> {
                 child: SizedBox(
                   width: baseConstraints.maxWidth,
                   height: baseConstraints.maxHeight,
-                  child: Transform.scale(
-                    scale: 0.7,
-                    child: BaseWidget().setImageAsset('moon.png'),
-                  ),
+                  child: BaseWidget().setIcon(iconData: Icons.dark_mode),
                 )),
             Expanded(
                 flex: 6,
@@ -524,10 +516,8 @@ class _AccountScreenState extends State<UserScreen> {
                 child: SizedBox(
                   width: baseConstraints.maxWidth,
                   height: baseConstraints.maxHeight,
-                  child: Transform.scale(
-                    scale: 0.8,
-                    child: BaseWidget().setImageAsset('clock.png'),
-                  ),
+                  child: BaseWidget()
+                      .setIcon(iconData: Icons.history, color: Colors.blueAccent),
                 )),
             Expanded(
                 flex: 6,
@@ -542,7 +532,7 @@ class _AccountScreenState extends State<UserScreen> {
                           alignment: Alignment
                               .centerLeft, // Đặt vị trí về giữa bên trái
                           child: Text(
-                            'lịch sử đọc truyện',
+                            'Lịch sử đọc truyện',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -558,10 +548,7 @@ class _AccountScreenState extends State<UserScreen> {
                 child: SizedBox(
                   width: baseConstraints.maxWidth,
                   height: baseConstraints.maxHeight,
-                  child: Transform.scale(
-                    scale: 0.25,
-                    child: BaseWidget().setImageAsset('next-white.png'),
-                  ),
+                  child: BaseWidget().setIcon(iconData: Icons.navigate_next),
                 )),
           ]),
         ),
@@ -574,10 +561,8 @@ class _AccountScreenState extends State<UserScreen> {
                 child: SizedBox(
                   width: baseConstraints.maxWidth,
                   height: baseConstraints.maxHeight,
-                  child: Transform.scale(
-                    scale: 0.7,
-                    child: BaseWidget().setImageAsset('padlock.png'),
-                  ),
+                  child: BaseWidget().setIcon(
+                      iconData: Icons.vpn_key, color: Colors.redAccent),
                 )),
             Expanded(
                 flex: 6,
@@ -608,10 +593,7 @@ class _AccountScreenState extends State<UserScreen> {
                 child: SizedBox(
                   width: baseConstraints.maxWidth,
                   height: baseConstraints.maxHeight,
-                  child: Transform.scale(
-                    scale: 0.25,
-                    child: BaseWidget().setImageAsset('next-white.png'),
-                  ),
+                  child: BaseWidget().setIcon(iconData: Icons.navigate_next),
                 )),
           ]),
         ),
@@ -645,10 +627,8 @@ class _AccountScreenState extends State<UserScreen> {
                 child: SizedBox(
                   width: baseConstraints.maxWidth,
                   height: baseConstraints.maxHeight,
-                  child: Transform.scale(
-                    scale: 0.7,
-                    child: BaseWidget().setImageAsset('notification-bell.png'),
-                  ),
+                  child: BaseWidget().setIcon(
+                      iconData: Icons.notifications, color: Colors.green),
                 )),
             Expanded(
                 flex: 6,
@@ -726,10 +706,8 @@ class _AccountScreenState extends State<UserScreen> {
                 child: SizedBox(
                   width: baseConstraints.maxWidth,
                   height: baseConstraints.maxHeight,
-                  child: Transform.scale(
-                    scale: 0.7,
-                    child: BaseWidget().setImageAsset('language.png'),
-                  ),
+                  child: BaseWidget().setIcon(
+                      iconData: Icons.language, color: Colors.purpleAccent),
                 )),
             Expanded(
                 flex: 6,
@@ -760,10 +738,7 @@ class _AccountScreenState extends State<UserScreen> {
                 child: SizedBox(
                   width: baseConstraints.maxWidth,
                   height: baseConstraints.maxHeight,
-                  child: Transform.scale(
-                    scale: 0.25,
-                    child: BaseWidget().setImageAsset('next-white.png'),
-                  ),
+                  child: BaseWidget().setIcon(iconData: Icons.navigate_next),
                 )),
           ]),
         ),
@@ -777,10 +752,8 @@ class _AccountScreenState extends State<UserScreen> {
                 child: SizedBox(
                   width: baseConstraints.maxWidth,
                   height: baseConstraints.maxHeight,
-                  child: Transform.scale(
-                    scale: 0.7,
-                    child: BaseWidget().setImageAsset('logout.png'),
-                  ),
+                  child: BaseWidget().setIcon(
+                      iconData: Icons.logout, color: Colors.orangeAccent),
                 )),
             Expanded(
                 flex: 6,
@@ -817,10 +790,7 @@ class _AccountScreenState extends State<UserScreen> {
                 child: SizedBox(
                   width: baseConstraints.maxWidth,
                   height: baseConstraints.maxHeight,
-                  child: Transform.scale(
-                    scale: 0.25,
-                    child: BaseWidget().setImageAsset('next-white.png'),
-                  ),
+                  child: BaseWidget().setIcon(iconData: Icons.navigate_next),
                 )),
           ]),
           // pageTo: AccountScreen(baseConstraints: baseConstraints),
