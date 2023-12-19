@@ -54,14 +54,14 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
         // width: MediaQuery.of(context).size.width,
         child: LayoutBuilder(
           builder: (context, constraints) {
-            double heightRow1 = constraints.maxHeight * 0.05;
-            double mangaInfoWidgetHeight = constraints.maxHeight * 0.33;
-            double likeViewWidgetHeight = constraints.maxHeight * 0.24;
-            double readFavouriteWidgetHeight = constraints.maxHeight * 0.24;
+            double heightTopBar = constraints.maxHeight * 0.05;
+            double heightMangaInfoWidget = constraints.maxHeight * 0.33;
+            double heightLikeViewWidget = constraints.maxHeight * 0.24;
+            double heightReadFavouriteWidget = constraints.maxHeight * 0.24;
             return ListView(
               children: [
                 Container(
-                  padding: EdgeInsets.all(heightRow1 / 2),
+                  padding: EdgeInsets.all(heightTopBar / 2),
                   child: Row(
                     children: [
                       Expanded(flex: 6, child: Container()),
@@ -72,18 +72,17 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                               color: Color(0xffC4B2A8),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10))),
-                          height: heightRow1 * 0.15,
+                          height: heightTopBar * 0.15,
                         ),
                       ),
                       Expanded(flex: 6, child: Container()),
                     ],
                   ),
                 ),
-                ////////////-----------------row2
-                _mangaInfoWidget(mangaInfoWidgetHeight, widget.comicBook),
+                _mangaInfoWidget(heightMangaInfoWidget, widget.comicBook),
                 _likeViewWidget(
-                    likeViewWidgetHeight, widget.comicBook, checkUserLogin),
-                _readAndFavouriteBtn(context, readFavouriteWidgetHeight,
+                    heightLikeViewWidget, widget.comicBook, checkUserLogin),
+                _readAndFavouriteBtn(context, heightReadFavouriteWidget,
                     widget.comicBook, checkUserLogin),
               ],
             );

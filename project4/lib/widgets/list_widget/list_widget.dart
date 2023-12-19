@@ -21,7 +21,6 @@ class ListWidget extends StatefulWidget {
 }
 
 class _ListWidgetState extends State<ListWidget> {
-  final PageController _pageController = PageController(viewportFraction: 0.95);
   final comicsRepository = GetIt.instance<ComicsRepository>();
   final interactComicRepository = GetIt.instance<InteractComicRepository>();
   
@@ -39,8 +38,7 @@ class _ListWidgetState extends State<ListWidget> {
       chunks.add(
           myList.sublist(i, i + 3 > myList.length ? myList.length : i + 3));
     }
-    return PageView.builder(
-      controller: _pageController,
+    return ListView.builder(
       itemCount: chunks.length,
       itemBuilder: (context, index) {
         // final comicBook = comicBooks[index];
@@ -50,9 +48,6 @@ class _ListWidgetState extends State<ListWidget> {
             children: [
               for (var comicBook in chunks[index])
                 itemPageView(context: context, comicBook: comicBook),
-              if (chunks[index].length < 3)
-                for (int i = chunks[index].length; i < 3; i++)
-                  Expanded(child: Container()),
             ],
           ),
         );

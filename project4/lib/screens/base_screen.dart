@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:project4/widgets/app_bar_widget.dart';
 import 'package:project4/widgets/bottom_bar_widget.dart';
-import 'package:project4/widgets/header_bar_widgeet.dart';
 
 import '../utils/constants.dart';
 
@@ -12,6 +12,7 @@ class BaseScreen extends StatefulWidget {
       this.setBottomBar = false,
       this.chooseBottomIcon = 0,
       this.setMoveUp = false});
+
   final int setAppBar;
   final Widget setBody;
   final bool setBottomBar;
@@ -49,51 +50,22 @@ class _BaseScreenState extends State<BaseScreen> {
   @override
   Widget build(BuildContext context) {
     Color colorTheme = const Color(0xFF080401);
-
     double heightHeadBottom = baseConstraints.maxHeight * 0.09;
 
-    /// base repo
-    ///
-    ///
-    ///
-
     return Scaffold(
-      backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-      /////////////////////////////////
-
-      body: Container(
-        //-----
-        color: colorTheme,
-
-        child: ListView(
-          controller: scrollController,
-          children: [
-            //appBar
-
-            HeaderBarWidget(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      appBar: CustomAppBar(),
+      //appBar
+      /*HeaderBarWidget(
               heightHead: heightHeadBottom,
               typeHeader: widget.setAppBar,
               padding: 10,
               colorTheme: colorTheme,
               baseConstraints: baseConstraints,
-            ), // SizedBox(
-            //   child: LayoutBuilder(
-            //     builder: (context, constraints) {
-            //       return ;
-            //     },
-            //   ),
-            // ),
-
-            //body
-            widget.setBody,
-          ],
-        ),
-      ),
-
-      ////////////////////////////////////
+            ),*/
+      body: widget.setBody,
       bottomNavigationBar: widget.setBottomBar
-          ? Container(
-              color: const Color.fromARGB(0, 0, 0, 0),
+          ? SizedBox(
               height: heightHeadBottom,
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -170,11 +142,9 @@ class _BaseScreenState extends State<BaseScreen> {
               ),
             )
           : null,
-      ///////////////////////////////
     );
   }
 }
-
 
 /////
 ///

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:project4/config/theme.dart';
 import 'package:project4/repositories/auth_repository.dart';
 import 'package:project4/repositories/chapter_repository.dart';
 import 'package:project4/repositories/comics_repository.dart';
@@ -61,16 +62,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        scaffoldBackgroundColor:
-            Colors.transparent, // Đặt màu nền của Scaffold là trong suốt
-        appBarTheme: AppBarTheme(
-          backgroundColor:
-              Colors.transparent, // Đặt màu nền của AppBar là trong suốt
-        ),
-      ),
+      // theme: ThemeData(
+      //   scaffoldBackgroundColor:
+      //       Colors.transparent, // Đặt màu nền của Scaffold là trong suốt
+      //   appBarTheme: AppBarTheme(
+      //     backgroundColor:
+      //         Colors.transparent, // Đặt màu nền của AppBar là trong suốt
+      //   ),
+      // ),
       debugShowCheckedModeBanner: false,
       title: 'Comic Reading App',
+      theme: ThemeApp.lightTheme,
+      darkTheme: ThemeApp.darkTheme,
       home: LayoutBuilder(
         builder: (context, constraints) {
           baseConstraints = constraints;

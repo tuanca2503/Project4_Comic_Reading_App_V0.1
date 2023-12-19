@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:project4/config/environment.dart';
 
 // import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:project4/models/comic/comic_book.dart';
+import 'package:project4/utils/util_func.dart';
 
 typedef void CallbackColor(Color color);
 typedef void CallBackConstraints(BoxConstraints constraints);
@@ -79,9 +81,6 @@ class BaseWidget {
     );
   }
 
-  ///
-
-  ///
   Widget setFutureBuilder(
       {required Function(dynamic) callback, required repo}) {
     return FutureBuilder(
@@ -98,7 +97,27 @@ class BaseWidget {
           // Using await here is allowed because it's inside an async function
         } else {
           print('ELSE: $snapshot');
-          return const Text('Unexpected ConnectionState');
+          return Container();
+        }
+      },
+    );
+  }
+
+  Widget setStreamBuilder(
+      {required Function(dynamic) callback, required StreamController streamController}) {
+    return StreamBuilder(
+      stream: streamController.stream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          debug('hasError: $snapshot');
+          return Text('Error: ${snapshot.error}');
+        } else if (snapshot.hasData) {
+          return callback(snapshot);
+        } else {
+          debug('ELSE setStreamBuilder: $snapshot');
+          return Container();
         }
       },
     );

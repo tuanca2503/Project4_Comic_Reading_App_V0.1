@@ -17,8 +17,10 @@ class ComicBook {
   int totalFavourite;
   String? currentReadChapterName;
   String? currentReadChapterId;
+
   //
   List<Genre> genres;
+
 //
   String author;
   String description;
@@ -28,6 +30,7 @@ class ComicBook {
 ///////////////////
 
   List<ChapterComicBook> listChapters = [];
+
   // List<String> listPart;
   // List<PartComicBook> partComicBook = [];
 
@@ -60,7 +63,7 @@ class ComicBook {
         currentReadChapterName = json['currentReadChapterName'],
         id = json['id'],
         title = json['title'],
-        coverImage = json['coverImage'].toString().replaceAll('-/', '/'),
+        coverImage = json['coverImage'],
         createdDate = json['createdDate'],
         lastUpdatedDate = json['lastUpdatedDate'],
         author = json['author'] ?? '',
@@ -85,7 +88,7 @@ class ComicBook {
           id: json['id'],
           title: json['title'],
           // title: utf8.decode(latin1.encode(json['title'])),
-          coverImage: json['coverImage'].toString().replaceAll('-/', '/'),
+          coverImage: json['coverImage'],
           createdDate:
               DateTime.fromMillisecondsSinceEpoch(json['createdDate']).year,
           lastUpdatedDate: json['lastUpdatedDate'],
@@ -201,12 +204,14 @@ class ComicBook {
 class Genre {
   String id;
   String genresName;
+
   Genre({this.id = '', this.genresName = ''});
 
   // Constructor từ JsonMap
   Genre.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         genresName = json['genresName'];
+
   List<Genre> getAllDataFromJson({required List<dynamic> jsons}) {
     List<Genre> datas = [];
     for (var json in jsons) {
@@ -255,6 +260,7 @@ class ChapterComicBook {
       this.lastUpdatedDate = '0',
       this.id = '',
       this.images = const []});
+
   ChapterComicBook setChapterFromJson({required Map<String, dynamic> json}) {
     return ChapterComicBook(
         id: json['id'],

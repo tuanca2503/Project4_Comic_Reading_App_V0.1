@@ -13,9 +13,9 @@ class ComicsRepository {
   ComicsRepository();
 
   Future<PageData<ComicBook>> getAllComics(
-      {String filter = 'CREATED_DATE'}) async {
+      {String filter = 'CREATED_DATE', int page = 0, int pageSize = 10}) async {
     final Response response = await dio.get(
-      '$_apiBase/free?filter=$filter',
+      '$_apiBase/free?filter=$filter&page=$page&pageSize=$pageSize',
     );
     // inspect(response);
     if (response.statusCode != 200) {

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:project4/config/theme.dart';
 import 'package:project4/utils/constants.dart';
 
 class User {
@@ -10,7 +11,6 @@ class User {
   bool isReceiveNotification;
 
   final List<Language> languages = Language().seed();
-  final List<ThemeApp> themeApp = ThemeApp().seed();
   Notification notification = Notification();
 
   User.empty()
@@ -18,17 +18,6 @@ class User {
         email = '',
         avatar = null,
         isReceiveNotification = false;
-
-  ThemeApp switchTheme({required bool choose}) {
-    ThemeApp data;
-    (themeApp.length == 2)
-        ? choose
-            ? data = themeApp[0]
-            : data = themeApp[1]
-        : data = themeApp[0];
-
-    return data;
-  }
 
   User.fromJson(Map<String, dynamic> json)
       : username = json['username'],
@@ -55,37 +44,9 @@ class Language {
   }
 }
 
-class ThemeApp {
-  final String themeName;
-  final Color backgroundColor;
-  final Color textColor;
-
-  /////
-  ThemeApp({
-    this.themeName = "",
-    this.backgroundColor = Colors.black,
-    this.textColor = Colors.white,
-  });
-
-  //
-  List<ThemeApp> seed() {
-    return [
-      ThemeApp(
-          themeName: 'Black',
-          backgroundColor: Colors.black,
-          textColor: Colors.white),
-      ThemeApp(
-          themeName: 'White',
-          backgroundColor: Colors.white,
-          textColor: Colors.black),
-    ];
-  }
-}
-
 class Notification {
   bool enabled;
   List<NotificationData> notificationDatas;
-
   Notification({
     this.enabled = true,
     this.notificationDatas = const [],
