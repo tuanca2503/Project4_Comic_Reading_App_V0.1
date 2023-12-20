@@ -53,7 +53,7 @@ class AuthRepository {
     }
   }
 
-  Future<void> registerUser(
+  Future<Response?> registerUser(
       {required String email,
       required String password,
       required String userName}) async {
@@ -68,8 +68,10 @@ class AuthRepository {
         debug("///ERROR at registerUser: ${response.data}///");
         throw Exception(response.data);
       }
+      return response;
     } catch (e) {
       debug("///ERROR at registerUser: $e///");
+      return null;
     }
   }
 

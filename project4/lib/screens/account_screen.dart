@@ -670,23 +670,27 @@ class _AccountScreenState extends State<AccountScreen> {
                             //
                             if (validMess is bool && validMess) {
                               try {
-                                await GetIt.instance<AuthRepository>()
-                                    .registerUser(
-                                        email: _email.text,
-                                        password: _password.text,
-                                        userName: _username.text);
-                                await GetIt.instance<AuthRepository>()
-                                    .loginUser(
-                                        email: _email.text,
-                                        password: _password.text);
-                                setState(() {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const HomeScreen(),
-                                    ),
-                                  );
-                                });
+                                dynamic response =
+                                    await GetIt.instance<AuthRepository>()
+                                        .registerUser(
+                                            email: _email.text,
+                                            password: _password.text,
+                                            userName: _username.text);
+                                if (response.statusCode == 200) {
+                                  await GetIt.instance<AuthRepository>()
+                                      .loginUser(
+                                          email: _email.text,
+                                          password: _password.text);
+                                  setState(() {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const HomeScreen(),
+                                      ),
+                                    );
+                                  });
+                                }
                               } catch (e) {
                                 setState(() {
                                   errorMess = "Email đã tồn tại";
@@ -1018,7 +1022,8 @@ class _AccountScreenState extends State<AccountScreen> {
                               child: Transform.scale(
                                 scale: 0.6,
                                 // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                                child: BaseWidget().setImageAsset('logo_google.png'),
+                                child: BaseWidget()
+                                    .setImageAsset('logo_google.png'),
                               ),
                             ),
                           ),
@@ -1037,7 +1042,8 @@ class _AccountScreenState extends State<AccountScreen> {
                               child: Transform.scale(
                                 scale: 0.4,
                                 // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                                child: BaseWidget().setImageAsset('logo_facebook.png'),
+                                child: BaseWidget()
+                                    .setImageAsset('logo_facebook.png'),
                               ),
                             ),
                           ),
@@ -1056,7 +1062,8 @@ class _AccountScreenState extends State<AccountScreen> {
                               child: Transform.scale(
                                 scale: 0.5,
                                 // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                                child: BaseWidget().setImageAsset('logo_apple.png'),
+                                child: BaseWidget()
+                                    .setImageAsset('logo_apple.png'),
                               ),
                             ),
                           ),
@@ -1075,7 +1082,8 @@ class _AccountScreenState extends State<AccountScreen> {
                               child: Transform.scale(
                                 scale: 0.6,
                                 // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                                child: BaseWidget().setImageAsset('logo_twitter.png'),
+                                child: BaseWidget()
+                                    .setImageAsset('logo_twitter.png'),
                               ),
                             ),
                           ),

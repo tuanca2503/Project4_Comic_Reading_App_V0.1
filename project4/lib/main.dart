@@ -24,7 +24,8 @@ Future<void> main() async {
   GetIt.instance
       .registerLazySingleton<ComicsRepository>(() => ComicsRepository());
   GetIt.instance.registerLazySingleton<AuthRepository>(() => AuthRepository());
-  GetIt.instance.registerLazySingleton<InteractComicRepository>(() => InteractComicRepository());
+  GetIt.instance.registerLazySingleton<InteractComicRepository>(
+      () => InteractComicRepository());
   GetIt.instance.registerLazySingleton<Dio>(() => Dio());
   GetIt.instance.registerLazySingleton<FlutterSecureStorage>(
       () => const FlutterSecureStorage());
@@ -97,11 +98,16 @@ class ScreenProvider with ChangeNotifier {
 
   bool showBoxSwitch = true;
   String? email = sharedPreferences.getString('email');
-
+  bool _showAllChapter = false;
   bool get isVisible => _isVisible;
 
   void toggleVisibility() {
     _isVisible = !_isVisible;
+    notifyListeners();
+  }
+
+  void toggleShowAllChapter() {
+    _showAllChapter = !_showAllChapter;
     notifyListeners();
   }
 

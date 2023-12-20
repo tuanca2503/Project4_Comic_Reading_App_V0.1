@@ -99,6 +99,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
     double ourRadius = 10;
     double scalePadding = 7;
     BorderRadius borderRadius = BorderRadius.all(Radius.circular(ourRadius));
+
     return Container(
       padding: BaseWidget().setLefRightPadding(pLR: 20),
       height: heightContentBox,
@@ -339,8 +340,17 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                               child: (myProvider
                                                                           .showPartDetailsScreen ==
                                                                       partComic)
-                                                                  ? BaseWidget().setIcon(iconData: Icons.arrow_drop_up, color: Colors.orange)
-                                                                  : BaseWidget().setIcon(iconData: Icons.arrow_drop_down, color: Colors.orange),
+                                                                  ? BaseWidget().setIcon(
+                                                                      iconData: Icons
+                                                                          .arrow_drop_up,
+                                                                      color: Colors
+                                                                          .orange)
+                                                                  : BaseWidget().setIcon(
+                                                                      iconData:
+                                                                          Icons
+                                                                              .arrow_drop_down,
+                                                                      color: Colors
+                                                                          .orange),
                                                             ),
                                                           ),
                                                         ],
@@ -421,6 +431,9 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                                                                     ),
                                                                     pageTo:
                                                                         ReadingScreen(
+                                                                      listChapterComicBook:
+                                                                          comicBook
+                                                                              .listChapters,
                                                                       chapterComicBook:
                                                                           valueChapterComic,
                                                                     ),

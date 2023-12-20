@@ -1,6 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:project4/models/app_valid.dart';
 import 'package:project4/repositories/auth_repository.dart';
+import 'package:project4/repositories/user_repository.dart';
 import 'package:project4/screens/base_screen.dart';
 import 'package:project4/utils/constants.dart';
 import 'package:project4/widgets/base_widget.dart';
@@ -52,12 +56,15 @@ class _AccountScreenState extends State<UserScreen> {
     create = screenWidth * 0.025;
   }
 
+  TextEditingController _username = TextEditingController();
+  bool _showUsernameField = false;
+  String errMess = '';
   ////
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
         chooseBottomIcon: 4,
-        setAppBar: 3,
+        setAppBar: 1,
         setBottomBar: true,
         setBody: chooseScreen
             ? _userSettingWidget(key: key, context: context)
@@ -69,10 +76,10 @@ class _AccountScreenState extends State<UserScreen> {
     double heightContentBox = baseConstraints.maxHeight * 0.37;
 
     return Container(
-      width: screenWidth,
-      height: screenHeight,
+      width: baseConstraints.maxWidth,
+      height: baseConstraints.maxHeight,
       padding: const EdgeInsets.all(10),
-      color: Colors.black,
+      // color: Colors.black,
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Column(
@@ -80,25 +87,26 @@ class _AccountScreenState extends State<UserScreen> {
               ///
               SizedBox(
                 height: heightBackgroundBox,
+                width: constraints.maxWidth,
                 child: Stack(
                   children: [
                     backgroundDetails(constraints: constraints),
                     blurBottomBackground(constraints: constraints),
                     ////////////////////background
                     boxDetailsComic(constraints: constraints),
-                    boxBotomBack(constraints: constraints),
+                    boxBotomBack(),
                   ],
                 ),
               ),
 
-              SizedBox(
-                height: heightContentBox,
-                child: Stack(
-                  children: [
-                    boxBottom(constraints: constraints),
-                  ],
-                ),
-              ),
+              // SizedBox(
+              //   height: heightContentBox,
+              //   child: Stack(
+              //     children: [
+              //       boxBottom(constraints: constraints),
+              //     ],
+              //   ),
+              // ),
 
               ///
             ],
@@ -111,9 +119,7 @@ class _AccountScreenState extends State<UserScreen> {
   }
 
 //////////////////////////////////////
-  Widget boxBotomBack({
-    required BoxConstraints constraints,
-  }) {
+  Widget boxBotomBack() {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -132,52 +138,50 @@ class _AccountScreenState extends State<UserScreen> {
   Widget boxBottom({
     required BoxConstraints constraints,
   }) {
-    return Column(
-      children: [
-        Expanded(
-          flex: 2,
-          child: SizedBox(
-            width: baseConstraints.maxWidth,
-            height: baseConstraints.maxHeight,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Truyện đang theo dõi',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: fontFour,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'Xem tất cả',
-                    style: TextStyle(
-                      color: const Color(0xffd1480b),
-                      fontSize: fontSize,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ],
+    return Container(
+      width: constraints.maxWidth,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Tên',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: const Color(0xffd6dbe2),
+              fontSize: fontFour,
             ),
           ),
-        ),
-        // hidden code
-        // Expanded(
-        //   flex: 8,
-        //   child: SizedBox(
-        //     height: 300,
-        //     child: ListWidget(
-        //       setList: 1,
-        //       comicBooks: ComicBook().Seed(),
-        //     ),
-        //   ),
-        // )
-      ],
+          const SizedBox(height: 8.0), // Add some vertical space
+          TextField(
+            controller: _username,
+            style: TextStyle(
+              color: const Color(0xffd6dbe2),
+              fontSize: fontSize,
+            ),
+            decoration: InputDecoration(
+              fillColor: const Color(0xff1f1b19),
+              filled: true,
+              hintStyle: TextStyle(
+                color: const Color(0xff49575e),
+                fontSize: fontSize,
+              ),
+              enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xFF242830),
+                  width: 1,
+                ),
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFF3b4149), width: 2),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 20,
+                horizontal: 20,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -188,107 +192,181 @@ class _AccountScreenState extends State<UserScreen> {
     return Positioned(
       bottom: 5,
       child: SizedBox(
-        width: baseConstraints.maxWidth,
-        height: baseConstraints.maxHeight * 0.4,
+        width: constraints.maxWidth,
+        height: constraints.maxHeight * 0.4,
         child: Column(
           children: [
             // Padding(
             //     padding: EdgeInsets.only(bottom: constraints.maxWidth * 0.15)),
             Expanded(
               flex: 5,
-              child: Align(
+              child: Container(
                 alignment: Alignment.center,
                 child: LayoutBuilder(builder: (ct, cs) {
-                  return Container(
-                    width: cs.maxHeight,
-                    height: cs.maxHeight,
-                    clipBehavior: Clip.hardEdge,
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(120))),
-                    child: getAvatarWidget(),
+                  double iconInAvatar = cs.maxHeight * 0.2;
+                  return GestureDetector(
+                    onTap: () {
+                      ///update avatar
+                      print('update avatar');
+                    },
+                    child: Container(
+                      width: cs.maxHeight,
+                      height: cs.maxHeight,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(shape: BoxShape.circle),
+                      child: Stack(
+                        children: [
+                          getAvatarWidget(),
+                          Positioned(
+                            bottom: 0,
+                            // left: cs.maxHeight / 2 - (iconInAvatar / 2),
+                            child: Container(
+                              color: Colors.black,
+                              width: cs.maxHeight,
+                              height: iconInAvatar,
+                              child: const Center(
+                                child: Icon(
+                                  Icons.camera,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   );
                 }),
               ),
             ),
+
             Expanded(
-              flex: 2,
-              child: Text(
-                sharedPreferences
-                    .getString(SharedPreferencesEnum.username.name)!,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: fontBack,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              flex: 1,
+              child: BaseWidget().setText(
+                  txt:
+                      'Email: ${sharedPreferences.getString(SharedPreferencesEnum.email.name)!.replaceRange(6, sharedPreferences.getString(SharedPreferencesEnum.email.name)!.length, '*' * (sharedPreferences.getString(SharedPreferencesEnum.email.name)!.length - 6))}',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w100),
             ),
             Expanded(
               flex: 3,
-              child: Row(children: [
-                Expanded(
-                  child: Container(
-                      child: Column(
-                    children: [
-                      Text(
-                        '43',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: fontFour,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const Text(
-                        'Người đăng ký',
-                        style: TextStyle(
-                          color: Color(0xff736b68),
-                        ),
-                      )
-                    ],
-                  )),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        '43',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: fontFour,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const Text(
-                        ' Manga đã đọc',
-                        style: TextStyle(
-                          color: Color(0xff736b68),
-                        ),
-                      )
-                    ],
+              child: Column(
+                children: [
+                  Visibility(
+                    visible: !_showUsernameField,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        BaseWidget().setText(
+                            txt: sharedPreferences.getString(
+                                SharedPreferencesEnum.username.name)!),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _showUsernameField = !_showUsernameField;
+                            });
+                          },
+                          child: const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Container(
-                      child: Column(
-                    children: [
-                      Text(
-                        '43',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: fontFour,
-                          fontWeight: FontWeight.bold,
+//
+                  Visibility(
+                    visible: _showUsernameField,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          child: TextField(
+                            controller: _username,
+                            style: TextStyle(
+                              color: const Color(0xffd6dbe2),
+                              fontSize: fontSize,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: sharedPreferences.getString(
+                                  SharedPreferencesEnum.username.name)!,
+                              fillColor: const Color(0xff1f1b19),
+                              filled: true,
+                              hintStyle: TextStyle(
+                                color: const Color(0xff49575e),
+                                fontSize: fontSize,
+                              ),
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0xFF242830),
+                                  width: 1,
+                                ),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xFF3b4149), width: 2),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 20,
+                                horizontal: 20,
+                              ),
+                              suffixIcon: TextButton(
+                                onPressed: () async {
+                                  if (AppValid(data: _username.text)
+                                      .isValidName) {
+                                    try {
+                                      await GetIt.instance<UserRepository>()
+                                          .updateUserInfo(
+                                              userName: _username.text);
+                                      setState(() {
+                                        _showUsernameField =
+                                            !_showUsernameField;
+                                      });
+                                    } catch (e) {
+                                      setState(() {
+                                        errMess = 'Hay nhap dung ten (5-50)';
+                                      });
+                                    }
+                                  } else {
+                                    setState(() {
+                                      errMess = 'Hay nhap dung ten (5-50)';
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      color: Colors.transparent,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(5))),
+                                  padding: const EdgeInsets.all(5),
+                                  child: Transform(
+                                    transform: Matrix4.identity(),
+                                    // ..rotateZ(-20 *
+                                    //     (3.14159265358979323846 /
+                                    //         180)) // Xoay 45 độ
+                                    // ..translate(-5, 0),
+                                    child: const Icon(
+                                      Icons.send, // Mã biểu tượng email
+                                      size: 20.0,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      const Text(
-                        'Người theo dõi',
-                        style: TextStyle(
-                          color: Color(0xff736b68),
+                        Positioned(
+                          bottom: -20,
+                          child: BaseWidget().setText(
+                              txt: errMess, color: Colors.red, fontSize: 15),
                         ),
-                      )
-                    ],
-                  )),
-                ),
-              ]),
-            )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -316,8 +394,8 @@ class _AccountScreenState extends State<UserScreen> {
     return Positioned(
       bottom: -1,
       child: Container(
-        width: baseConstraints.maxWidth,
-        height: baseConstraints.maxHeight,
+        width: constraints.maxWidth,
+        height: constraints.maxHeight,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             end: Alignment.bottomCenter,
@@ -337,19 +415,10 @@ class _AccountScreenState extends State<UserScreen> {
   Widget _userSettingWidget({required BuildContext context, bool key = false}) {
     return Container(
       width: baseConstraints.maxWidth,
-      height: screenHeight * 0.91,
+      height: screenHeight,
       padding: EdgeInsets.all(screenHeight * 0.03),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          colors: [
-            Color(0xff0b0704),
-            Color(0xff16110d),
-            Color(0xff1f1b19),
-          ],
-        ),
-      ),
-      child: ListView(children: [
+      color: const Color(0xFF080401),
+      child: Column(children: [
         SizedBox(
           width: baseConstraints.maxWidth,
           height: screenHeight * 0.06,
@@ -516,8 +585,8 @@ class _AccountScreenState extends State<UserScreen> {
                 child: SizedBox(
                   width: baseConstraints.maxWidth,
                   height: baseConstraints.maxHeight,
-                  child: BaseWidget()
-                      .setIcon(iconData: Icons.history, color: Colors.blueAccent),
+                  child: BaseWidget().setIcon(
+                      iconData: Icons.history, color: Colors.blueAccent),
                 )),
             Expanded(
                 flex: 6,
