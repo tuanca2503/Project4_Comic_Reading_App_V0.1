@@ -95,7 +95,7 @@ class ScreenProvider with ChangeNotifier {
 
   bool showBoxSwitch = true;
   String? email = sharedPreferences.getString('email');
-  bool _showAllChapter = false;
+  bool showAllChapter = false;
   bool get isVisible => _isVisible;
 
   void toggleVisibility() {
@@ -104,7 +104,7 @@ class ScreenProvider with ChangeNotifier {
   }
 
   void toggleShowAllChapter() {
-    _showAllChapter = !_showAllChapter;
+    showAllChapter = !showAllChapter;
     notifyListeners();
   }
 
