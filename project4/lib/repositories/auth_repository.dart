@@ -1,25 +1,31 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:project4/main.dart';
 import 'package:project4/repositories/user_repository.dart';
+import 'package:project4/utils/storages.dart';
 
 import '../config/environment.dart';
-import '../models/users/auth.dart';
-import '../utils/util_func.dart';
+import '../models/users/user_login_res.dart';
+import '../utils/helper.dart';
 
 class AuthRepository {
+  static AuthRepository? _instance;
+  AuthRepository._();
+
+  static AuthRepository get instance {
+    _instance ??= AuthRepository._();
+    return _instance!;
+  }
+
   final dio = GetIt.instance<Dio>();
   final String _apiBase = '${Environment.apiUrl}/api/auth';
-  final flutterSecureStorage = GetIt.instance<FlutterSecureStorage>();
-  final userRepository = GetIt.instance<UserRepository>();
+  final _storage = Storages.instance;
+  final userRepository = UserRepository.instance;
   final screenProvider = GetIt.instance<ScreenProvider>();
 
-  AuthRepository();
-
-  Future<Auth> loginUser(
+  Future<UserLoginRes> loginUser(
       {required String email, required String password}) async {
-    Auth auth = Auth();
+    UserLoginRes userLogin = UserLoginRes();
     try {
       final Response response = await dio.post('$_apiBase/free/login', data: {
         'email': email,
@@ -27,29 +33,31 @@ class AuthRepository {
       });
 
       if (response.statusCode != 200) {
-        debug(
+        Helper.debug(
             "///ERROR at loginUser with statusCode = ${response.statusCode}, error = ${response.data}///");
         throw Exception(response.data);
       }
-      auth = Auth.fromJson(response.data);
-      await updateTokenStorage(auth.accessToken, auth.refreshToken);
-      Map<String, dynamic> tokenPayload = convertJwtToken(auth.accessToken);
-      updateSharedPreferences(tokenPayload);
+      // save token and user info
+      userLogin = UserLoginRes.fromJson(response.data);
+      await _storage.setToken(userLogin.accessToken, userLogin.refreshToken);
+      await _storage.setUserLogin(userLogin);
 
-      screenProvider.updateUserInfo(tokenPayload['email']);
+      // notify to change bottom avatar
+      screenProvider.updateUserInfo(userLogin.email);
+      return userLogin;
     } catch (e) {
-      debug("///ERROR at loginUser(): $e///");
+      Helper.debug("///ERROR at loginUser(): $e///");
+      throw Exception(e);
     }
-    return auth;
   }
 
   Future<void> logout() async {
     try {
-      await flutterSecureStorage.deleteAll();
-      clearAllSharedPreferences();
+      await _storage.clearStorage();
       screenProvider.updateUserInfo(null);
     } catch (e) {
-      debug("///ERROR at logout(): $e///");
+      Helper.debug("///ERROR at logout(): $e///");
+      throw Exception(e);
     }
   }
 
@@ -65,13 +73,13 @@ class AuthRepository {
         'username': userName,
       });
       if (response.statusCode != 200) {
-        debug("///ERROR at registerUser: ${response.data}///");
+        Helper.debug("///ERROR at registerUser: ${response.data}///");
         throw Exception(response.data);
       }
       return response;
     } catch (e) {
-      debug("///ERROR at registerUser: $e///");
-      return null;
+      Helper.debug("///ERROR at registerUser: $e///");
+      throw Exception(e);
     }
   }
 
@@ -82,11 +90,12 @@ class AuthRepository {
         'email': email,
       });
       if (response.statusCode != 200) {
-        debug("///ERROR at forgotPassword: ${response.data}///");
+        Helper.debug("///ERROR at forgotPassword: ${response.data}///");
         throw Exception(response.data);
       }
     } catch (e) {
-      debug("///ERROR at forgotPassword: $e///");
+      Helper.debug("///ERROR at forgotPassword: $e///");
+      throw Exception(e);
     }
   }
 }

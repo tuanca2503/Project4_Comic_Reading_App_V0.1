@@ -1,53 +1,42 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:project4/config/theme.dart';
-import 'package:project4/repositories/auth_repository.dart';
-import 'package:project4/repositories/chapter_repository.dart';
-import 'package:project4/repositories/comics_repository.dart';
-import 'package:project4/repositories/interact_comic_repository.dart';
-import 'package:project4/repositories/user_repository.dart';
-import 'package:project4/screens/home_screen.dart';
-import 'package:project4/utils/constants.dart';
-import 'package:project4/utils/util_func.dart';
+import 'package:project4/config/app_theme.dart';
+import 'package:project4/models/users/user_login_res.dart';
+import 'package:project4/screens/main_screen.dart';
+import 'package:project4/utils/app_dimension.dart';
+import 'package:project4/utils/helper.dart';
+import 'package:project4/utils/storages.dart';
+import 'package:project4/utils/string_utils.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/http_interceptor.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  GetIt.instance.registerLazySingleton<UserRepository>(() => UserRepository());
-  GetIt.instance
-      .registerLazySingleton<ChapterRepository>(() => ChapterRepository());
-  GetIt.instance
-      .registerLazySingleton<ComicsRepository>(() => ComicsRepository());
-  GetIt.instance.registerLazySingleton<AuthRepository>(() => AuthRepository());
-  GetIt.instance.registerLazySingleton<InteractComicRepository>(
-      () => InteractComicRepository());
+  await Storages.initialize();
   GetIt.instance.registerLazySingleton<Dio>(() => Dio());
-  GetIt.instance.registerLazySingleton<FlutterSecureStorage>(
-      () => const FlutterSecureStorage());
-  // GetIt.instance.registerSingleton<SharedPreferences>(await SharedPreferences.getInstance());
   GetIt.instance.registerLazySingleton<ScreenProvider>(() => ScreenProvider());
 
-  sharedPreferences = await SharedPreferences.getInstance();
+  HttpInterceptor.instance.interceptor();
 
-  interceptor();
-
-  final flutterSecureStorage = GetIt.instance<FlutterSecureStorage>();
+  final storage = Storages.instance;
   final screenProvider = GetIt.instance<ScreenProvider>();
+  UserLoginRes? userLogin = storage.getUserLogin();
 
-  String? accessToken = await flutterSecureStorage.read(
-      key: FlutterSecureStorageEnum.accessToken.name);
-  if (checkStringIsNotEmpty(accessToken)) {
-    Map<String, dynamic> tokenPayload = convertJwtToken(accessToken!);
-    await updateSharedPreferences(tokenPayload);
-    screenProvider.updateUserInfo(tokenPayload['email']);
+  // Splash Screen
+  if (userLogin == null) {
+    String? accessToken = await storage.getAccessToken();
+    Helper.debug('accessToken = $accessToken');
+    if (accessToken.isHasText) {
+      // TODO get user info
+    }
+  } else {
+    // update BottomNavigatorWidget
+    Helper.debug('userLogin = ${userLogin.username}');
+    screenProvider.updateUserInfo(userLogin.email);
   }
 
-  // runApp(const MyApp());
   runApp(
     ChangeNotifierProvider(
       // create: (context) => ScreenProvider(),
@@ -62,33 +51,41 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // theme: ThemeData(
-      //   scaffoldBackgroundColor:
-      //       Colors.transparent, // Đặt màu nền của Scaffold là trong suốt
-      //   appBarTheme: AppBarTheme(
-      //     backgroundColor:
-      //         Colors.transparent, // Đặt màu nền của AppBar là trong suốt
-      //   ),
-      // ),
+    /*return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Comic Reading App',
-      theme: ThemeApp.lightTheme,
-      darkTheme: ThemeApp.darkTheme,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: Storages.instance.getDarkMode() ? ThemeMode.dark : ThemeMode.light,
       home: LayoutBuilder(
         builder: (context, constraints) {
-          baseConstraints = constraints;
-          return const HomeScreen();
+          AppDimension.baseConstraints = constraints;
+          return const MainScreen();
         },
       ),
-    );
+    );*/
+    return Consumer<ScreenProvider>(builder: (context, provider, child) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Comic Reading App',
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: Storages.instance.getDarkMode() ? ThemeMode.dark : ThemeMode.light,
+        home: LayoutBuilder(
+          builder: (context, constraints) {
+            AppDimension.baseConstraints = constraints;
+            return const MainScreen();
+          },
+        ),
+      );
+    });
   }
 }
 
 class ScreenProvider with ChangeNotifier {
   bool _isVisible = true;
+  bool isDarkMode = false;
 
-  //
   bool boxDetailDetailsScreen = false;
   bool boxChapterDetailsScreen = true;
 
@@ -96,9 +93,9 @@ class ScreenProvider with ChangeNotifier {
   bool buttonDetailsScreen = true;
   String showPartDetailsScreen = '';
 
-  bool showBoxSwitch = true;
-  String? email = sharedPreferences.getString('email');
+  String? email = Storages.instance.getUserLogin()?.email;
   bool showAllChapter = false;
+
   bool get isVisible => _isVisible;
 
   void toggleVisibility() {
@@ -114,6 +111,13 @@ class ScreenProvider with ChangeNotifier {
   void updateUserInfo(String? updateEmail) {
     email = updateEmail;
     notifyListeners();
+  }
+
+  void setIsDarkMode(bool darkMode) {
+    Storages.instance.setDarkMode(darkMode).then((value) {
+      isDarkMode = darkMode;
+      notifyListeners();
+    });
   }
 
   void toggleDetailsScreen({required int showButton}) {

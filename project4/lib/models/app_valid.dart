@@ -30,7 +30,7 @@ class AppValid {
   }
 
   bool get isValidName {
-    final nameRegExp = RegExp(r'^[a-zA-Z]{5,30}$');
+    final nameRegExp = RegExp(r'.{0,255}$');
     return nameRegExp.hasMatch(data);
   }
 

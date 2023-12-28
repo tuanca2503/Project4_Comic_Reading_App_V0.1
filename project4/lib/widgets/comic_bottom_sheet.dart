@@ -1,0 +1,165 @@
+import 'package:flutter/material.dart';
+import 'package:project4/models/comic/detail_comic.dart';
+import 'package:project4/repositories/comic_repository.dart';
+import 'package:project4/screens/details_comic_screen.dart';
+import 'package:project4/utils/helper.dart';
+import 'package:project4/widgets/custom/custom_button_widget.dart';
+import 'package:project4/widgets/interact_comic.dart';
+import 'package:project4/widgets/list_widget/list_genres_horizontal.dart';
+
+import '../utils/app_dimension.dart';
+import 'base_widget.dart';
+
+class ComicBottomSheet extends StatefulWidget {
+  final String id;
+
+  const ComicBottomSheet({Key? key, required this.id}) : super(key: key);
+
+  @override
+  State<ComicBottomSheet> createState() => _ComicBottomSheetState();
+}
+
+class _ComicBottomSheetState extends State<ComicBottomSheet> {
+  DetailComic? detailComic;
+
+  @override
+  void initState() {
+    super.initState();
+    ComicRepository.instance.getDetailsComics(id: widget.id).then((value) {
+      setState(() {
+        detailComic = value;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.7,
+      maxChildSize: 0.75,
+      minChildSize: 0.6,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.background,
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(AppDimension.dimension16),
+                topRight: Radius.circular(AppDimension.dimension16)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(AppDimension.dimension8),
+            color: Theme.of(context).colorScheme.surface,
+            child: detailComic == null
+                ? const Center(child: CircularProgressIndicator())
+                : _bottomSheetWidget(),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _bottomSheetWidget() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onSurface,
+            borderRadius: const BorderRadius.all(
+                Radius.circular(AppDimension.dimension8)),
+          ),
+          width: AppDimension.dimension64,
+          height: AppDimension.dimension4,
+        ),
+        _mangaInfoWidget(
+            AppDimension.baseConstraints.maxHeight * 0.3, detailComic!),
+        InteractComicWidget(
+          bgColor: Theme.of(context).colorScheme.surface,
+          iconColor: Theme.of(context).colorScheme.onSurface,
+          height: AppDimension.baseConstraints.maxHeight * 0.2,
+          detailComic: detailComic!,
+          textColor: Theme.of(context).colorScheme.onSurface,
+        ),
+        CustomButtonWidget(
+          onTap: () {
+            Helper.navigatorPush(
+                context: context,
+                screen: DetailsComicScreen(id: detailComic!.id));
+          },
+          text: "Đọc ngay",
+          bgColor: Theme.of(context).colorScheme.primary,
+          textColor: Theme.of(context).colorScheme.onPrimary,
+          fontSize: Theme.of(context).textTheme.titleMedium?.fontSize,
+        ),
+      ],
+    );
+  }
+
+  Widget _mangaInfoWidget(double height, DetailComic comic) {
+    return SizedBox(
+      height: height,
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Container(
+              height: double.infinity,
+              clipBehavior: Clip.hardEdge,
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(AppDimension.dimension8))),
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child:
+                    BaseWidget.instance.setImageNetwork(link: comic.coverImage),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Container(
+              padding: const EdgeInsets.only(left: AppDimension.dimension8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    comic.title,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize:
+                            Theme.of(context).textTheme.titleLarge?.fontSize),
+                  ),
+                  Text(
+                    "${comic.totalChapters} Chương",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize:
+                            Theme.of(context).textTheme.labelLarge?.fontSize),
+                  ),
+                  ListGenresHorizontal(
+                    genres: comic.genres,
+                    fontSize: Theme.of(context).textTheme.titleSmall?.fontSize,
+                    height: AppDimension.baseConstraints.maxHeight * 0.04,
+                    bgColor: Theme.of(context).colorScheme.surfaceVariant,
+                    textColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  Text(
+                    comic.description,
+                    style: TextStyle(
+                      fontSize:
+                          Theme.of(context).textTheme.titleMedium?.fontSize,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 5,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

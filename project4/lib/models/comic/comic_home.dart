@@ -1,9 +1,9 @@
-import 'package:project4/models/comic/comic_book.dart';
+import 'package:project4/models/comic/detail_comic.dart';
 
 class ComicHome {
-  List<ComicBook> topViewMangas;
-  List<ComicBook> topLikeMangas;
-  List<ComicBook> topFavouriteMangas;
+  List<DetailComic> topViewMangas;
+  List<DetailComic> topLikeMangas;
+  List<DetailComic> topFavouriteMangas;
 
   ComicHome.empty()
       : topViewMangas = List.empty(growable: false),
@@ -13,12 +13,12 @@ class ComicHome {
   // Constructor từ JsonMap
   ComicHome.fromJson(Map<String, dynamic> json)
       : topViewMangas = (json['topViewMangas'] as List)
-            .map((itemJson) => ComicBook.fromJson(itemJson))
+            .map((itemJson) => DetailComic.fromJson(itemJson))
             .toList(),
         topLikeMangas = (json['topLikeMangas'] as List)
-            .map((itemJson) => ComicBook.fromJson(itemJson))
+            .map((itemJson) => DetailComic.fromJson(itemJson))
             .toList(),
         topFavouriteMangas = (json['topFavouriteMangas'] as List)
-            .map((itemJson) => ComicBook.fromJson(itemJson))
+            .map((itemJson) => DetailComic.fromJson(itemJson))
             .toList();
 }

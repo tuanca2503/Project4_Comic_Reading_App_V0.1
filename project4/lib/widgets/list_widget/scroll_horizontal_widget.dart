@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:project4/models/comic/comic_book.dart';
+import 'package:project4/config/app_color.dart';
+import 'package:project4/models/comic/page_comic_item.dart';
+import 'package:project4/models/genres.dart';
+import 'package:project4/screens/details_comic_screen.dart';
+import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/widgets/base_widget.dart';
-import 'package:project4/widgets/list_widget/util_list_widget.dart';
+import 'package:project4/widgets/comic_bottom_sheet.dart';
 
 class ScrollHorizontalWidget extends StatefulWidget {
-  const ScrollHorizontalWidget({Key? key, required this.comicBooks}) : super(key: key);
-  final List<ComicBook> comicBooks;
+  const ScrollHorizontalWidget({Key? key, required this.comics})
+      : super(key: key);
+  final List<PageComicItem>? comics;
+
   @override
   State<ScrollHorizontalWidget> createState() => _ScrollHorizontalWidgetState();
 }
@@ -13,24 +19,27 @@ class ScrollHorizontalWidget extends StatefulWidget {
 class _ScrollHorizontalWidgetState extends State<ScrollHorizontalWidget> {
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: widget.comicBooks.length,
-        itemBuilder: (BuildContext context, int index) {
-          return _itemListView(
-              constraints: constraints, comicBook: widget.comicBooks[index]);
-        },
-      );
-      //////////////////////////////////
-      ///
-    });
+    return widget.comics != null
+        ? SizedBox(
+            height: 300,
+            child: LayoutBuilder(builder: (context, constraints) {
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: widget.comics!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return _itemListView(
+                      constraints: constraints, comic: widget.comics![index]);
+                },
+              );
+            }),
+          )
+        : const Center(child: CircularProgressIndicator());
   }
 
   Widget _itemListView(
-      {required BoxConstraints constraints, required ComicBook comicBook}) {
+      {required BoxConstraints constraints, required PageComicItem comic}) {
     return Container(
-      padding: BaseWidget().setLefRightPadding(pLR: 10),
+      padding: const EdgeInsets.symmetric(horizontal: AppDimension.dimension8),
       width: constraints.maxWidth / 2 - 10,
       height: constraints.maxHeight,
       child: Column(
@@ -44,10 +53,11 @@ class _ScrollHorizontalWidgetState extends State<ScrollHorizontalWidget> {
               width: double.infinity,
               child: FittedBox(
                 fit: BoxFit.cover,
-                child: myEventHandler(context: context,
-                    child: BaseWidget()
-                        .setImageNetwork(link: comicBook.coverImage),
-                    comicBook: comicBook),
+                child: myEventHandler(
+                    context: context,
+                    child: BaseWidget.instance
+                        .setImageNetwork(link: comic.coverImage),
+                    comic: comic),
               ),
             ),
           ),
@@ -55,8 +65,8 @@ class _ScrollHorizontalWidgetState extends State<ScrollHorizontalWidget> {
             flex: 1,
             child: Align(
               alignment: Alignment.centerLeft,
-              child: BaseWidget().setText(
-                  txt: "${comicBook.title} ",
+              child: BaseWidget.instance.setText(
+                  txt: "${comic.title} ",
                   fontSize: 18,
                   fontWeight: FontWeight.w100),
             ),
@@ -69,7 +79,7 @@ class _ScrollHorizontalWidgetState extends State<ScrollHorizontalWidget> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    for (Genre value in comicBook.genres)
+                    for (Genres value in comic.genres)
                       FittedBox(
                         fit: BoxFit.cover,
                         child: Container(
@@ -77,7 +87,7 @@ class _ScrollHorizontalWidgetState extends State<ScrollHorizontalWidget> {
                           padding: const EdgeInsets.all(3),
                           child: Align(
                             alignment: Alignment.center,
-                            child: BaseWidget().setText(
+                            child: BaseWidget.instance.setText(
                                 color: const Color(0xffD8d8d8),
                                 txt: value.genresName,
                                 fontSize: 6,
@@ -92,6 +102,34 @@ class _ScrollHorizontalWidgetState extends State<ScrollHorizontalWidget> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget myEventHandler(
+      {required BuildContext context,
+      required Widget child,
+      required PageComicItem comic}) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailsComicScreen(id: comic.id),
+          ),
+        );
+      },
+      onLongPress: () async {
+        showModalBottomSheet(
+          isScrollControlled: true,
+          isDismissible: true,
+          backgroundColor: Colors.transparent,
+          context: context,
+          builder: (BuildContext context) {
+            return ComicBottomSheet(id: comic.id);
+          },
+        );
+      },
+      child: child,
     );
   }
 }

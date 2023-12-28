@@ -1,414 +1,142 @@
 import 'package:flutter/material.dart';
-import 'package:project4/screens/base_screen.dart';
-import 'package:project4/utils/constants.dart';
+import 'package:project4/config/app_color.dart';
+import 'package:project4/models/genres.dart';
+import 'package:project4/widgets/base_widget.dart';
+import 'package:project4/widgets/title_app_widget.dart';
 
-class CategoryScreen extends StatelessWidget {
+import '../utils/app_dimension.dart';
+
+class CategoryScreen extends StatefulWidget {
   @override
-  const CategoryScreen({Key? key});
+  const CategoryScreen({
+    super.key,
+    required this.onSelectedFilterGenres,
+    required this.genresFilter,
+    required this.allGenres,
+  });
+
+  final void Function(List<Genres> genresFilter) onSelectedFilterGenres;
+  final List<Genres> genresFilter;
+  final List<Genres> allGenres;
+
+  @override
+  State<CategoryScreen> createState() => _CategoryScreenState();
+}
+
+class _CategoryScreenState extends State<CategoryScreen>
+    with AutomaticKeepAliveClientMixin<CategoryScreen> {
+  late List<Genres> _genres;
+  final ScrollController _scrollController = ScrollController();
+  late final List<Genres> _genresFilter;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _genresFilter = widget.genresFilter;
+    setState(() {
+      _genres = widget.allGenres;
+    });
+  }
+
+  void updateGenresFilter(Genres genres) {
+    setState(() {
+      if (_genresFilter.contains(genres)) {
+        _genresFilter.remove(genres);
+      } else {
+        _genresFilter.add(genres);
+      }
+    });
+    widget.onSelectedFilterGenres(_genresFilter);
+  }
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-    final fontSize = screenWidth * 0.03;
-    final fontFour = screenWidth * 0.04;
-    final fontBac = screenWidth * 0.02;
-    final fontBack = screenWidth * 0.05;
-    final create = screenWidth * 0.025;
-    final fontOne = screenWidth * 0.1;
+    super.build(context);
+    return _listGenresWidget();
+  }
 
-    return BaseScreen(
-      setBody: Container(
-        width: baseConstraints.maxWidth,
-        height: baseConstraints.maxHeight,
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            colors: [
-              Colors.white,
-              Colors.white,
-              Colors.white,
+  Widget _listGenresWidget() {
+    return SingleChildScrollView(
+      child: Container(
+        padding: AppDimension.initPaddingBody(),
+        child: Column(
+          children: [
+            const TitleAppWidget(
+              title: 'Danh sách thể loại',
+              // crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+            GridView.builder(
+              controller: _scrollController,
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              itemCount: _genres.length,
+              itemBuilder: (_, index) {
+                return _categoryItemWidget(
+                  context: context,
+                  genres: _genres[index],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _categoryItemWidget({
+    required BuildContext context,
+    required Genres genres,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        updateGenresFilter(genres);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(AppDimension.dimension8),
+        child: Container(
+          height: double.infinity,
+          color: Theme.of(context).colorScheme.surface,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: BaseWidget.instance.setImageNetwork(
+                  link: genres.genresImage!,
+                ),
+              ),
+              // overlay
+              Container(
+                decoration: BoxDecoration(
+                  color: _genresFilter.contains(genres) ? AppColor.overlayActive : AppColor.overlay,
+                  border: _genresFilter.contains(genres)
+                      ? Border.all(
+                          width: 3,
+                          color: Theme.of(context).colorScheme.primary,
+                        )
+                      : null,
+                ),
+                width: double.infinity,
+                height: double.infinity,
+              ),
+              Center(
+                child: Text(
+                  genres.genresName,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.onOverlay,
+                  ),
+                  maxLines: 3,
+                ),
+              )
             ],
           ),
         ),
-        child: Column(children: [
-          Container(
-              width: baseConstraints.maxWidth,
-              height: screenHeight * 0.2,
-              // decoration: BoxDecoration(
-              //   border: Border.all(width: 1, color: Colors.black),
-              // ),
-              child: Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Let us know!',
-                    style: TextStyle(
-                      fontSize: fontOne,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    'Choose your genre to find your favorite webtoon here!',
-                    style:
-                        TextStyle(fontSize: fontFour, color: Color(0xff999999)),
-                    textAlign: TextAlign.center,
-                  )
-                ],
-              ))),
-          Container(
-            width: baseConstraints.maxWidth,
-            height: screenHeight * 0.18,
-            // decoration: BoxDecoration(
-            //   border: Border.all(width: 1, color: Colors.black),
-            // ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(5), // Adjust the padding as needed
-                    child: Container(
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Color(0xFFeaecef)),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: screenHeight * 0.1,
-                            child: Transform.scale(
-                              scale: 0.5,
-                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                              child: Image.asset(
-                                  '/images/fire.png'), // Đường dẫn đến ảnh của bạn
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              'Action',
-                              style: TextStyle(fontSize: fontFour),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(5),
-                    child: Container(
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Color(0xFFeaecef)),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: screenHeight * 0.1,
-                            child: Transform.scale(
-                              scale: 0.5,
-                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                              child: Image.asset(
-                                  '/images/crying.png'), // Đường dẫn đến ảnh của bạn
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              'Drama',
-                              style: TextStyle(fontSize: fontFour),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(5),
-                    child: Container(
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Color(0xFFeaecef)),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: screenHeight * 0.1,
-                            child: Transform.scale(
-                              scale: 0.5,
-                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                              child: Image.asset(
-                                  '/images/ghost.png'), // Đường dẫn đến ảnh của bạn
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              'Horror',
-                              style: TextStyle(fontSize: fontFour),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: baseConstraints.maxWidth,
-            height: screenHeight * 0.18,
-            // decoration: BoxDecoration(
-            //   border: Border.all(width: 1, color: Colors.black),
-            // ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(5), // Adjust the padding as needed
-                    child: Container(
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Color(0xFFeaecef)),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: screenHeight * 0.1,
-                            child: Transform.scale(
-                              scale: 0.5,
-                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                              child: Image.asset(
-                                  '/images/heart.png'), // Đường dẫn đến ảnh của bạn
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              'Romance',
-                              style: TextStyle(fontSize: fontFour),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(5),
-                    child: Container(
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Color(0xFFeaecef)),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: screenHeight * 0.1,
-                            child: Transform.scale(
-                              scale: 0.5,
-                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                              child: Image.asset(
-                                  '/images/crown.png'), // Đường dẫn đến ảnh của bạn
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              'Western',
-                              style: TextStyle(fontSize: fontFour),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(5),
-                    child: Container(
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Color(0xFFeaecef)),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: screenHeight * 0.1,
-                            child: Transform.scale(
-                              scale: 0.5,
-                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                              child: Image.asset(
-                                  '/images/unicorn.png'), // Đường dẫn đến ảnh của bạn
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              'Fantasy',
-                              style: TextStyle(fontSize: fontFour),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: baseConstraints.maxWidth,
-            height: screenHeight * 0.18,
-            // decoration: BoxDecoration(
-            //   border: Border.all(width: 1, color: Colors.black),
-            // ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(5), // Adjust the padding as needed
-                    child: Container(
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Color(0xFFeaecef)),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: screenHeight * 0.1,
-                            child: Transform.scale(
-                              scale: 0.5,
-                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                              child: Image.asset(
-                                  '/images/laughing.png'), // Đường dẫn đến ảnh của bạn
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              'Parody',
-                              style: TextStyle(fontSize: fontFour),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(5),
-                    child: Container(
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Color(0xFFeaecef)),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: screenHeight * 0.1,
-                            child: Transform.scale(
-                              scale: 0.5,
-                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                              child: Image.asset(
-                                  '/images/magic-ball.png'), // Đường dẫn đến ảnh của bạn
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              'Magic',
-                              style: TextStyle(fontSize: fontFour),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(5),
-                    child: Container(
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Color(0xFFeaecef)),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: screenHeight * 0.1,
-                            child: Transform.scale(
-                              scale: 0.5,
-                              // Đặt tỉ lệ thu nhỏ hình ảnh (0.7 là 70% kích thước gốc)
-                              child: Image.asset(
-                                  '/images/mistery.png'), // Đường dẫn đến ảnh của bạn
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              'Mistery',
-                              style: TextStyle(fontSize: fontFour),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: baseConstraints.maxWidth,
-            height: screenHeight * 0.07,
-            // decoration: BoxDecoration(
-            //   border: Border.all(width: 1, color: Colors.black),
-            // ),
-          ),
-          Container(
-            width: screenWidth * 0.6,
-            height: screenHeight * 0.07,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Color(0xFFf48611),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Center(
-                child: Text(
-                  'Continue',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xffd6dbe2),
-                    fontSize: fontFour,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Container(
-            width: baseConstraints.maxWidth,
-            height: screenHeight * 0.07,
-            child: Center(
-                child: Text(
-              'Skip for now',
-              style: TextStyle(color: Color(0xff8e8e8e)),
-            )),
-          )
-        ]),
       ),
     );
   }

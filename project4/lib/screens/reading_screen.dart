@@ -1,83 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:project4/config/environment.dart';
 import 'package:project4/main.dart';
-import 'package:project4/models/comic/comic_book.dart';
+import 'package:project4/models/comic/chapter/chapter_detail.dart';
+import 'package:project4/models/comic/chapter/page_chapter_item.dart';
 import 'package:project4/repositories/chapter_repository.dart';
-import 'package:project4/screens/base_screen.dart';
+import 'package:project4/utils/helper.dart';
 import 'package:project4/widgets/base_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../utils/constants.dart';
+import '../utils/app_dimension.dart';
 
 class ReadingScreen extends StatefulWidget {
   const ReadingScreen(
-      {super.key,
-      required this.chapterComicBook,
-      required this.listChapterComicBook});
+      {super.key, required this.chapterId, required this.chapterList});
 
-  final ChapterComicBook chapterComicBook;
-  final List<ChapterComicBook> listChapterComicBook;
+  final String chapterId;
+  final List<PageChapterItem> chapterList;
 
   @override
   State<ReadingScreen> createState() => _ReadingScreenState();
 }
 
 class _ReadingScreenState extends State<ReadingScreen> {
+  ChapterDetail? chapterDetail;
+
   @override
   void initState() {
     super.initState();
-    double screenWidth = baseConstraints.maxWidth;
-    fontSize = screenWidth * 0.03;
-    fontFour = screenWidth * 0.04;
-    fontBac = screenWidth * 0.02;
-    fontBack = screenWidth * 0.05;
-    create = screenWidth * 0.025;
-    _chapterComicBook = widget.chapterComicBook;
+    ChapterRepository.instance.getChapterComic(id: widget.chapterId).then((value) {
+      setState(() {
+        chapterDetail = value;
+      });
+    });
   }
-
-  double? fontSize;
-  double? fontFour;
-  double? fontBac;
-  double? fontBack;
-  double? create;
 
   bool showBars = true;
 
-  ChapterComicBook _chapterComicBook = ChapterComicBook();
   final ScrollController _readingScroll = ScrollController();
 
-////////////////////////////////////////
   void scrollToItem({required int index}) {
     try {
-      if (_readingScroll.hasClients && _readingScroll.position != null) {
+      if (_readingScroll.hasClients) {
         _readingScroll.animateTo(index * 21.9,
-            duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut);
       }
     } catch (e) {
       print(e);
     }
   }
 
-//scrollToItem(index: currentChapter);
-////////////////////////////////////
   @override
   Widget build(BuildContext context) {
-    return BaseScreen(
-      setBody: BaseWidget().setFutureBuilder(
-        callback: (snapshot) {
-          return bodyReadingScreen(chapterComicBook: snapshot.data);
-        },
-        repo: GetIt.instance<ChapterRepository>()
-            .getChapterComic(chapter: _chapterComicBook),
-      ),
+    return Scaffold(
+      body: chapterDetail == null
+          ? BaseWidget.instance.loadingWidget()
+          : bodyReadingScreen(),
     );
   }
 
-  Widget bodyReadingScreen({required ChapterComicBook chapterComicBook}) {
-    double heightHeadBott = baseConstraints.maxHeight * 0.08;
-    // print(chapterComicBook.images.length);
-    // final visibilityProvider = context.read<VisibilityProvider>();
+  Widget bodyReadingScreen() {
+    double heightHeadBott = AppDimension.baseConstraints.maxHeight * 0.08;
 
     return Consumer<ScreenProvider>(
       builder: (context, visibilityProvider, child) {
@@ -88,14 +71,14 @@ class _ReadingScreenState extends State<ReadingScreen> {
                 visibilityProvider.toggleVisibility();
               },
               child: SizedBox(
-                height: baseConstraints.maxHeight,
-                width: baseConstraints.maxWidth,
+                height: AppDimension.baseConstraints.maxHeight,
+                width: AppDimension.baseConstraints.maxWidth,
                 child: ListView.builder(
-                  itemCount: chapterComicBook.images.length,
+                  itemCount: chapterDetail!.images.length,
                   itemBuilder: (context, index) {
                     return IntrinsicHeight(
                       child: Image.network(
-                          '${Environment.apiUrl}/${chapterComicBook.images[index]}'),
+                          '${Environment.apiUrl}/${chapterDetail!.images[index]}'),
                     );
                   },
                 ),
@@ -135,31 +118,30 @@ class _ReadingScreenState extends State<ReadingScreen> {
   Widget headerBar({
     required heightHeadBott,
   }) {
-    return Container(
-      color: BaseWidget().setColorBlack(),
+    return SizedBox(
       height: heightHeadBott,
       child: Row(
         children: [
           Expanded(
             flex: 1,
-            child: BaseWidget().handleEventBackNavigation(
-                child: SizedBox(
-                  height: heightHeadBott,
-                  child: Transform.scale(
-                    scale: 1,
-                    child:
-                        BaseWidget().setIcon(iconData: Icons.navigate_before),
-                  ),
+            child: GestureDetector(
+              onTap: () {
+                Helper.navigatorPop(context);
+              },
+              child: SizedBox(
+                height: heightHeadBott,
+                child: Transform.scale(
+                  scale: 1,
+                  child: BaseWidget.instance
+                      .setIcon(iconData: Icons.navigate_before),
                 ),
-                context: context),
+              ),
+            ),
           ),
           Expanded(
             flex: 8,
             child: Container(),
           ),
-///////
-
-          /////
           Expanded(
             flex: 1,
             child: Container(),
@@ -170,14 +152,12 @@ class _ReadingScreenState extends State<ReadingScreen> {
   }
 
   Widget bottomBar({required heightHeadBott}) {
-    int currentChapter = widget.listChapterComicBook
-        .indexWhere((item) => item.id == _chapterComicBook.id);
-    int totalChapter = widget.listChapterComicBook.length - 1;
+    // TODO update current chapter
+    int currentChapter = 1;
+    int totalChapter = widget.chapterList.length - 1;
     double heightListChapter = heightHeadBott * 6;
     double heightItemChapter = heightListChapter * 0.12;
 
-    ///
-    ////
     return Consumer<ScreenProvider>(builder: (context, provider, child) {
       return Container(
         color: Colors.transparent,
@@ -190,10 +170,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
             Positioned(
               bottom: 0,
               child: Container(
-                padding: EdgeInsets.all(5),
-                color: BaseWidget().setColorBlack(),
+                padding: const EdgeInsets.all(AppDimension.dimension8),
                 height: heightHeadBott,
-                width: baseConstraints.maxWidth,
+                width: AppDimension.baseConstraints.maxWidth,
                 child: Row(
                   children: [
                     Expanded(
@@ -204,9 +183,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
                             ? GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    _chapterComicBook =
-                                        widget.listChapterComicBook[
-                                            currentChapter - 1];
+                                    // TODO
+                                    // _chapterComicBook =
+                                    //     widget.chapters[
+                                    //         currentChapter - 1];
                                   });
                                 },
                                 child: Row(
@@ -214,14 +194,13 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                   children: [
                                     Transform.scale(
                                       scale: 0.8,
-                                      child: BaseWidget()
+                                      child: BaseWidget.instance
                                           .setIcon(iconData: Icons.arrow_back),
                                     ),
                                     Text(
                                       'Trước',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: fontFour,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     )
@@ -241,10 +220,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              _chapterComicBook.name,
+                              chapterDetail!.chapterName,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: fontFour,
                                 fontWeight: FontWeight.bold,
                               ),
                               textAlign: TextAlign.center,
@@ -268,9 +246,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
                             ? GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    _chapterComicBook =
-                                        widget.listChapterComicBook[
-                                            currentChapter + 1];
+                                    // TODO
+                                    // _chapterComicBook =
+                                    //     widget.chapters[
+                                    //         currentChapter + 1];
                                   });
                                 },
                                 child: Row(
@@ -280,13 +259,12 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                       'Sau',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: fontFour,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Transform.scale(
                                       scale: 0.8,
-                                      child: BaseWidget().setIcon(
+                                      child: BaseWidget.instance.setIcon(
                                           iconData: Icons.arrow_forward),
                                     ),
                                   ],
@@ -301,8 +279,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
             ),
             provider.showAllChapter
                 ? Positioned(
-                    left: baseConstraints.maxWidth / 2 -
-                        (baseConstraints.maxWidth / 4),
+                    left: AppDimension.baseConstraints.maxWidth / 2 -
+                        (AppDimension.baseConstraints.maxWidth / 4),
                     top: 1,
                     child: Container(
                       padding: EdgeInsets.only(top: 10, left: 10, right: 10),
@@ -313,45 +291,44 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                   Radius.circular(heightListChapter * 0.02),
                               topRight:
                                   Radius.circular(heightListChapter * 0.02))),
-                      width: baseConstraints.maxWidth / 2,
+                      width: AppDimension.baseConstraints.maxWidth / 2,
                       height: heightListChapter,
                       child: ListView.builder(
                         controller: _readingScroll,
-                        itemCount: widget.listChapterComicBook.length,
+                        itemCount: widget.chapterList.length,
                         itemBuilder: (cont, index) {
                           return GestureDetector(
                             onTap: () {
                               setState(() {
-                                _chapterComicBook =
-                                    widget.listChapterComicBook[index];
+                                // TODO
+                                // _chapterComicBook =
+                                //     widget.chapters[index];
                               });
                               scrollToItem(index: currentChapter);
                             },
                             child: Container(
                               margin: const EdgeInsets.only(bottom: 8),
                               decoration: BoxDecoration(
-                                color: (widget.listChapterComicBook[index].id ==
-                                        _chapterComicBook.id)
+                                color: (widget.chapterList[index].id ==
+                                        chapterDetail!.id)
                                     ? Colors.orange
                                     : null,
                                 borderRadius: BorderRadius.all(
                                     Radius.circular(heightListChapter * 0.02)),
-                                border:
-                                    (widget.listChapterComicBook[index].id ==
-                                            _chapterComicBook.id)
-                                        ? null
-                                        : const Border(
-                                            bottom: BorderSide(
-                                                width: 1, color: Colors.white),
-                                          ),
+                                border: (widget.chapterList[index].id ==
+                                        chapterDetail!.id)
+                                    ? null
+                                    : const Border(
+                                        bottom: BorderSide(
+                                            width: 1, color: Colors.white),
+                                      ),
                               ),
                               height: heightItemChapter,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  BaseWidget().setText(
-                                      txt: widget
-                                          .listChapterComicBook[index].name,
+                                  BaseWidget.instance.setText(
+                                      txt: widget.chapterList[index].name,
                                       fontSize: 15,
                                       fontWeight: FontWeight.w100)
                                 ],
