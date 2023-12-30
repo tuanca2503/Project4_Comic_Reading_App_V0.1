@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:project4/config/environment.dart';
+import 'package:project4/models/users/update_user.dart';
 import 'package:project4/models/users/user.dart';
+import 'package:project4/utils/helper.dart';
 
-import '../config/environment.dart';
-import '../utils/helper.dart';
 
 class UserRepository {
   static UserRepository? _instance;
@@ -18,7 +19,6 @@ class UserRepository {
   final String _apiBase = '${Environment.apiUrl}/api/user';
 
   Future<User> getUserInfo() async {
-    User user = User.empty();
     try {
       final Response response = await dio.get(
         '$_apiBase/get-information',
@@ -27,7 +27,7 @@ class UserRepository {
         Helper.debug("///ERROR getUserInfo: ${response.data}///");
         throw Exception(response.data);
       }
-      user = User.fromJson(response.data);
+      User user = User.fromJson(response.data);
       return user;
     } catch (e) {
       Helper.debug("///ERROR getUserInfo: $e///");
@@ -35,12 +35,10 @@ class UserRepository {
     }
   }
 
-  Future<void> updateUserInfo({required String userName}) async {
+  Future<void> updateUserInfo({required UpdateUser user}) async {
     try {
       final Response response =
-          await dio.post('$_apiBase/update-information', data: {
-        'username': userName,
-      });
+          await dio.post('$_apiBase/update-information', data: user);
       if (response.statusCode != 200) {
         Helper.debug("///ERROR at updateUserInfo: ${response.data}///");
         throw Exception(response.data);

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:project4/config/app_color.dart';
+import 'package:project4/config/app_font_size.dart';
 import 'package:project4/models/genres.dart';
+import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/widgets/base_widget.dart';
 import 'package:project4/widgets/title_app_widget.dart';
 
-import '../utils/app_dimension.dart';
 
 class CategoryScreen extends StatefulWidget {
   @override
@@ -127,7 +128,7 @@ class _CategoryScreenState extends State<CategoryScreen>
                   genres.genresName,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
+                    fontSize: AppFontSize.headline2,
                     fontWeight: FontWeight.bold,
                     color: AppColor.onOverlay,
                   ),

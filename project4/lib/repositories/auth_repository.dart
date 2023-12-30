@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:project4/config/environment.dart';
 import 'package:project4/main.dart';
+import 'package:project4/models/users/user.dart';
+import 'package:project4/models/users/user_login_res.dart';
 import 'package:project4/repositories/user_repository.dart';
+import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/storages.dart';
 
-import '../config/environment.dart';
-import '../models/users/user_login_res.dart';
-import '../utils/helper.dart';
 
 class AuthRepository {
   static AuthRepository? _instance;
@@ -40,7 +41,7 @@ class AuthRepository {
       // save token and user info
       userLogin = UserLoginRes.fromJson(response.data);
       await _storage.setToken(userLogin.accessToken, userLogin.refreshToken);
-      await _storage.setUserLogin(userLogin);
+      await _storage.setUser(User.fromUserLogin(userLogin));
 
       // notify to change bottom avatar
       screenProvider.updateUserInfo(userLogin.email);

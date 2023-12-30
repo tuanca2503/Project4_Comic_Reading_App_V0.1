@@ -35,7 +35,7 @@ class ListGenresHorizontal extends StatelessWidget {
               margin: const EdgeInsets.only(right: AppDimension.dimension8),
               child: Align(
                 alignment: Alignment.center,
-                child: Text(genres[index].genresName, style: TextStyle(fontSize: fontSize, color: textColor),),
+                child: Text(genres[index].genresName, style: TextStyle(fontSize: fontSize, color: textColor, fontWeight: FontWeight.w500),),
               ),
             ),
           );

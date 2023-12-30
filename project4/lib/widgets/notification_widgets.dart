@@ -135,7 +135,7 @@ class _RankFollowScreen extends State<NotificationWidget> {
                                     padding: EdgeInsets.all(8),
                                     child: CircleAvatar(
                                       backgroundColor: isRead
-                                          ? Colors.transparent
+                                          ? AppColor.transparent
                                           : Colors.blue,
                                     ),
                                   )

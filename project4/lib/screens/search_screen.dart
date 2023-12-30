@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:project4/config/app_font_size.dart';
 import 'package:project4/models/comic/filter_comic.dart';
 import 'package:project4/models/genres.dart';
 import 'package:project4/repositories/genres_repository.dart';
 import 'package:project4/screens/category_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
+import 'package:project4/widgets/app/custom_text_form_field.dart';
 import 'package:project4/widgets/base_widget.dart';
-import 'package:project4/widgets/custom/custom_text_form_field.dart';
-import 'package:project4/widgets/list_widget/list_genres_horizontal.dart';
-import 'package:project4/widgets/list_widget/scroll_page_widget.dart';
+import 'package:project4/widgets/comic/list_widget/list_genres_horizontal.dart';
+import 'package:project4/widgets/comic/list_widget/scroll_page_widget.dart';
 import 'package:project4/widgets/title_app_widget.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -114,7 +115,7 @@ class _SearchScreenState extends State<SearchScreen>
         _genresFilter.isNotEmpty
             ? ListGenresHorizontal(
                 bgColor: Theme.of(context).colorScheme.surface,
-                fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
+                fontSize: AppFontSize.headline3,
                 genres: _genresFilter,
                 height: AppDimension.baseConstraints.maxHeight * 0.05,
                 textColor: Theme.of(context).colorScheme.onSurface,

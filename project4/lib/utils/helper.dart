@@ -1,12 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:project4/config/environment.dart';
-import 'package:project4/models/users/user_login_res.dart';
-import 'package:project4/utils/storages.dart';
-import 'package:project4/utils/string_utils.dart';
-
-import '../widgets/base_widget.dart';
+import 'package:project4/config/app_color.dart';
 
 class Helper {
   Helper._();
@@ -39,9 +33,12 @@ class Helper {
   static void showErrorSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message, style: TextStyle(color: Theme.of(context).colorScheme.onSurface),),
+        content: Text(
+          message,
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        ),
         action: null,
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: AppColor.error,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -50,9 +47,12 @@ class Helper {
   static void showSuccessSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message, style: TextStyle(color: Theme.of(context).colorScheme.onSurface),),
+        content: Text(
+          message,
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        ),
         action: null,
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: AppColor.success,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -62,5 +62,18 @@ class Helper {
     if (kDebugMode) {
       print(body);
     }
+  }
+
+  static String? showTimeUpdatedComic(int lastUpdatedDate) {
+    int currentTs = DateTime.now().millisecondsSinceEpoch;
+    int gapTime = ((currentTs - lastUpdatedDate) / 1000).round();
+    if (gapTime < 60 * 60) {
+      return '${(gapTime/60).round()} phút trước';
+    } else if (gapTime < 60 * 60 * 24) {
+      return '${(gapTime/60 / 60).round()} giờ trước';
+    } else if (gapTime < 60 * 60 * 24 * 30) {
+      return '${(gapTime/60 / 60 / 24).round()} ngày trước';
+    }
+    return null;
   }
 }

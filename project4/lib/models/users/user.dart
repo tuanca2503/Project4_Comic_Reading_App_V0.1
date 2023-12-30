@@ -1,20 +1,25 @@
-class User {
-  String username;
-  String email;
-  String? avatar;
-  bool isReceiveNotification;
+import 'package:project4/models/users/user_login_res.dart';
 
-  User.empty()
-      : username = '',
-        email = '',
-        avatar = null,
-        isReceiveNotification = false;
+class User {
+  String? id;
+  String? username;
+  String? email;
+  String? avatar;
+  bool? isReceiveNotification;
 
   User.fromJson(Map<String, dynamic> json)
-      : username = json['username'],
+      : id = json['id'],
+        username = json['username'],
         email = json['email'],
         avatar = json['avatar'],
         isReceiveNotification = json['isReceiveNotification'] ?? false;
+
+  User.fromUserLogin(UserLoginRes userLogin)
+      : id = userLogin.userId,
+        username = userLogin.username,
+        email = userLogin.email,
+        avatar = userLogin.avatar,
+        isReceiveNotification = userLogin.isReceiveNotification ?? false;
 
   Map<String, dynamic> toJson() => {
         "username": username,

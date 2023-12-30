@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project4/models/comic/page_comic_item.dart';
 import 'package:project4/utils/storages.dart';
-import 'package:project4/widgets/list_widget/item_comic_widget.dart';
+import 'package:project4/widgets/comic/list_widget/item_comic_widget.dart';
 
 class ListWidget extends StatefulWidget {
   ListWidget({super.key, required this.comics});

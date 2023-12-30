@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:project4/config/app_color.dart';
+import 'package:project4/config/app_font_size.dart';
 import 'package:project4/config/environment.dart';
 import 'package:project4/models/comic/chapter/page_chapter_item.dart';
 import 'package:project4/models/comic/detail_comic.dart';
+import 'package:project4/repositories/comic_repository.dart';
 import 'package:project4/screens/reading_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
+import 'package:project4/utils/custom_date_utils.dart';
 import 'package:project4/utils/helper.dart';
+import 'package:project4/widgets/app/custom_app_bar.dart';
 import 'package:project4/widgets/base_widget.dart';
-import 'package:project4/widgets/custom/custom_app_bar.dart';
-import 'package:project4/widgets/interact_comic.dart';
-import 'package:project4/widgets/list_widget/list_genres_horizontal.dart';
+import 'package:project4/widgets/comic/list_widget/list_genres_horizontal.dart';
+import 'package:project4/widgets/comic/interact_comic.dart';
 
-import '../repositories/comic_repository.dart';
-import '../utils/custom_date_utils.dart';
 
 class DetailsComicScreen extends StatefulWidget {
   const DetailsComicScreen({super.key, required this.id, this.showButton = 0});
@@ -56,7 +57,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
           : Column(
               children: [
                 Expanded(flex: 55, child: _coverImageContainerWidget()),
-                Expanded(flex: 45, child: _tabWidget())
+                Expanded(flex: 45, child: _tabWidget()),
               ],
             ),
     );
@@ -95,15 +96,18 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
           children: [
             Container(
               alignment: Alignment.center,
-              child: Text(
-                _detailComic!.title,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize:
-                      Theme.of(context).textTheme.headlineMedium?.fontSize,
-                  color: Theme.of(context).colorScheme.primary,
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  _detailComic!.title,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize:
+                        AppFontSize.headline1,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ),
             ),
@@ -115,7 +119,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
               child: Text(
                 'Tác giả: ${_detailComic!.author}',
                 style: TextStyle(
-                  fontSize: Theme.of(context).textTheme.titleMedium?.fontSize,
+                  fontSize: AppFontSize.label,
                   color: AppColor.onOverlay,
                 ),
               ),
@@ -125,12 +129,15 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
             ),
             Container(
               alignment: Alignment.center,
-              child: Text(
-                "Thời gian tải lên - ${CustomDateUtils.formatDateFromTs(_detailComic!.createdDate)}",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: Theme.of(context).textTheme.titleMedium?.fontSize,
-                  color: AppColor.onOverlay,
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "Thời gian tải lên - ${CustomDateUtils.formatDateFromTs(_detailComic!.createdDate)}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: AppFontSize.label,
+                    color: AppColor.onOverlay,
+                  ),
                 ),
               ),
             ),
@@ -140,7 +147,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
             ListGenresHorizontal(
               genres: _detailComic!.genres,
               height: AppDimension.dimension32,
-              fontSize: Theme.of(context).textTheme.titleSmall?.fontSize,
+              fontSize: AppFontSize.label,
               bgColor: Theme.of(context).colorScheme.secondary,
               textColor: Theme.of(context).colorScheme.onSecondary,
             ),
@@ -151,7 +158,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
               bgColor: AppColor.transparent,
               borderColor: Theme.of(context).colorScheme.primary,
               iconColor: Theme.of(context).colorScheme.background,
-              height: AppDimension.baseConstraints.maxHeight * 0.2,
+              height: AppFontSize.headline1 * 4,
               detailComic: _detailComic!,
               textColor: Theme.of(context).colorScheme.background,
             ),
@@ -179,19 +186,19 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
               ]),
             ),
             child: SizedBox(
-              height: Theme.of(context).textTheme.headlineLarge?.fontSize,
+              height: AppFontSize.headline1,
               child: TabBar(
                 labelColor: Theme.of(context).colorScheme.tertiary,
                 unselectedLabelColor: Theme.of(context).colorScheme.onTertiary,
                 indicatorSize: TabBarIndicatorSize.tab,
-                indicatorColor: Colors.transparent,
+                indicatorColor: AppColor.transparent,
                 isScrollable: true,
                 tabAlignment: TabAlignment.start,
-                dividerColor: Colors.transparent,
+                dividerColor: AppColor.transparent,
                 indicator: BoxDecoration(
                     borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
+                        topLeft: Radius.circular(AppDimension.dimension8),
+                        topRight: Radius.circular(AppDimension.dimension8),),
                     color: Theme.of(context).colorScheme.background),
                 tabs: _tabs,
               ),
@@ -222,7 +229,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
         child: Text(
           _detailComic!.description,
           style: TextStyle(
-              fontSize: Theme.of(context).textTheme.titleMedium?.fontSize),
+              fontSize: AppFontSize.body),
         ),
       ),
     );
@@ -247,6 +254,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
         setState(() {
           _isSortDesc = !_isSortDesc;
         });
+        _detailComic!.chapters = _detailComic!.chapters.reversed.toList();
       },
       child: Container(
         height: height,
@@ -257,59 +265,45 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
               fit: BoxFit.cover),
         ),
         child: Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(AppDimension.dimension8),
           color: const Color.fromARGB(200, 0, 0, 0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                flex: 9,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Danh sách chương',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.fontSize,
-                            color: AppColor.onOverlay,
-                          ),
-                        ),
-                      ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Danh sách chương',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.fontSize,
+                      color: AppColor.onOverlay,
                     ),
-                    Expanded(
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "${_detailComic!.totalChapters} chương",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                ?.fontSize,
-                            color: AppColor.onOverlay,
-                          ),
-                        ),
-                      ),
+                  ),
+                  Text(
+                    "${_detailComic!.totalChapters} chương",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          ?.fontSize,
+                      color: AppColor.onOverlay,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Expanded(
-                flex: 1,
-                child: Container(
-                    child: BaseWidget.instance.setIcon(
-                  iconData:
-                      _isSortDesc ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 18,
-                )),
-              ),
+              Container(
+                  child: BaseWidget.instance.setIcon(
+                iconData:
+                    _isSortDesc ? Icons.arrow_downward : Icons.arrow_upward,
+                color: Theme.of(context).colorScheme.primary,
+                size: 18,
+              )),
             ],
           ),
         ),
@@ -322,17 +316,19 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
   }
 
   Widget _chapterList(double height) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          for (PageChapterItem chapterComic in _detailComic!.chapters)
-            _chapterDetailWidget(height, chapterComic)
-        ],
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            for (int i = 0; i < _detailComic!.chapters.length; i ++)
+              _chapterDetailWidget(height, _detailComic!.chapters[i], i)
+          ],
+        ),
       ),
     );
   }
 
-  Widget _chapterDetailWidget(double height, PageChapterItem chapter) {
+  Widget _chapterDetailWidget(double height, PageChapterItem chapter, int chapterIndex) {
     return GestureDetector(
       child: Container(
         padding: const EdgeInsets.all(AppDimension.dimension8),
@@ -357,7 +353,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.onBackground,
                 borderRadius: const BorderRadius.all(
-                  Radius.circular(2),
+                  Radius.circular(AppDimension.dimension4),
                 ),
               ),
             )
@@ -367,7 +363,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
       onTap: () {
         Helper.navigatorPush(
             context: context,
-            screen: ReadingScreen(chapterId: chapter.id, chapterList: _detailComic!.chapters,));
+            screen: ReadingScreen(chapterIndex: chapterIndex, chapterList: _detailComic!.chapters,));
       },
     );
   }

@@ -80,4 +80,6 @@ class AppColor {
   static Color overlayActive = Colors.black.withOpacity(0.4);
   static Color onOverlay = Colors.white.withOpacity(0.8);
   static Color transparent = Colors.transparent;
+  static Color lightMode = const Color(0xFFF0BC2C);
+  static Color darkMode = const Color(0xff0F0F0F);
 }

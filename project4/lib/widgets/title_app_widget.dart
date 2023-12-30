@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project4/config/app_font_size.dart';
 import 'package:project4/utils/app_dimension.dart';
 
 class TitleAppWidget extends StatelessWidget {
@@ -12,7 +13,7 @@ class TitleAppWidget extends StatelessWidget {
 
   double? getFontSize(BuildContext context) {
     if (fontSize != null) return fontSize;
-    return Theme.of(context).textTheme.headlineMedium?.fontSize;
+    return AppFontSize.headline1;
   }
 
   @override

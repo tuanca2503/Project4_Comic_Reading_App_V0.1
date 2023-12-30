@@ -7,10 +7,10 @@ import 'package:project4/screens/search_screen.dart';
 import 'package:project4/screens/setting_screen.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/storages.dart';
-import 'package:project4/widgets/custom/custom_bottom_navigator_bar.dart';
+import 'package:project4/widgets/app/custom_app_bar.dart';
+import 'package:project4/widgets/app/custom_bottom_navigator_bar.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/custom/custom_app_bar.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);

@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:project4/config/app_font_size.dart';
 import 'package:project4/models/comic/detail_comic.dart';
 import 'package:project4/repositories/comic_repository.dart';
-import 'package:project4/screens/details_comic_screen.dart';
+import 'package:project4/screens/reading_screen.dart';
+import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
-import 'package:project4/widgets/custom/custom_button_widget.dart';
-import 'package:project4/widgets/interact_comic.dart';
-import 'package:project4/widgets/list_widget/list_genres_horizontal.dart';
-
-import '../utils/app_dimension.dart';
-import 'base_widget.dart';
+import 'package:project4/widgets/app/custom_button_widget.dart';
+import 'package:project4/widgets/base_widget.dart';
+import 'package:project4/widgets/comic/interact_comic.dart';
+import 'package:project4/widgets/comic/list_widget/list_genres_horizontal.dart';
 
 class ComicBottomSheet extends StatefulWidget {
   final String id;
+  final String? currentChapterId;
 
-  const ComicBottomSheet({Key? key, required this.id}) : super(key: key);
+  const ComicBottomSheet({Key? key, required this.id, this.currentChapterId})
+      : super(key: key);
 
   @override
   State<ComicBottomSheet> createState() => _ComicBottomSheetState();
@@ -84,12 +86,15 @@ class _ComicBottomSheetState extends State<ComicBottomSheet> {
           onTap: () {
             Helper.navigatorPush(
                 context: context,
-                screen: DetailsComicScreen(id: detailComic!.id));
+                screen: ReadingScreen(
+                  comicId: detailComic!.id,
+                  chapterId: detailComic!.currentReadChapterId,
+                ));
           },
           text: "Đọc ngay",
           bgColor: Theme.of(context).colorScheme.primary,
           textColor: Theme.of(context).colorScheme.onPrimary,
-          fontSize: Theme.of(context).textTheme.titleMedium?.fontSize,
+          fontSize: AppFontSize.button,
         ),
       ],
     );
@@ -128,19 +133,17 @@ class _ComicBottomSheetState extends State<ComicBottomSheet> {
                     maxLines: 1,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize:
-                            Theme.of(context).textTheme.titleLarge?.fontSize),
+                        fontSize: AppFontSize.headline2),
                   ),
                   Text(
                     "${comic.totalChapters} Chương",
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        fontSize:
-                            Theme.of(context).textTheme.labelLarge?.fontSize),
+                        fontSize: AppFontSize.label),
                   ),
                   ListGenresHorizontal(
                     genres: comic.genres,
-                    fontSize: Theme.of(context).textTheme.titleSmall?.fontSize,
+                    fontSize: AppFontSize.label,
                     height: AppDimension.baseConstraints.maxHeight * 0.04,
                     bgColor: Theme.of(context).colorScheme.surfaceVariant,
                     textColor: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -148,8 +151,7 @@ class _ComicBottomSheetState extends State<ComicBottomSheet> {
                   Text(
                     comic.description,
                     style: TextStyle(
-                      fontSize:
-                          Theme.of(context).textTheme.titleMedium?.fontSize,
+                      fontSize: AppFontSize.body,
                     ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 5,

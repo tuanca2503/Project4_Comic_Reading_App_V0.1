@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:project4/config/environment.dart';
+import 'package:project4/models/users/user.dart';
 import 'package:project4/utils/storages.dart';
 import 'package:project4/utils/string_utils.dart';
 
@@ -11,6 +12,7 @@ enum _AuthorizationPrefix { Bearer, Refresh }
 
 class HttpInterceptor {
   static HttpInterceptor? _instance;
+
   HttpInterceptor._();
 
   static HttpInterceptor get instance {
@@ -31,19 +33,28 @@ class HttpInterceptor {
     _dio.interceptors
         .add(InterceptorsWrapper(onRequest: (options, handler) async {
       // config url (dotenv, ...)
-      String? accessToken = await _storage.getAccessToken();
+      if(_storage.isLogin()) {
+        String? accessToken = await _storage.getAccessToken();
 
-      bool tokenIsValid = await _checkTokenIsValid();
-      if (!tokenIsValid) {
-        await _clearToken();
-        String? refreshToken = await _storage.getRefreshToken();
-        if (refreshToken != null) {
-          await _refreshToken();
+        bool tokenIsValid = await _checkTokenIsValid();
+        if (!tokenIsValid) {
+          await _clearToken();
+          String? refreshToken = await _storage.getRefreshToken();
+          if (refreshToken != null) {
+            await _refreshToken();
 
-          // get new token after refresh
-          accessToken = await _storage.getAccessToken();
+            // get new token after refresh
+            accessToken = await _storage.getAccessToken();
+          }
+        }
+
+        // Add header when call API
+        if (accessToken.isHasText) {
+          _headers['Authorization'] =
+          '${_AuthorizationPrefix.Bearer.name} $accessToken';
         }
       }
+      options.headers = _headers;
 
       if (!options.path.startsWith('http')) {
         options.path = Environment.apiUrl + options.path;
@@ -52,14 +63,6 @@ class HttpInterceptor {
       // config timeout
       options.connectTimeout = const Duration(seconds: 30);
       options.receiveTimeout = const Duration(seconds: 30);
-
-      // Add header when call API
-
-      if (accessToken.isHasText) {
-        _headers['Authorization'] =
-            '${_AuthorizationPrefix.Bearer.name} $accessToken';
-      }
-      options.headers = _headers;
       return handler.next(options);
     }, onResponse: (Response response, handler) {
       // Do something with response data
@@ -128,7 +131,6 @@ class HttpInterceptor {
   }
 
   Future<bool> _refreshToken() async {
-    UserLoginRes userLoginRes = UserLoginRes();
     try {
       Helper.debug('run refresh token');
       String? refreshToken = await _storage.getRefreshToken();
@@ -144,10 +146,10 @@ class HttpInterceptor {
         Helper.debug("///ERROR _refreshToken: ${response.data}///");
         throw Exception(response.data);
       }
-      userLoginRes = UserLoginRes.fromJson(response.data);
+      UserLoginRes userLoginRes = UserLoginRes.fromJson(response.data);
       await _storage.setToken(
           userLoginRes.accessToken, userLoginRes.refreshToken);
-      await _storage.setUserLogin(userLoginRes);
+      await _storage.setUser(User.fromUserLogin(userLoginRes));
       return true;
     } catch (e) {
       Helper.debug("///ERROR _refreshToken: $e///");

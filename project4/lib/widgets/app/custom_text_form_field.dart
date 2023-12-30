@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:project4/config/app_font_size.dart';
 import 'package:project4/utils/app_dimension.dart';
 
 class CustomTextFormField extends StatefulWidget {
@@ -92,7 +93,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
             onEditingComplete: widget.onEditingComplete,
             obscureText: obscureText != null ? obscureText! : false,
             onTap: widget.onTap,
+            textAlignVertical: TextAlignVertical.center, // enabled false
             decoration: InputDecoration(
+              isCollapsed: true, // if use prefixIcon + enabled false
               contentPadding: const EdgeInsets.symmetric(
                   vertical: 0, horizontal: AppDimension.dimension16),
               filled: true,
@@ -105,7 +108,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               ),
             ),
             style: TextStyle(
-              fontSize: Theme.of(context).textTheme.bodyMedium?.fontSize,
+              fontSize: AppFontSize.bodySmall,
             ),
           ),
         ),
@@ -124,7 +127,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 widget.label!,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: Theme.of(context).textTheme.labelLarge?.fontSize),
+                    fontSize: AppFontSize.body),
               ),
               const SizedBox(
                 height: AppDimension.dimension8,

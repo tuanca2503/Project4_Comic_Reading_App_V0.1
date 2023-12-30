@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:project4/config/app_color.dart';
+import 'package:project4/config/app_font_size.dart';
 import 'package:project4/screens/auth/login_screen.dart';
 import 'package:project4/screens/auth/signup_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
-import 'package:project4/widgets/custom/custom_app_bar.dart';
-import 'package:project4/widgets/custom/custom_button_widget.dart';
-
-import '../../widgets/base_widget.dart';
+import 'package:project4/widgets/app/custom_app_bar.dart';
+import 'package:project4/widgets/app/custom_button_widget.dart';
+import 'package:project4/widgets/base_widget.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key? key}) : super(key: key);
@@ -68,18 +68,18 @@ class _AuthScreenState extends State<AuthScreen> {
                 bgColor: Theme.of(context).colorScheme.primary,
                 textColor: Theme.of(context).colorScheme.onPrimary,
                 text: "Đăng nhập với email",
-                fontSize: Theme.of(context).textTheme.titleMedium?.fontSize,
+                fontSize: AppFontSize.button,
               ),
               CustomButtonWidget(
                 onTap: () {
                   Helper.navigatorPush(
                       context: context, screen: const SignUpScreen());
                 },
-                bgColor: Colors.transparent,
+                bgColor: AppColor.transparent,
                 borderColor: Theme.of(context).colorScheme.onSurface,
                 textColor: Theme.of(context).colorScheme.onTertiary,
                 text: "Tạo tài khoản",
-                fontSize: Theme.of(context).textTheme.titleMedium?.fontSize,
+                fontSize: AppFontSize.button,
               ),
               _formLoginOAuthWidget(),
               _footerWidget(),
@@ -112,13 +112,13 @@ class _AuthScreenState extends State<AuthScreen> {
               Center(
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimension.dimension8,
+                    horizontal: AppDimension.dimension8,
                   ),
                   color: Theme.of(context).colorScheme.secondary,
                   child: Text(
                     'Hoặc đăng nhập bằng',
                     style: TextStyle(
-                      fontSize: Theme.of(context).textTheme.bodySmall?.fontSize,
+                      fontSize: AppFontSize.label,
                       color: Theme.of(context).colorScheme.onSecondary,
                       fontWeight: FontWeight.bold,
                     ),
@@ -174,7 +174,7 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Text(
           '@ 2023 Comic Reading | v1.0.157',
           style: TextStyle(
-            fontSize: Theme.of(context).textTheme.labelMedium?.fontSize,
+            fontSize: AppFontSize.labelSmall,
             color: Theme.of(context).colorScheme.onSurface,
           ),
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project4/models/comic/filter_comic.dart';
-import 'package:project4/widgets/list_widget/scroll_page_widget.dart';
+import 'package:project4/widgets/comic/list_widget/scroll_page_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

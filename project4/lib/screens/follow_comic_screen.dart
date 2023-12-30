@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:project4/config/app_font_size.dart';
 import 'package:project4/main.dart';
 import 'package:project4/models/comic/filter_comic.dart';
 import 'package:project4/screens/auth/login_screen.dart';
 import 'package:project4/screens/auth/signup_screen.dart';
+import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/storages.dart';
-import 'package:project4/widgets/custom/custom_button_widget.dart';
-import 'package:project4/widgets/list_widget/scroll_page_widget.dart';
+import 'package:project4/widgets/app/custom_button_widget.dart';
+import 'package:project4/widgets/comic/list_widget/scroll_page_widget.dart';
 import 'package:project4/widgets/title_app_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../utils/app_dimension.dart';
 
 class FollowScreen extends StatefulWidget {
   const FollowScreen({super.key});
@@ -41,7 +42,7 @@ class _RankFollowScreen extends State<FollowScreen>
       filter: FilterComicType.LAST_UPDATED_DATE.value,
       title: const TitleAppWidget(
         title: 'Danh sách theo dõi',
-        crossAxisAlignment: CrossAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.start,
       ),
       queryType: QueryType.favourite,
     );
@@ -73,7 +74,7 @@ class _RankFollowScreen extends State<FollowScreen>
               'hoặc',
               style: TextStyle(
                   color: Theme.of(context).colorScheme.onBackground,
-                  fontSize: Theme.of(context).textTheme.titleMedium?.fontSize),
+                  fontSize: AppFontSize.label),
             ),
           ),
           CustomButtonWidget(

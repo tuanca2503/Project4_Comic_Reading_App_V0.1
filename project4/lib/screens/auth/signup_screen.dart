@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:project4/config/app_color.dart';
+import 'package:project4/config/app_font_size.dart';
 import 'package:project4/repositories/auth_repository.dart';
 import 'package:project4/screens/auth/login_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
-import 'package:project4/widgets/custom/custom_button_widget.dart';
+import 'package:project4/utils/app_validator.dart';
+import 'package:project4/utils/helper.dart';
+import 'package:project4/utils/response_helper.dart';
+import 'package:project4/widgets/app/custom_button_widget.dart';
+import 'package:project4/widgets/app/custom_text_form_field.dart';
+import 'package:project4/widgets/base_widget.dart';
+import 'package:project4/widgets/loading_dialog.dart';
 import 'package:project4/widgets/title_app_widget.dart';
 
-import '../../utils/app_validator.dart';
-import '../../utils/helper.dart';
-import '../../utils/response_helper.dart';
-import '../../widgets/base_widget.dart';
-import '../../widgets/custom/custom_text_form_field.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -36,11 +38,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
 
     try {
+      showDialog(context: context, builder: (c) {
+        return const LoadingDialog(message: "Đang đăng ký",);
+      });
       await AuthRepository.instance.registerUser(
           email: _emailController.text,
           password: _passwordController.text,
           userName: _usernameController.text);
       if (!mounted) return;
+      Helper.navigatorPop(context);
       Helper.navigatorPush(
           context: context, screen: const LoginScreen(), isReplace: true);
       Helper.showSuccessSnackBar(context, "Đăng ký thành công");
@@ -166,9 +172,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Helper.navigatorPop(context);
                 },
                 text: "<",
-                bgColor: Colors.transparent,
+                bgColor: AppColor.transparent,
                 borderColor: Theme.of(context).colorScheme.outline,
-                fontSize: Theme.of(context).textTheme.headlineSmall?.fontSize,
+                fontSize: AppFontSize.button,
               ),
             ),
             Expanded(

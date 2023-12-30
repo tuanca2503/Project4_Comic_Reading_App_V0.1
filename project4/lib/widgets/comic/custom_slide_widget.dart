@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:project4/config/environment.dart';
 import 'package:project4/models/comic/page_comic_item.dart';
 import 'package:project4/screens/details_comic_screen.dart';
+import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/widgets/base_widget.dart';
 
-import '../utils/app_dimension.dart';
 
 class CustomSlideWidget extends StatefulWidget {
   const CustomSlideWidget({Key? key, required this.comics}) : super(key: key);
@@ -28,7 +28,6 @@ class _CustomSlideWidgetState extends State<CustomSlideWidget> {
                     builder: (context, constraints) {
                       double widthBox = constraints.maxWidth * 0.7;
                       double center = constraints.maxWidth / 2 - (widthBox / 2);
-
                       return Stack(
                         children: [
                           Image.network(

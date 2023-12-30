@@ -5,7 +5,7 @@ import 'package:project4/models/genres.dart';
 import 'package:project4/screens/details_comic_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/widgets/base_widget.dart';
-import 'package:project4/widgets/comic_bottom_sheet.dart';
+import 'package:project4/widgets/comic/comic_bottom_sheet.dart';
 
 class ScrollHorizontalWidget extends StatefulWidget {
   const ScrollHorizontalWidget({Key? key, required this.comics})
@@ -122,7 +122,7 @@ class _ScrollHorizontalWidgetState extends State<ScrollHorizontalWidget> {
         showModalBottomSheet(
           isScrollControlled: true,
           isDismissible: true,
-          backgroundColor: Colors.transparent,
+          backgroundColor: AppColor.transparent,
           context: context,
           builder: (BuildContext context) {
             return ComicBottomSheet(id: comic.id);

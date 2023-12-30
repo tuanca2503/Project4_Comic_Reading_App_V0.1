@@ -2,15 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:project4/models/comic/page_comic_item.dart';
+import 'package:project4/models/page_data.dart';
 import 'package:project4/repositories/comic_repository.dart';
+import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/widgets/base_widget.dart';
-import 'package:project4/widgets/list_widget/item_comic_widget.dart';
+import 'package:project4/widgets/comic/list_widget/item_comic_widget.dart';
 
-import '../../models/page_data.dart';
-import '../../utils/app_dimension.dart';
-
-enum QueryType {all, favourite}
+enum QueryType {all, favourite, read}
 
 class ScrollPageWidget extends StatefulWidget {
   const ScrollPageWidget({
@@ -20,6 +19,7 @@ class ScrollPageWidget extends StatefulWidget {
     required this.filter,
     this.genresId,
     this.mangaName = '',
+    this.itemComicType = ItemComicType.normal,
     this.queryType = QueryType.all,
   }) : super(key: key);
   final List<Widget> children;
@@ -27,6 +27,7 @@ class ScrollPageWidget extends StatefulWidget {
   final String filter;
   final List<String>? genresId;
   final String mangaName;
+  final ItemComicType itemComicType;
   final QueryType queryType;
 
   @override
@@ -64,8 +65,9 @@ class _ScrollPageWidgetState extends State<ScrollPageWidget>
           pageData = await ComicRepository.instance
               .getAllComics(filter: widget.filter, page: page, pageSize: pageSize, genresIds: widget.genresId, mangaName: widget.mangaName);
         case QueryType.favourite:
+        case QueryType.read:
           pageData = await ComicRepository.instance
-              .getAllFavouriteComics(page: page, pageSize: pageSize);
+              .getAllHistoryComics(page: page, pageSize: pageSize, action: QueryType.read.name.toUpperCase());
       }
       isLoading = false;
       page += 1;
@@ -101,7 +103,7 @@ class _ScrollPageWidgetState extends State<ScrollPageWidget>
     return SingleChildScrollView(
       padding: AppDimension.initPaddingBody(),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ...widget.children,
           SizedBox(
@@ -120,7 +122,7 @@ class _ScrollPageWidgetState extends State<ScrollPageWidget>
                 controller: ScrollController(),
                 itemCount: scrollComics.length,
                 itemBuilder: (context, index) {
-                  return ItemComicWidget(comic: scrollComics[index]);
+                  return ItemComicWidget(comic: scrollComics[index], itemComicType: widget.itemComicType,);
                 },
               );
             },

@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:project4/config/app_color.dart';
+import 'package:project4/config/app_font_size.dart';
 import 'package:project4/repositories/auth_repository.dart';
 import 'package:project4/screens/main_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/app_validator.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/response_helper.dart';
-import 'package:project4/widgets/custom/custom_button_widget.dart';
-import 'package:project4/widgets/custom/custom_text_form_field.dart';
+import 'package:project4/widgets/app/custom_button_widget.dart';
+import 'package:project4/widgets/app/custom_text_form_field.dart';
+import 'package:project4/widgets/base_widget.dart';
+import 'package:project4/widgets/loading_dialog.dart';
 import 'package:project4/widgets/title_app_widget.dart';
 
-import '../../widgets/base_widget.dart';
 
 enum LoginTo { home, pop }
 class LoginScreen extends StatefulWidget {
@@ -35,9 +37,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     try {
+      showDialog(context: context, builder: (c) {
+        return const LoadingDialog(message: "Đang đăng nhập",);
+      });
       await AuthRepository.instance.loginUser(
           email: _emailController.text, password: _passwordController.text);
       if (!mounted) return;
+      Helper.navigatorPop(context);
       switch (widget.loginTo) {
         case LoginTo.home:
           Helper.navigatorPush(context: context, screen: const MainScreen());
@@ -142,9 +148,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   Helper.navigatorPop(context);
                 },
                 text: "<",
-                bgColor: Colors.transparent,
+                bgColor: AppColor.transparent,
                 borderColor: Theme.of(context).colorScheme.outline,
-                fontSize: Theme.of(context).textTheme.headlineSmall?.fontSize,
+                fontSize: AppFontSize.button,
               ),
             ),
             Expanded(

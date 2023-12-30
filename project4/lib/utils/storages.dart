@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:project4/models/users/user_login_res.dart';
+import 'package:project4/models/users/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum _SharedPreferencesEnum { user, darkMode }
@@ -31,34 +31,32 @@ class Storages {
     return _sharedPreferences.getKeys();
   }
 
-  bool isLogin() => getUserLogin() != null;
+  bool isLogin() => getUser() != null;
 
-  UserLoginRes? getUserLogin() {
-    final userJson =
-        _sharedPreferences.getString(_SharedPreferencesEnum.user.name);
-    return userJson == null
-        ? null
-        : UserLoginRes.fromJson(jsonDecode(userJson));
+  User? getUser() {
+    final user = _sharedPreferences.getString(_SharedPreferencesEnum.user.name);
+    return user == null ? null : User.fromJson(jsonDecode(user));
   }
 
-  Future<bool> setUserLogin(UserLoginRes? userLogin) {
+  Future<bool> setUser(User? user) {
     return _sharedPreferences.setString(
-        _SharedPreferencesEnum.user.name, jsonEncode(userLogin?.toJson()));
+        _SharedPreferencesEnum.user.name, jsonEncode(user?.toJson()));
   }
 
   bool getIsNotify() {
-    UserLoginRes userLogin  = getUserLogin()!;
-    return userLogin.isReceiveNotification ?? false;
+    User user = getUser()!;
+    return user.isReceiveNotification ?? false;
   }
 
   Future<bool> setIsNotify(bool isNotify) {
-    UserLoginRes userLogin  = getUserLogin()!;
-    userLogin.isReceiveNotification = isNotify;
-    return setUserLogin(userLogin);
+    User user = getUser()!;
+    user.isReceiveNotification = isNotify;
+    return setUser(user);
   }
 
-  bool getDarkMode() {
-    return _sharedPreferences.getBool(_SharedPreferencesEnum.darkMode.name) ?? false;
+  bool isDarkMode() {
+    return _sharedPreferences.getBool(_SharedPreferencesEnum.darkMode.name) ??
+        false;
   }
 
   Future<bool> setDarkMode(bool isDarkMode) {

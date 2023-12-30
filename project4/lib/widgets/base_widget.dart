@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project4/config/environment.dart';
-import 'package:project4/models/users/user_login_res.dart';
+import 'package:project4/models/users/user.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/storages.dart';
@@ -21,13 +21,12 @@ class BaseWidget {
   }
 
   Widget getAvatarWidget({double? size}) {
-    UserLoginRes? userLoginRes = Storages.instance.getUserLogin();
-    if (userLoginRes == null || !userLoginRes.avatar.isHasText) {
-      return setImageAsset(link: 'user.png', size: size);
+    User? user = Storages.instance.getUser();
+    if (user == null || !user.avatar.isHasText) {
+      return setIcon(iconData: Icons.manage_accounts_outlined, size: size);
     } else {
       return setImageNetwork(
-          link: '${Environment.apiUrl}/images/${userLoginRes.avatar}',
-          size: size);
+          link: '${Environment.apiUrl}/images/${user.avatar}', size: size);
     }
   }
 
@@ -70,12 +69,12 @@ class BaseWidget {
         'ngrok-skip-browser-warning': 'true',
       },
       fit: fit,
-      errorBuilder: (context, error, stackTrace) {
+      /*errorBuilder: (context, error, stackTrace) {
         return Image.asset(
           '$_imageAsset/background.png',
           fit: fit,
         );
-      },
+      },*/
     );
   }
 
@@ -102,12 +101,10 @@ class BaseWidget {
             Icon(
               Icons.insert_drive_file,
               size: 48.0,
-              color: Colors.grey,
             ),
             SizedBox(height: 8.0),
             Text(
               'Danh sách trống',
-              style: TextStyle(color: Colors.grey),
             ),
           ],
         ),

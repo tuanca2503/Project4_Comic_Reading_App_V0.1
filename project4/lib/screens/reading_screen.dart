@@ -1,348 +1,240 @@
 import 'package:flutter/material.dart';
-import 'package:project4/config/environment.dart';
-import 'package:project4/main.dart';
+import 'package:project4/config/app_color.dart';
 import 'package:project4/models/comic/chapter/chapter_detail.dart';
 import 'package:project4/models/comic/chapter/page_chapter_item.dart';
 import 'package:project4/repositories/chapter_repository.dart';
-import 'package:project4/utils/helper.dart';
+import 'package:project4/utils/app_dimension.dart';
+import 'package:project4/widgets/app/custom_app_bar.dart';
 import 'package:project4/widgets/base_widget.dart';
-import 'package:provider/provider.dart';
 
-import '../utils/app_dimension.dart';
+enum NavigateChapterAction { prev, next }
 
 class ReadingScreen extends StatefulWidget {
   const ReadingScreen(
-      {super.key, required this.chapterId, required this.chapterList});
+      {super.key, this.chapterIndex, this.chapterList, this.comicId, this.chapterId});
+  /* Guide: Use chapterList && chapterIndex (from DetailScreen)
+  or comicId && chapterId (from ComicBottomSheet). If chapterId = null => set chapterIndex = 0
+  * */
+  final String? comicId;
+  final String? chapterId;
 
-  final String chapterId;
-  final List<PageChapterItem> chapterList;
+  final int? chapterIndex;
+  final List<PageChapterItem>? chapterList;
 
   @override
   State<ReadingScreen> createState() => _ReadingScreenState();
 }
 
-class _ReadingScreenState extends State<ReadingScreen> {
-  ChapterDetail? chapterDetail;
+class _ReadingScreenState extends State<ReadingScreen>
+    with AutomaticKeepAliveClientMixin<ReadingScreen> {
+  @override
+  bool get wantKeepAlive => true;
+
+  final _listViewKey = GlobalKey<ScaffoldState>();
+  late int _currentChapterIndex;
+  final List<DropdownMenuItem> _chapterListMenu = [];
+  ChapterDetail? _chapterDetail;
+  bool _isShowBar = true;
+  late List<PageChapterItem> chapterList;
 
   @override
   void initState() {
     super.initState();
-    ChapterRepository.instance.getChapterComic(id: widget.chapterId).then((value) {
+
+    if (widget.comicId == null && !(widget.chapterIndex != null && widget.chapterList != null)) {
+      throw Exception("Cannot get chapter information, check `Guide` in `ReadingScreen`");
+    }
+
+    if (widget.chapterList != null) {
+      chapterList = widget.chapterList!;
+      _createDropdownChapterList();
+      _onSelectChapter(widget.chapterIndex!);
+    } else {
+      ChapterRepository.instance.getChapterListByComicId(comicId: widget.comicId!).then((value) {
+        chapterList = value;
+        if (widget.chapterId != null) {
+          _currentChapterIndex = _createDropdownChapterList(chapterId: widget.chapterId)!;
+        } else {
+          _currentChapterIndex = 0;
+        }
+        _onSelectChapter(_currentChapterIndex);
+      });
+    }
+    
+  }
+
+  int? _createDropdownChapterList({String? chapterId}) {
+    int? chapterIndex;
+    for (int i = 0; i < chapterList.length; i++) {
+      PageChapterItem chapter = chapterList[i];
+      if (chapterId != null && chapterId == chapter.id) {
+        chapterIndex = i;
+      }
+      _chapterListMenu.add(DropdownMenuItem(
+        value: i,
+        child: Text(chapter.name),
+      ));
+    }
+    return chapterIndex;
+  }
+
+  void _onSelectChapter(int chapterIndex) {
+    _currentChapterIndex = chapterIndex;
+    ChapterRepository.instance
+        .getChapterComic(id: chapterList[_currentChapterIndex].id)
+        .then((value) {
       setState(() {
-        chapterDetail = value;
+        _chapterDetail = value;
       });
     });
   }
 
-  bool showBars = true;
-
-  final ScrollController _readingScroll = ScrollController();
-
-  void scrollToItem({required int index}) {
-    try {
-      if (_readingScroll.hasClients) {
-        _readingScroll.animateTo(index * 21.9,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut);
-      }
-    } catch (e) {
-      print(e);
+  void _navigateChapter(NavigateChapterAction action) {
+    switch (action) {
+      case NavigateChapterAction.prev:
+        if (_currentChapterIndex > 0) {
+          setState(() {
+            _currentChapterIndex--;
+          });
+        }
+      case NavigateChapterAction.next:
+        if (_currentChapterIndex < chapterList.length) {
+          setState(() {
+            _currentChapterIndex++;
+          });
+        }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
-      body: chapterDetail == null
+      body: _chapterDetail == null
           ? BaseWidget.instance.loadingWidget()
-          : bodyReadingScreen(),
+          : _bodyReadingScreen(),
     );
   }
 
-  Widget bodyReadingScreen() {
-    double heightHeadBott = AppDimension.baseConstraints.maxHeight * 0.08;
-
-    return Consumer<ScreenProvider>(
-      builder: (context, visibilityProvider, child) {
-        return Stack(
-          children: [
-            GestureDetector(
-              onTap: () {
-                visibilityProvider.toggleVisibility();
-              },
-              child: SizedBox(
-                height: AppDimension.baseConstraints.maxHeight,
-                width: AppDimension.baseConstraints.maxWidth,
-                child: ListView.builder(
-                  itemCount: chapterDetail!.images.length,
-                  itemBuilder: (context, index) {
-                    return IntrinsicHeight(
-                      child: Image.network(
-                          '${Environment.apiUrl}/${chapterDetail!.images[index]}'),
-                    );
-                  },
-                ),
-              ),
-            ),
-
-            visibilityProvider.isVisible
-                ? Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: headerBar(
-                      heightHeadBott: heightHeadBott,
-                    ),
-                  )
-                : Container(),
-
-            /////
-
-            visibilityProvider.isVisible
-                ? Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: bottomBar(heightHeadBott: heightHeadBott),
-                  )
-                : Container(),
-          ],
-        );
+  Widget _bodyReadingScreen() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isShowBar = !_isShowBar;
+        });
       },
-    );
-  }
-
-//
-
-//
-  Widget headerBar({
-    required heightHeadBott,
-  }) {
-    return SizedBox(
-      height: heightHeadBott,
-      child: Row(
+      child: Stack(
         children: [
-          Expanded(
-            flex: 1,
-            child: GestureDetector(
-              onTap: () {
-                Helper.navigatorPop(context);
-              },
-              child: SizedBox(
-                height: heightHeadBott,
-                child: Transform.scale(
-                  scale: 1,
-                  child: BaseWidget.instance
-                      .setIcon(iconData: Icons.navigate_before),
+          _chapterImagesWidget(),
+          !_isShowBar
+              ? Container()
+              : CustomAppBar(
+                  selectedAppBar: AppBarEnum.back,
+                  color: AppColor.onOverlay,
+                  bgColor: AppColor.overlay,
                 ),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 8,
-            child: Container(),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(),
-          ),
+          !_isShowBar ? Container() : _bottomBar()
         ],
       ),
     );
   }
 
-  Widget bottomBar({required heightHeadBott}) {
-    // TODO update current chapter
-    int currentChapter = 1;
-    int totalChapter = widget.chapterList.length - 1;
-    double heightListChapter = heightHeadBott * 6;
-    double heightItemChapter = heightListChapter * 0.12;
+  Widget _chapterImagesWidget() {
+    return Positioned.fill(
+      child: SizedBox(
+        height: AppDimension.baseConstraints.maxHeight,
+        width: AppDimension.baseConstraints.maxWidth,
+        child: ListView.builder(
+          key: _listViewKey,
+          itemCount: _chapterDetail!.images.length,
+          itemBuilder: (context, index) {
+            return BaseWidget.instance
+                .setImageNetwork(link: _chapterDetail!.images[index]);
+          },
+        ),
+      ),
+    );
+  }
 
-    return Consumer<ScreenProvider>(builder: (context, provider, child) {
-      return Container(
-        color: Colors.transparent,
-        height: provider.showAllChapter
-            ? heightHeadBott + heightListChapter
-            : heightHeadBott,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned(
-              bottom: 0,
+  Widget _bottomBar() {
+    return !_isShowBar
+        ? Container()
+        : Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              color: AppColor.overlay,
+              height: AppDimension.baseConstraints.maxHeight * 0.08,
               child: Container(
                 padding: const EdgeInsets.all(AppDimension.dimension8),
-                height: heightHeadBott,
                 width: AppDimension.baseConstraints.maxWidth,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: (currentChapter > 0 && currentChapter != 0)
-                            ? GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    // TODO
-                                    // _chapterComicBook =
-                                    //     widget.chapters[
-                                    //         currentChapter - 1];
-                                  });
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Transform.scale(
-                                      scale: 0.8,
-                                      child: BaseWidget.instance
-                                          .setIcon(iconData: Icons.arrow_back),
-                                    ),
-                                    Text(
-                                      'Trước',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-                            : Container(),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 8,
-                      child: GestureDetector(
-                        onTap: () {
-                          provider.toggleShowAllChapter();
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              chapterDetail!.chapterName,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            Icon(
-                              provider.showAllChapter
-                                  ? Icons.arrow_drop_down_outlined
-                                  : Icons.arrow_drop_up_outlined,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        alignment: Alignment.centerRight,
-                        child: (currentChapter < totalChapter &&
-                                currentChapter != totalChapter)
-                            ? GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    // TODO
-                                    // _chapterComicBook =
-                                    //     widget.chapters[
-                                    //         currentChapter + 1];
-                                  });
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      'Sau',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Transform.scale(
-                                      scale: 0.8,
-                                      child: BaseWidget.instance.setIcon(
-                                          iconData: Icons.arrow_forward),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Container(),
-                      ),
-                    ),
+                    _navigateChapterWidget(NavigateChapterAction.prev),
+                    _dropdownChapterListWidget(),
+                    _navigateChapterWidget(NavigateChapterAction.next),
                   ],
                 ),
               ),
             ),
-            provider.showAllChapter
-                ? Positioned(
-                    left: AppDimension.baseConstraints.maxWidth / 2 -
-                        (AppDimension.baseConstraints.maxWidth / 4),
-                    top: 1,
-                    child: Container(
-                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.only(
-                              topLeft:
-                                  Radius.circular(heightListChapter * 0.02),
-                              topRight:
-                                  Radius.circular(heightListChapter * 0.02))),
-                      width: AppDimension.baseConstraints.maxWidth / 2,
-                      height: heightListChapter,
-                      child: ListView.builder(
-                        controller: _readingScroll,
-                        itemCount: widget.chapterList.length,
-                        itemBuilder: (cont, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                // TODO
-                                // _chapterComicBook =
-                                //     widget.chapters[index];
-                              });
-                              scrollToItem(index: currentChapter);
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 8),
-                              decoration: BoxDecoration(
-                                color: (widget.chapterList[index].id ==
-                                        chapterDetail!.id)
-                                    ? Colors.orange
-                                    : null,
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(heightListChapter * 0.02)),
-                                border: (widget.chapterList[index].id ==
-                                        chapterDetail!.id)
-                                    ? null
-                                    : const Border(
-                                        bottom: BorderSide(
-                                            width: 1, color: Colors.white),
-                                      ),
-                              ),
-                              height: heightItemChapter,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  BaseWidget.instance.setText(
-                                      txt: widget.chapterList[index].name,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w100)
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  )
-                : Container(),
-          ],
+          );
+  }
+
+  Widget _navigateChapterWidget(NavigateChapterAction action) {
+    return GestureDetector(
+      onTap: () {
+        _navigateChapter(action);
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          BaseWidget.instance.setIcon(
+            iconData: action == NavigateChapterAction.prev
+                ? Icons.arrow_back
+                : Icons.arrow_forward,
+            color: AppColor.onOverlay,
+          ),
+          Text(
+            action == NavigateChapterAction.prev ? ' Trước' : ' Sau',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColor.onOverlay,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _dropdownChapterListWidget() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppDimension.dimension16, vertical: AppDimension.dimension8),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColor.onOverlay),
+        borderRadius: BorderRadius.circular(AppDimension.dimension8),
+      ),
+      child: DropdownButton(
+        value: _currentChapterIndex,
+        items: _chapterListMenu,
+        onChanged: (chapterIndex) {
+          setState(() {
+            _onSelectChapter(chapterIndex);
+          });
+        },
+        style: TextStyle(
+          color: AppColor.onOverlay,
+          overflow: TextOverflow.ellipsis,
+        ),alignment: Alignment.centerLeft,
+        icon: Icon(
+          Icons.arrow_drop_down_circle,
+          color: AppColor.onOverlay,
         ),
-      );
-    });
+        underline: const SizedBox(),
+        dropdownColor: AppColor.overlay,
+        menuMaxHeight: AppDimension.baseConstraints.maxHeight * 0.5,
+      ),
+    );
   }
 }

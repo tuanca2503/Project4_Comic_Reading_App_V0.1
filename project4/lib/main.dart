@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:project4/config/app_theme.dart';
-import 'package:project4/models/users/user_login_res.dart';
+import 'package:project4/models/users/user.dart';
 import 'package:project4/screens/main_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
@@ -22,7 +22,7 @@ Future<void> main() async {
 
   final storage = Storages.instance;
   final screenProvider = GetIt.instance<ScreenProvider>();
-  UserLoginRes? userLogin = storage.getUserLogin();
+  User? userLogin = storage.getUser();
 
   // Splash Screen
   if (userLogin == null) {
@@ -70,7 +70,8 @@ class MyApp extends StatelessWidget {
         title: 'Comic Reading App',
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        themeMode: Storages.instance.getDarkMode() ? ThemeMode.dark : ThemeMode.light,
+        themeMode:
+            Storages.instance.isDarkMode() ? ThemeMode.dark : ThemeMode.light,
         home: LayoutBuilder(
           builder: (context, constraints) {
             AppDimension.baseConstraints = constraints;
@@ -93,7 +94,7 @@ class ScreenProvider with ChangeNotifier {
   bool buttonDetailsScreen = true;
   String showPartDetailsScreen = '';
 
-  String? email = Storages.instance.getUserLogin()?.email;
+  String? email = Storages.instance.getUser()?.email;
   bool showAllChapter = false;
 
   bool get isVisible => _isVisible;

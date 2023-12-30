@@ -61,11 +61,11 @@ class ComicRepository {
     }
   }
 
-  Future<PageData<PageComicItem>> getAllFavouriteComics(
-      {int page = 0, int pageSize = 10}) async {
+  Future<PageData<PageComicItem>> getAllHistoryComics(
+      {int page = 0, int pageSize = 10, required String action}) async {
     try {
       final Response response = await dio.get(
-        '$_apiBase/favourite?page=$page&pageSize=$pageSize',
+        '$_apiBase/history?page=$page&pageSize=$pageSize&action=$action',
       );
       if (response.statusCode != 200) {
         Helper.debug("///ERROR getAllFavouriteComics: ${response.data}///");
