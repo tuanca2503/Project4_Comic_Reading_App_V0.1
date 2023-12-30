@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project4/config/app_color.dart';
 import 'package:project4/models/comic/page_comic_item.dart';
 import 'package:project4/models/genres.dart';
-import 'package:project4/screens/details_comic_screen.dart';
+import 'package:project4/screens/comic/details_comic_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/widgets/base_widget.dart';
 import 'package:project4/widgets/comic/comic_bottom_sheet.dart';

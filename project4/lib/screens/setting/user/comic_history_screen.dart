@@ -25,7 +25,7 @@ class _RankComicHistoryScreen extends State<ComicHistoryScreen> {
         filter: FilterComicType.LAST_UPDATED_DATE.value,
         title: const TitleAppWidget(
           title: 'Lịch sử đọc',
-          crossAxisAlignment: CrossAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.start,
         ),
         queryType: QueryType.read,
         itemComicType: ItemComicType.history,

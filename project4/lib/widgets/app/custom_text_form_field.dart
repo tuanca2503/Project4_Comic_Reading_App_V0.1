@@ -72,8 +72,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           child: widget.suffixIcon,
         );
       }
-    } else {
-      suffixIcon = widget.suffixIcon;
     }
   }
 

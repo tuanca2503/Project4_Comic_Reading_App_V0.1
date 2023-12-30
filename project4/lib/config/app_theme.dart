@@ -102,6 +102,12 @@ class AppTheme {
           width: 1,
         ),
       ),
+      disabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: AppColor.darkTheme[AppColorField.outline]!,
+          width: 1,
+        ),
+      ),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(
           color: AppColor.darkTheme[AppColorField.focus]!,

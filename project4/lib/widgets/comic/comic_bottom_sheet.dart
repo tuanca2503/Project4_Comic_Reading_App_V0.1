@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project4/config/app_font_size.dart';
 import 'package:project4/models/comic/detail_comic.dart';
 import 'package:project4/repositories/comic_repository.dart';
-import 'package:project4/screens/reading_screen.dart';
+import 'package:project4/screens/comic/reading_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/widgets/app/custom_button_widget.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:project4/main.dart';
-import 'package:project4/screens/auth/auth_screen.dart';
-import 'package:project4/screens/follow_comic_screen.dart';
-import 'package:project4/screens/home_screen.dart';
-import 'package:project4/screens/search_screen.dart';
-import 'package:project4/screens/setting_screen.dart';
+import 'package:project4/screens/follow/follow_comic_screen.dart';
+import 'package:project4/screens/home/home_screen.dart';
+import 'package:project4/screens/search/search_screen.dart';
+import 'package:project4/screens/setting/auth/auth_screen.dart';
+import 'package:project4/screens/setting/setting_screen.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/storages.dart';
 import 'package:project4/widgets/app/custom_app_bar.dart';

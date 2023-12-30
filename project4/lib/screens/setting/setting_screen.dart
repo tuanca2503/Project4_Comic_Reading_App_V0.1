@@ -7,10 +7,10 @@ import 'package:project4/config/app_font_size.dart';
 import 'package:project4/main.dart';
 import 'package:project4/repositories/auth_repository.dart';
 import 'package:project4/repositories/user_repository.dart';
-import 'package:project4/screens/comic/comic_history_screen.dart';
+import 'package:project4/screens/setting/user/comic_history_screen.dart';
 import 'package:project4/screens/main_screen.dart';
-import 'package:project4/screens/user/change_password_screen.dart';
-import 'package:project4/screens/user/user_info_screen.dart';
+import 'package:project4/screens/setting/user/change_password_screen.dart';
+import 'package:project4/screens/setting/user/user_info_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/storages.dart';
@@ -50,7 +50,7 @@ class _SettingScreenState extends State<SettingScreen> {
     Timer(const Duration(seconds: 1), () async {
       await AuthRepository.instance.logout();
       if (!mounted) return;
-      Helper.navigatorPop(context);
+      Helper.dialogPop(context);
       Helper.navigatorPush(
           context: context, screen: const MainScreen(), isReplace: true);
     });
@@ -73,7 +73,7 @@ class _SettingScreenState extends State<SettingScreen> {
       _storage.setIsNotify(value).then((_) {
         setState(() {
           _notificationsSwitched = value;
-          Helper.navigatorPop(context);
+          Helper.dialogPop(context);
         });
       });
     });

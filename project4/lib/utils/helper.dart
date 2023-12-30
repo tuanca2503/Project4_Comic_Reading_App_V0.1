@@ -30,12 +30,16 @@ class Helper {
     return Navigator.maybePop(context);
   }
 
+  static void dialogPop(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+
   static void showErrorSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           message,
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          style: TextStyle(color: AppColor.onToast),
         ),
         action: null,
         backgroundColor: AppColor.error,
@@ -49,7 +53,7 @@ class Helper {
       SnackBar(
         content: Text(
           message,
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          style: TextStyle(color: AppColor.onToast),
         ),
         action: null,
         backgroundColor: AppColor.success,

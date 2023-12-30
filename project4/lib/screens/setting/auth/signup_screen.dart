@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project4/config/app_color.dart';
 import 'package:project4/config/app_font_size.dart';
 import 'package:project4/repositories/auth_repository.dart';
-import 'package:project4/screens/auth/login_screen.dart';
+import 'package:project4/screens/setting/auth/login_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/app_validator.dart';
 import 'package:project4/utils/helper.dart';
@@ -46,12 +46,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
           password: _passwordController.text,
           userName: _usernameController.text);
       if (!mounted) return;
-      Helper.navigatorPop(context);
+      Helper.dialogPop(context);
       Helper.navigatorPush(
           context: context, screen: const LoginScreen(), isReplace: true);
       Helper.showSuccessSnackBar(context, "Đăng ký thành công");
     } catch (e) {
       if (!mounted) return;
+      Helper.dialogPop(context);
       Helper.showErrorSnackBar(context, ResponseErrorHelper.getErrorMessage(e));
     }
   }

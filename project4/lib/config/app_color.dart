@@ -76,6 +76,7 @@ class AppColor {
 
   static Color error = const Color(0xffBF3131);
   static Color success = const Color(0xff4F6F52);
+  static Color onToast = const Color(0xFFE6E6E6);
   static Color overlay = Colors.black.withOpacity(0.7);
   static Color overlayActive = Colors.black.withOpacity(0.4);
   static Color onOverlay = Colors.white.withOpacity(0.8);

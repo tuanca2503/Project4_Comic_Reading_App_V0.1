@@ -3,6 +3,7 @@ import 'package:project4/config/app_color.dart';
 import 'package:project4/config/app_font_size.dart';
 import 'package:project4/repositories/auth_repository.dart';
 import 'package:project4/screens/main_screen.dart';
+import 'package:project4/screens/setting/user/forgot_password_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/app_validator.dart';
 import 'package:project4/utils/helper.dart';
@@ -13,11 +14,11 @@ import 'package:project4/widgets/base_widget.dart';
 import 'package:project4/widgets/loading_dialog.dart';
 import 'package:project4/widgets/title_app_widget.dart';
 
-
 enum LoginTo { home, pop }
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key, this.loginTo = LoginTo.home}) : super(key: key);
-  
+
   final LoginTo loginTo;
 
   @override
@@ -37,13 +38,17 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     try {
-      showDialog(context: context, builder: (c) {
-        return const LoadingDialog(message: "Đang đăng nhập",);
-      });
+      showDialog(
+          context: context,
+          builder: (c) {
+            return const LoadingDialog(
+              message: "Đang đăng nhập",
+            );
+          });
       await AuthRepository.instance.loginUser(
           email: _emailController.text, password: _passwordController.text);
       if (!mounted) return;
-      Helper.navigatorPop(context);
+      Helper.dialogPop(context);
       switch (widget.loginTo) {
         case LoginTo.home:
           Helper.navigatorPush(context: context, screen: const MainScreen());
@@ -52,6 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       if (!mounted) return;
+      Helper.dialogPop(context);
       Helper.showErrorSnackBar(context, ResponseErrorHelper.getErrorMessage(e));
     }
   }
@@ -101,36 +107,69 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _formGroupWidget(BuildContext context, GlobalKey key) {
-    return Form(
-      key: key,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Center(
-            child: TitleAppWidget(title: 'Đăng nhập', mainAxisAlignment: MainAxisAlignment.center,),
+    return Column(
+      children: [
+        Form(
+          key: key,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Center(
+                child: TitleAppWidget(
+                  title: 'Đăng nhập',
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+              ),
+              CustomTextFormField(
+                controller: _emailController,
+                label: "Email",
+                hintText: 'abc@mail.com',
+                prefixIcon:
+                    BaseWidget.instance.setIcon(iconData: Icons.email_outlined),
+                validator: (value) {
+                  return AppValidator.emailValidator(value);
+                },
+              ),
+              CustomTextFormField(
+                controller: _passwordController,
+                label: "Mật khẩu",
+                hintText: 'Mật khẩu',
+                prefixIcon:
+                    BaseWidget.instance.setIcon(iconData: Icons.lock_outline),
+                suffixIcon: BaseWidget.instance
+                    .setIcon(iconData: Icons.remove_red_eye_outlined),
+                obscureText: true,
+                validator: (value) {
+                  return AppValidator.passwordValidator(value);
+                },
+              ),
+            ],
           ),
-          CustomTextFormField(
-            controller: _emailController,
-            label: "Email",
-            hintText: 'abc@mail.com',
-            prefixIcon: BaseWidget.instance.setIcon(iconData: Icons.email_outlined),
-            validator: (value) {
-              return AppValidator.emailValidator(value);
-            },
-          ),
-          CustomTextFormField(
-            controller: _passwordController,
-            label: "Mật khẩu",
-            hintText: 'Mật khẩu',
-            prefixIcon: BaseWidget.instance.setIcon(iconData: Icons.lock_outline),
-            suffixIcon: BaseWidget.instance.setIcon(iconData: Icons.remove_red_eye_outlined),
-            obscureText: true,
-            validator: (value) {
-              return AppValidator.passwordValidator(value);
-            },
-          ),
-        ],
-      ),
+        ),
+        Align(
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              onTap: () {
+                Helper.navigatorPush(
+                    context: context, screen: const ForgotPasswordScreen());
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        color: Theme.of(context).colorScheme.onBackground),
+                  ),
+                ),
+                child: Text(
+                  'Quên mật khẩu',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onBackground,
+                    fontSize: AppFontSize.body,
+                  ),
+                ),
+              ),
+            )),
+      ],
     );
   }
 
@@ -138,7 +177,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: AppDimension.dimension64,),
+        const SizedBox(
+          height: AppDimension.dimension64,
+        ),
         Row(
           children: [
             Expanded(

@@ -37,6 +37,11 @@ class AppValidator {
     return null;
   }
 
+  static String? codeValidator(String? value) {
+    String? errorMessage = _required(value);
+    if (errorMessage != null) return errorMessage;
+  }
+
   static String? rePasswordValidator(String? password, String rePassword) {
     if (passwordValidator(password) != null) return null;
 

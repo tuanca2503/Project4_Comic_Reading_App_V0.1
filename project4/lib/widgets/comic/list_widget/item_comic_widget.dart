@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project4/config/app_font_size.dart';
 import 'package:project4/models/comic/page_comic_item.dart';
-import 'package:project4/screens/details_comic_screen.dart';
-import 'package:project4/screens/reading_screen.dart';
+import 'package:project4/screens/comic/details_comic_screen.dart';
+import 'package:project4/screens/comic/reading_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/widgets/base_widget.dart';

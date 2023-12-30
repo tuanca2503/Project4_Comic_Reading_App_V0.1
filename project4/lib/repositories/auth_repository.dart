@@ -99,4 +99,39 @@ class AuthRepository {
       throw Exception(e);
     }
   }
+
+  Future<void> updatePassword({required String oldPassword, required String newPassword}) async {
+    try {
+      final Response response =
+      await dio.post('$_apiBase/change-password', data: {
+        'oldPassword': oldPassword,
+        'newPassword': newPassword,
+      });
+      if (response.statusCode != 200) {
+        Helper.debug("///ERROR at forgotPassword: ${response.data}///");
+        throw Exception(response.data);
+      }
+    } catch (e) {
+      Helper.debug("///ERROR at forgotPassword: $e///");
+      throw Exception(e);
+    }
+  }
+
+  Future<void> updatePasswordByCode({required String code, required String email, required String newPassword}) async {
+    try {
+      final Response response =
+      await dio.post('$_apiBase/free/change-password-by-token', data: {
+        'email': email,
+        'code': code,
+        'newPassword': newPassword,
+      });
+      if (response.statusCode != 200) {
+        Helper.debug("///ERROR at forgotPassword: ${response.data}///");
+        throw Exception(response.data);
+      }
+    } catch (e) {
+      Helper.debug("///ERROR at forgotPassword: $e///");
+      throw Exception(e);
+    }
+  }
 }

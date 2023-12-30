@@ -3,7 +3,9 @@ import 'package:get_it/get_it.dart';
 import 'package:project4/config/app_color.dart';
 import 'package:project4/config/app_font_size.dart';
 import 'package:project4/main.dart';
+import 'package:project4/screens/notification/notification_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
+import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/storages.dart';
 import 'package:project4/widgets/base_widget.dart';
 
@@ -68,11 +70,18 @@ class _CustomAppBarState extends State<CustomAppBar> {
               child: BaseWidget.instance.getLogoApp(context: context, scale: 1),
             ),
           ),
-          Storages.instance.isLogin() ? BaseWidget.instance.setIcon(iconData: Icons.notifications_outlined)
-              : _toggleDarkModeWidget(),
+          Storages.instance.isLogin() ? _notificationWidget() : _toggleDarkModeWidget(),
         ],
       ),
     );
+  }
+
+  Widget _notificationWidget() {
+    return GestureDetector(
+        onTap: () {
+          Helper.navigatorPush(context: context, screen: const NotificationScreen());
+        },
+        child: BaseWidget.instance.setIcon(iconData: Icons.notifications_outlined));
   }
 
   Widget _toggleDarkModeWidget() {

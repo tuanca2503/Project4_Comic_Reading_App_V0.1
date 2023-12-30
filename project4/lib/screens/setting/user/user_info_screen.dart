@@ -78,11 +78,13 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
           user: UpdateUser(_usernameController!.text, _avatarName!));
       if (!mounted) return;
       // pop loading dialog
-      Helper.navigatorPop(context);
+      Helper.dialogPop(context);
       // pop user info screen
       Helper.navigatorPop(context);
+      Helper.showSuccessSnackBar(context, 'Cập nhật thông tin thành công!');
     } catch (e) {
       if (!mounted) return;
+      Helper.dialogPop(context);
       Helper.showErrorSnackBar(context, ResponseErrorHelper.getErrorMessage(e));
     }
   }
@@ -180,7 +182,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                 text: "<",
                 bgColor: AppColor.transparent,
                 borderColor: Theme.of(context).colorScheme.outline,
-                fontSize: AppFontSize.headline1,
+                fontSize: AppFontSize.body,
               ),
             ),
             Expanded(

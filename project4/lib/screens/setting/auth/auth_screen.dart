@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project4/config/app_color.dart';
 import 'package:project4/config/app_font_size.dart';
-import 'package:project4/screens/auth/login_screen.dart';
-import 'package:project4/screens/auth/signup_screen.dart';
+import 'package:project4/screens/setting/auth/login_screen.dart';
+import 'package:project4/screens/setting/auth/signup_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/widgets/app/custom_app_bar.dart';
