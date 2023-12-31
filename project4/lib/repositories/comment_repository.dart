@@ -1,10 +1,6 @@
-import 'dart:html';
-
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:project4/config/environment.dart';
-import 'package:project4/models/comic/page_comic_item.dart';
 import 'package:project4/models/comment/page_comment_item.dart';
 import 'package:project4/models/page_data.dart';
 import 'package:project4/utils/helper.dart';
@@ -51,12 +47,11 @@ class CommentRepository {
 
   Future<Response?> createOrUpdateComment(
       {String? id,
-        required String content,
-        String? parentCommentId,
-        required String mangaId}) async {
+      required String content,
+      String? parentCommentId,
+      required String mangaId}) async {
     try {
-      final Response response =
-      await dio.post('$_apiBase/', data: {
+      final Response response = await dio.post('$_apiBase/', data: {
         'email': id,
         'content': content,
         'parentCommentId': parentCommentId,

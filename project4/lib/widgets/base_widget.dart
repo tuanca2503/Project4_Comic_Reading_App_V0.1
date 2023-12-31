@@ -10,7 +10,7 @@ import 'package:project4/utils/storages.dart';
 import 'package:project4/utils/string_utils.dart';
 
 class BaseWidget {
-  final String _imageAsset = 'assets/images/';
+  final String _imageAsset = 'assets/images';
   static BaseWidget? _instance;
 
   BaseWidget._();
@@ -89,7 +89,7 @@ class BaseWidget {
     );
   }
 
-  Icon setIcon({required IconData iconData, Color? color, size = 24}) {
+  Icon setIcon({required IconData iconData, Color? color, double? size = 24}) {
     return Icon(
       iconData,
       color: color,
