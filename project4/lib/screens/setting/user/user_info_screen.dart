@@ -114,8 +114,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       child: CircleAvatar(
         radius: AppDimension.baseConstraints.maxHeight * 0.1,
         backgroundColor: _avatarError != null ? AppColor.error : Colors.white,
-        backgroundImage: _avatarName != null ? BaseWidget.instance.getAvatarWidget() as NetworkImage
-        : (imageXFile == null ? null : FileImage(File(imageXFile!.path)) as ImageProvider<Object>?),
+        backgroundImage: imageXFile == null ? (_avatarName != null ? BaseWidget.instance.getAvatarWidget() as NetworkImage : null) : FileImage(File(imageXFile!.path)) as ImageProvider<Object>?,
         child: imageXFile == null
             ? Icon(
                 Icons.add_photo_alternate,
