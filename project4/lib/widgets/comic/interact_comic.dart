@@ -58,7 +58,7 @@ class _InteractComicWidgetState extends State<InteractComicWidget> {
             context: context,
             text: "${widget.detailComic.totalRead} lượt đọc",
             iconData: Icons.remove_red_eye_outlined,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: widget.iconColor,
           ),
           const SizedBox(width: AppDimension.dimension24,),
           _interactComicWidget(

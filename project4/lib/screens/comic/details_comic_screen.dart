@@ -193,10 +193,10 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
             InteractComicWidget(
               bgColor: AppColor.transparent,
               borderColor: Theme.of(context).colorScheme.primary,
-              iconColor: Theme.of(context).colorScheme.background,
+              iconColor: AppColor.onOverlay,
               height: AppFontSize.headline1 * 4,
               detailComic: _detailComic!,
-              textColor: Theme.of(context).colorScheme.background,
+              textColor: AppColor.onOverlay,
             ),
           ],
         ),
