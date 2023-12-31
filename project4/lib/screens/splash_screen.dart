@@ -1,8 +1,29 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:project4/screens/main_screen.dart';
 import 'package:project4/widgets/base_widget.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+
+  startTimer() {
+    Timer(const Duration(seconds: 2), () async {
+      Navigator.push(context, MaterialPageRoute(builder: (c) => const MainScreen()));
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+  }
 
   @override
   Widget build(BuildContext context) {

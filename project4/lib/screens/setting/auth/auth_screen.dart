@@ -23,7 +23,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: const CustomAppBar(selectedAppBar: AppBarEnum.back),
+      appBar: const CustomAppBar(selectedAppBar: AppBarEnum.back,),
       body: Stack(
         children: [
           // back button

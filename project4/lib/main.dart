@@ -5,6 +5,7 @@ import 'package:project4/config/app_theme.dart';
 import 'package:project4/models/notification/notification_page_item.dart';
 import 'package:project4/models/users/user.dart';
 import 'package:project4/screens/main_screen.dart';
+import 'package:project4/screens/splash_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/socket_helper.dart';
@@ -79,7 +80,7 @@ class MyApp extends StatelessWidget {
         home: LayoutBuilder(
           builder: (context, constraints) {
             AppDimension.baseConstraints = constraints;
-            return const MainScreen();
+            return const SplashScreen();
           },
         ),
       );
