@@ -160,7 +160,7 @@ class _AuthScreenState extends State<AuthScreen> {
             // borderRadius: BorderRadius.circular(AppDimension.dimension8),
           ),
           child: BaseWidget.instance
-              .setImageAsset(link: image, scale: 0.7, fit: BoxFit.contain),
+              .setImageAssetScale(link: image, scale: 0.7, fit: BoxFit.contain),
         ),
       ),
     );

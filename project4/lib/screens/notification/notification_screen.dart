@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:project4/screens/notification/bottom_sheet_option.dart';
+import 'package:get_it/get_it.dart';
+import 'package:project4/main.dart';
+import 'package:project4/repositories/notification_repository.dart';
 import 'package:project4/screens/notification/scroll_page_notify_widget.dart';
+import 'package:project4/utils/helper.dart';
 import 'package:project4/widgets/app/custom_app_bar.dart';
+import 'package:project4/widgets/loading_dialog.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -29,10 +33,23 @@ class _NotificationScreenScreen extends State<NotificationScreen> {
     ));
   }
 
+  void _markAsReadAll() {
+    showDialog(
+        context: context,
+        builder: (c) {
+          return const LoadingDialog(message: "Đang xử lý");
+        });
+    NotificationRepository.instance.markAllAsRead().then((_) {
+      Helper.navigatorPop(context);
+      Helper.showSuccessSnackBar(context, 'Đánh dấu đã đọc thành công!');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(selectedAppBar: AppBarEnum.back),
+      appBar: const CustomAppBar(
+          selectedAppBar: AppBarEnum.back),
       body: DefaultTabController(
         length: _tabs.length,
         child: Column(
@@ -50,7 +67,8 @@ class _NotificationScreenScreen extends State<NotificationScreen> {
 
   Widget _rightActionWidget() {
     return GestureDetector(
-        onTap: () {
+        onTap: _markAsReadAll,
+        /*onTap: () {
           showModalBottomSheet(
             isScrollControlled: true,
             isDismissible: true,
@@ -59,9 +77,9 @@ class _NotificationScreenScreen extends State<NotificationScreen> {
               return const BottomSheetOption();
             },
           );
-        },
+        },*/
         child: Icon(
-          Icons.more_vert,
+          Icons.done_all,
           color: Theme.of(context).colorScheme.primary,
         ));
   }

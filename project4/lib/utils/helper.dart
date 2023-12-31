@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:project4/config/app_color.dart';
 import 'package:project4/models/notification/notification_pass_data.dart';
+import 'package:project4/utils/custom_date_utils.dart';
 
 class Helper {
   Helper._();
@@ -74,7 +75,7 @@ class Helper {
     }
   }
 
-  static String? showTimeUpdatedComic(int lastUpdatedDate) {
+  static String showTimeUpdatedComic(int lastUpdatedDate) {
     int currentTs = DateTime.now().millisecondsSinceEpoch;
     int gapTime = ((currentTs - lastUpdatedDate) / 1000).round();
     if (gapTime < 60 * 60) {
@@ -84,6 +85,6 @@ class Helper {
     } else if (gapTime < 60 * 60 * 24 * 30) {
       return '${(gapTime / 60 / 60 / 24).round()} ngày trước';
     }
-    return null;
+    return CustomDateUtils.formatDateFromTs(lastUpdatedDate);
   }
 }

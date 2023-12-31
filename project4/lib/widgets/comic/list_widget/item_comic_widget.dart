@@ -43,7 +43,6 @@ class ItemComicWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? lastUpdated = Helper.showTimeUpdatedComic(comic.lastUpdatedDate);
     // Expanded
     return Container(
       height: AppFontSize.headline1 * 4.5,
@@ -69,7 +68,7 @@ class ItemComicWidget extends StatelessWidget {
               const SizedBox(
                 width: AppDimension.dimension8,
               ),
-              Expanded(flex: 3, child: _comicInfoWidget(context, lastUpdated)),
+              Expanded(flex: 3, child: _comicInfoWidget(context)),
             ],
           ),
         ),
@@ -89,7 +88,7 @@ class ItemComicWidget extends StatelessWidget {
     );
   }
 
-  Widget _comicInfoWidget(BuildContext context, String? lastUpdated) {
+  Widget _comicInfoWidget(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -122,16 +121,14 @@ class ItemComicWidget extends StatelessWidget {
               fontSize: AppFontSize.label,
           ),
         ) : Container(),
-        lastUpdated != null
-            ? Text(
-                "Cập nhật: $lastUpdated",
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: AppFontSize.label,
-                  color: Theme.of(context).colorScheme.tertiary
-                ),
-              )
-            : Container(),
+        Text(
+          "Cập nhật: ${Helper.showTimeUpdatedComic(comic.lastUpdatedDate)}",
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: AppFontSize.label,
+              color: Theme.of(context).colorScheme.tertiary
+          ),
+        ),
         _comicInteractGroupWidget(context),
       ],
     );

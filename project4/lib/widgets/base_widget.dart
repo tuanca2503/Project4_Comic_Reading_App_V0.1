@@ -23,6 +23,7 @@ class BaseWidget {
   Widget getAvatarWidget({double? size}) {
     User? user = Storages.instance.getUser();
     if (user == null || !user.avatar.isHasText) {
+      return setImageAsset(link: 'user.png', size: size);
       return setIcon(iconData: Icons.manage_accounts_outlined, size: size);
     } else {
       return setImageNetwork(
@@ -44,7 +45,7 @@ class BaseWidget {
     return Image.asset('$_imageAsset/$background');
   }
 
-  Transform setImageAsset(
+  Transform setImageAssetScale(
       {required String link,
       BoxFit fit = BoxFit.cover,
       double scale = 1,
@@ -57,6 +58,16 @@ class BaseWidget {
           height: size,
           width: size,
         ));
+  }
+
+  Image setImageAsset(
+      {required String link, BoxFit fit = BoxFit.cover, double? size}) {
+    return Image.asset(
+      '$_imageAsset/$link',
+      fit: fit,
+      height: size,
+      width: size,
+    );
   }
 
   Image setImageNetwork(
@@ -120,12 +131,12 @@ class BaseWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          print('hasError: $snapshot');
+          Helper.debug('hasError: $snapshot');
           return Text('Error: ${snapshot.error}');
         } else if (snapshot.connectionState == ConnectionState.done) {
           return callback(snapshot);
         } else {
-          print('ELSE: $snapshot');
+          Helper.debug('ELSE: $snapshot');
           return Container();
         }
       },
@@ -141,7 +152,7 @@ class BaseWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return SizedBox(
             // fake center screen (in singleScroll -> cannot use Expanded)
-            height: AppDimension.baseConstraints.maxHeight * 0.5,
+            height: AppDimension.baseConstraints.maxHeight * 0.2,
             child: const Center(child: CircularProgressIndicator()),
           );
         } else if (snapshot.hasError) {

@@ -60,7 +60,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (!mounted) return;
       Helper.dialogPop(context);
-      Helper.showErrorSnackBar(context, ResponseErrorHelper.getErrorMessage(e));
+      Helper.showErrorSnackBar(context, 'Email đã tồn tại');
+      // Helper.showErrorSnackBar(context, ResponseErrorHelper.getErrorMessage(e));
     }
   }
 

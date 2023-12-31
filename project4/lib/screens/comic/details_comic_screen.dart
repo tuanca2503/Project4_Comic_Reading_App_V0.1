@@ -5,15 +5,20 @@ import 'package:project4/config/environment.dart';
 import 'package:project4/models/comic/chapter/page_chapter_item.dart';
 import 'package:project4/models/comic/detail_comic.dart';
 import 'package:project4/repositories/comic_repository.dart';
+import 'package:project4/repositories/comment_repository.dart';
 import 'package:project4/screens/comic/reading_screen.dart';
+import 'package:project4/screens/comic/scroll_page_comment_widget.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/custom_date_utils.dart';
 import 'package:project4/utils/helper.dart';
+import 'package:project4/utils/storages.dart';
+import 'package:project4/utils/string_utils.dart';
 import 'package:project4/widgets/app/custom_app_bar.dart';
+import 'package:project4/widgets/app/custom_text_form_field.dart';
 import 'package:project4/widgets/base_widget.dart';
-import 'package:project4/widgets/comic/list_widget/list_genres_horizontal.dart';
 import 'package:project4/widgets/comic/interact_comic.dart';
-
+import 'package:project4/widgets/comic/list_widget/list_genres_horizontal.dart';
+import 'package:project4/widgets/loading_dialog.dart';
 
 class DetailsComicScreen extends StatefulWidget {
   const DetailsComicScreen({super.key, required this.id, this.showButton = 0});
@@ -26,6 +31,8 @@ class DetailsComicScreen extends StatefulWidget {
 }
 
 class _DetailsComicScreenState extends State<DetailsComicScreen> {
+  final TextEditingController _commentController = TextEditingController();
+  bool _isNeedGetNewDataScroll = false;
   DetailComic? _detailComic;
   final List<Widget> _tabs = [
     const Align(alignment: Alignment.center, child: Text('Giới thiệu')),
@@ -33,6 +40,14 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
     const Align(alignment: Alignment.center, child: Text('Bình luận')),
   ];
   bool _isSortDesc = true;
+
+  bool _getIsNeedGetNewDataScroll() {
+    if (_isNeedGetNewDataScroll) {
+      _isNeedGetNewDataScroll = false;
+      return true;
+    }
+    return false;
+  }
 
   @override
   void initState() {
@@ -42,6 +57,28 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
         _detailComic = value;
       });
     });
+  }
+
+  void _onSendComment() {
+    if (_commentController.text.isHasText) {
+      if (!Storages.instance.isLogin()) {
+        Helper.showErrorSnackBar(context, 'Bạn phải đăng nhập để bình luận!');
+        return;
+      }
+      showDialog(context: context, builder: (c) {
+        return const LoadingDialog(message: "Đang gửi bình luận");
+      });
+      CommentRepository.instance.createOrUpdateComment(content: _commentController.text, mangaId: _detailComic!.id)
+          .then((_) {
+        Helper.dialogPop(context);
+        setState(() {
+          _commentController.clear();
+          _isNeedGetNewDataScroll = true;
+        });
+      }).catchError((Object e, StackTrace stackTrace) {
+        Helper.dialogPop(context);
+      });
+    }
   }
 
   @override
@@ -104,8 +141,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize:
-                        AppFontSize.headline1,
+                    fontSize: AppFontSize.headline1,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
@@ -197,8 +233,9 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                 dividerColor: AppColor.transparent,
                 indicator: BoxDecoration(
                     borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(AppDimension.dimension8),
-                        topRight: Radius.circular(AppDimension.dimension8),),
+                      topLeft: Radius.circular(AppDimension.dimension8),
+                      topRight: Radius.circular(AppDimension.dimension8),
+                    ),
                     color: Theme.of(context).colorScheme.background),
                 tabs: _tabs,
               ),
@@ -228,8 +265,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
         alignment: Alignment.centerLeft,
         child: Text(
           _detailComic!.description,
-          style: TextStyle(
-              fontSize: AppFontSize.body),
+          style: TextStyle(fontSize: AppFontSize.body),
         ),
       ),
     );
@@ -277,10 +313,8 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                     'Danh sách chương',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.fontSize,
+                      fontSize:
+                          Theme.of(context).textTheme.titleMedium?.fontSize,
                       color: AppColor.onOverlay,
                     ),
                   ),
@@ -288,10 +322,8 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                     "${_detailComic!.totalChapters} chương",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: Theme.of(context)
-                          .textTheme
-                          .labelLarge
-                          ?.fontSize,
+                      fontSize:
+                          Theme.of(context).textTheme.labelLarge?.fontSize,
                       color: AppColor.onOverlay,
                     ),
                   ),
@@ -312,7 +344,18 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
   }
 
   Widget _commentWidget() {
-    return Container();
+    return Column(
+      children: [
+        CustomTextFormField(
+          controller: _commentController,
+          hintText: 'Nhập bình luận ...',
+          prefixIcon: BaseWidget.instance.setIcon(iconData: Icons.comment),
+          suffixIcon: BaseWidget.instance.setIcon(iconData: Icons.send),
+          onSuffixIcon: _onSendComment,
+        ),
+        Expanded(child: ScrollPageCommentWidget(mangaId: _detailComic!.id, isNeedGetNewData: _getIsNeedGetNewDataScroll(),)),
+      ],
+    );
   }
 
   Widget _chapterList(double height) {
@@ -320,7 +363,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            for (int i = 0; i < _detailComic!.chapters.length; i ++)
+            for (int i = 0; i < _detailComic!.chapters.length; i++)
               _chapterDetailWidget(height, _detailComic!.chapters[i], i)
           ],
         ),
@@ -328,7 +371,8 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
     );
   }
 
-  Widget _chapterDetailWidget(double height, PageChapterItem chapter, int chapterIndex) {
+  Widget _chapterDetailWidget(
+      double height, PageChapterItem chapter, int chapterIndex) {
     return GestureDetector(
       child: Container(
         padding: const EdgeInsets.all(AppDimension.dimension8),
@@ -341,8 +385,7 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
                 children: [
                   Text(chapter.name),
                   Text(
-                    CustomDateUtils.formatDateFromTs(
-                        chapter.lastUpdatedDate!),
+                    CustomDateUtils.formatDateFromTs(chapter.lastUpdatedDate!),
                   ),
                 ],
               ),
@@ -363,7 +406,10 @@ class _DetailsComicScreenState extends State<DetailsComicScreen> {
       onTap: () {
         Helper.navigatorPush(
             context: context,
-            screen: ReadingScreen(chapterIndex: chapterIndex, chapterList: _detailComic!.chapters,));
+            screen: ReadingScreen(
+              chapterIndex: chapterIndex,
+              chapterList: _detailComic!.chapters,
+            ));
       },
     );
   }
