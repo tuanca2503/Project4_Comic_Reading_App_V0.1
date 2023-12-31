@@ -17,10 +17,10 @@ class FollowScreen extends StatefulWidget {
   const FollowScreen({super.key});
 
   @override
-  State<FollowScreen> createState() => _RankFollowScreen();
+  State<FollowScreen> createState() => _FollowScreen();
 }
 
-class _RankFollowScreen extends State<FollowScreen>
+class _FollowScreen extends State<FollowScreen>
     with AutomaticKeepAliveClientMixin<FollowScreen> {
   @override
   bool get wantKeepAlive => true;

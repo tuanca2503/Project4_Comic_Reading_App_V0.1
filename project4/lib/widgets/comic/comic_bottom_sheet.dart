@@ -36,27 +36,21 @@ class _ComicBottomSheetState extends State<ComicBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      maxChildSize: 0.75,
-      minChildSize: 0.6,
-      builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.background,
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(AppDimension.dimension16),
-                topRight: Radius.circular(AppDimension.dimension16)),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(AppDimension.dimension8),
-            color: Theme.of(context).colorScheme.surface,
-            child: detailComic == null
-                ? const Center(child: CircularProgressIndicator())
-                : _bottomSheetWidget(),
-          ),
-        );
-      },
+    return Container(
+      height: AppDimension.baseConstraints.maxHeight * 0.7,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.background,
+        borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(AppDimension.dimension16),
+            topRight: Radius.circular(AppDimension.dimension16)),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(AppDimension.dimension8),
+        color: Theme.of(context).colorScheme.surface,
+        child: detailComic == null
+            ? const Center(child: CircularProgressIndicator())
+            : _bottomSheetWidget(),
+      ),
     );
   }
 

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:project4/config/environment.dart';
 import 'package:project4/models/users/user.dart';
+import 'package:project4/repositories/auth_repository.dart';
 import 'package:project4/utils/storages.dart';
 import 'package:project4/utils/string_utils.dart';
 
@@ -153,6 +154,7 @@ class HttpInterceptor {
       return true;
     } catch (e) {
       Helper.debug("///ERROR _refreshToken: $e///");
+      AuthRepository.instance.logout();
       return false;
     }
   }

@@ -8,6 +8,7 @@ import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/app_validator.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/response_helper.dart';
+import 'package:project4/utils/socket_helper.dart';
 import 'package:project4/widgets/app/custom_button_widget.dart';
 import 'package:project4/widgets/app/custom_text_form_field.dart';
 import 'package:project4/widgets/base_widget.dart';
@@ -47,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
           });
       await AuthRepository.instance.loginUser(
           email: _emailController.text, password: _passwordController.text);
+      SocketHelper.instance.activate();
       if (!mounted) return;
       Helper.dialogPop(context);
       switch (widget.loginTo) {

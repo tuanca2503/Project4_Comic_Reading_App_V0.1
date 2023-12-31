@@ -6,6 +6,7 @@ import 'package:project4/models/users/user.dart';
 import 'package:project4/models/users/user_login_res.dart';
 import 'package:project4/repositories/user_repository.dart';
 import 'package:project4/utils/helper.dart';
+import 'package:project4/utils/socket_helper.dart';
 import 'package:project4/utils/storages.dart';
 
 
@@ -55,6 +56,7 @@ class AuthRepository {
   Future<void> logout() async {
     try {
       await _storage.clearStorage();
+      SocketHelper.instance.deactivate();
       screenProvider.updateUserInfo(null);
     } catch (e) {
       Helper.debug("///ERROR at logout(): $e///");

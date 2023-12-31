@@ -22,6 +22,7 @@ class User {
         isReceiveNotification = userLogin.isReceiveNotification ?? false;
 
   Map<String, dynamic> toJson() => {
+        "id": id,
         "username": username,
         "email": email,
         "avatar": avatar,

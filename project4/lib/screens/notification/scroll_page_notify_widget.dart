@@ -1,60 +1,56 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:project4/models/comic/page_comic_item.dart';
+import 'package:project4/main.dart';
+import 'package:project4/models/notification/notification_page_item.dart';
 import 'package:project4/models/page_data.dart';
-import 'package:project4/repositories/comic_repository.dart';
+import 'package:project4/repositories/notification_repository.dart';
+import 'package:project4/screens/notification/item_notification_widget.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/widgets/base_widget.dart';
-import 'package:project4/widgets/comic/list_widget/item_comic_widget.dart';
+import 'package:provider/provider.dart';
 
 class ScrollPageNotifyWidget extends StatefulWidget {
   const ScrollPageNotifyWidget({
     Key? key,
     this.title,
+    required this.hasRead, this.updateNotificationState,
   }) : super(key: key);
   final Widget? title;
+  final bool hasRead; // true -> all, false -> only unread
+  final void Function(String?)? updateNotificationState;
 
   @override
   State<ScrollPageNotifyWidget> createState() => _ScrollPageNotifyWidgetState();
 }
 
-class _ScrollPageNotifyWidgetState extends State<ScrollPageNotifyWidget>
-    with AutomaticKeepAliveClientMixin<ScrollPageNotifyWidget> {
+class _ScrollPageNotifyWidgetState extends State<ScrollPageNotifyWidget> {
   int page = 0;
   final int pageSize = 10;
   final scrollController = ScrollController();
   bool? hasNext;
   bool isLoading = false;
-  late StreamController<List<PageComicItem>> _dataStreamController;
+  late StreamController<List<NotificationPageItem>> _dataStreamController;
   final List<String> scrollComicIds = [];
-  final List<PageComicItem> scrollComics = [];
-
-  @override
-  bool get wantKeepAlive => true;
+  final List<NotificationPageItem> scrollNotifications = [];
 
   @override
   void initState() {
     super.initState();
     scrollController.addListener(_scrollListener);
-    _dataStreamController = StreamController<List<PageComicItem>>.broadcast();
+    _dataStreamController =
+        StreamController<List<NotificationPageItem>>.broadcast();
     fetchData();
   }
 
   Future<void> fetchData() async {
     try {
       isLoading = true;
-      PageData<PageComicItem> pageData;
-      switch (widget.queryType) {
-        case QueryType.all:
-          pageData = await ComicRepository.instance
-              .getAllComics(filter: widget.filter, page: page, pageSize: pageSize, genresIds: widget.genresId, mangaName: widget.mangaName);
-        case QueryType.favourite:
-        case QueryType.read:
-          pageData = await ComicRepository.instance
-              .getAllHistoryComics(page: page, pageSize: pageSize, action: QueryType.read.name.toUpperCase());
-      }
+      PageData<NotificationPageItem> pageData =
+          await NotificationRepository.instance.getAllNotification(
+              page: page, pageSize: pageSize, hasRead: widget.hasRead);
+
       isLoading = false;
       page += 1;
       hasNext = pageData.hasNext;
@@ -74,48 +70,51 @@ class _ScrollPageNotifyWidgetState extends State<ScrollPageNotifyWidget>
     }
   }
 
-  void addNotDuplicateComics(List<PageComicItem> comics) {
-    for (var c in comics) {
+  void addNotDuplicateNotifications(List<NotificationPageItem> notifications) {
+    for (var c in notifications) {
       if (!scrollComicIds.contains(c.id)) {
         scrollComicIds.add(c.id);
-        scrollComics.add(c);
+        scrollNotifications.add(c);
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return SingleChildScrollView(
-      padding: AppDimension.initPaddingBody(),
-      child: Column(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ...widget.children,
-          SizedBox(
-            height: widget.children.isNotEmpty
-                ? AppDimension.baseConstraints.maxHeight * 0.01
-                : 0,
-          ),
-          widget.title != null ? widget.title! : Container(),
-          BaseWidget.instance.setStreamBuilder(
-            callback: (snapshot) {
-              final List<PageComicItem> data = snapshot.data!;
-              addNotDuplicateComics(data);
-              return scrollComics.isEmpty ? BaseWidget.instance.emptyWidget() : ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                controller: ScrollController(),
-                itemCount: scrollComics.length,
-                itemBuilder: (context, index) {
-                  return ItemComicWidget(comic: scrollComics[index], itemComicType: widget.itemComicType,);
-                },
-              );
-            },
-            streamController: _dataStreamController,
-          ),
-        ],
-      ),
-    );
+    return Consumer<ScreenProvider>(builder: (context, provider, child) {
+      if (provider.notificationPageItem != null) {
+        scrollNotifications.insert(0, provider.notificationPageItem!);
+        scrollComicIds.insert(0, provider.notificationPageItem!.id);
+        // has `addNotDuplicateNotifications` -> cannot update page
+      }
+      return SingleChildScrollView(
+        padding: AppDimension.initPaddingBody(),
+        child: Column(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            widget.title != null ? widget.title! : Container(),
+            BaseWidget.instance.setStreamBuilder(
+              callback: (snapshot) {
+                final List<NotificationPageItem> data = snapshot.data!;
+                addNotDuplicateNotifications(data);
+                return scrollNotifications.isEmpty
+                    ? BaseWidget.instance.emptyWidget()
+                    : ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  controller: ScrollController(),
+                  itemCount: scrollNotifications.length,
+                  itemBuilder: (context, index) {
+                    return ItemNotificationWidget(
+                        notification: scrollNotifications[index]);
+                  },
+                );
+              },
+              streamController: _dataStreamController,
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

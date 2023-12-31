@@ -13,11 +13,12 @@ enum AppBarEnum { logo, back }
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar(
-      {Key? key, required this.selectedAppBar, this.color, this.bgColor})
+      {Key? key, required this.selectedAppBar, this.color, this.bgColor, this.rightAction})
       : super(key: key);
   final AppBarEnum selectedAppBar;
   final Color? color;
   final Color? bgColor;
+  final Widget? rightAction;
 
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
@@ -120,15 +121,21 @@ class _CustomAppBarState extends State<CustomAppBar> {
               color: backgroundColor,
               height: widget.preferredSize.height,
               padding: const EdgeInsets.all(AppDimension.dimension8),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.maybePop(context);
-                },
-                child: Icon(
-                  Icons.navigate_before,
-                  size: AppFontSize.headline1,
-                  color: widget.color,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.maybePop(context);
+                    },
+                    child: Icon(
+                      Icons.navigate_before,
+                      size: AppFontSize.headline1,
+                      color: widget.color,
+                    ),
+                  ),
+                  widget.rightAction != null ? widget.rightAction! : Container(),
+                ],
               ),
             )),
       ],

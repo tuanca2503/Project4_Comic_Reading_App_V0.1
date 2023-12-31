@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:project4/config/app_color.dart';
+import 'package:project4/models/notification/notification_pass_data.dart';
 
 class Helper {
   Helper._();
@@ -28,6 +29,11 @@ class Helper {
 
   static Future<bool> navigatorPop(BuildContext context) {
     return Navigator.maybePop(context);
+  }
+
+  static Future<bool> navigatorPopWithMessage(
+      BuildContext context, NotificationPassData notification) {
+    return Navigator.maybePop(context, notification);
   }
 
   static void dialogPop(BuildContext context) {
@@ -72,11 +78,11 @@ class Helper {
     int currentTs = DateTime.now().millisecondsSinceEpoch;
     int gapTime = ((currentTs - lastUpdatedDate) / 1000).round();
     if (gapTime < 60 * 60) {
-      return '${(gapTime/60).round()} phút trước';
+      return '${(gapTime / 60).round()} phút trước';
     } else if (gapTime < 60 * 60 * 24) {
-      return '${(gapTime/60 / 60).round()} giờ trước';
+      return '${(gapTime / 60 / 60).round()} giờ trước';
     } else if (gapTime < 60 * 60 * 24 * 30) {
-      return '${(gapTime/60 / 60 / 24).round()} ngày trước';
+      return '${(gapTime / 60 / 60 / 24).round()} ngày trước';
     }
     return null;
   }

@@ -9,10 +9,10 @@ class ComicHistoryScreen extends StatefulWidget {
   const ComicHistoryScreen({super.key});
 
   @override
-  State<ComicHistoryScreen> createState() => _RankComicHistoryScreen();
+  State<ComicHistoryScreen> createState() => _ComicHistoryScreen();
 }
 
-class _RankComicHistoryScreen extends State<ComicHistoryScreen> {
+class _ComicHistoryScreen extends State<ComicHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

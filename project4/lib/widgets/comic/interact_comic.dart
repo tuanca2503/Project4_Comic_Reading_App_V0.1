@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:project4/models/comic/detail_comic.dart';
 import 'package:project4/repositories/interact_comic_repository.dart';
 import 'package:project4/utils/app_dimension.dart';
+import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/storages.dart';
 import 'package:project4/widgets/base_widget.dart';
+import 'package:project4/widgets/loading_dialog.dart';
 
 class InteractComicWidget extends StatefulWidget {
   const InteractComicWidget({Key? key, required this.detailComic, required this.height, required this.bgColor, required this.iconColor, required this.textColor, this.borderColor}) : super(key: key);
@@ -24,6 +26,9 @@ class _InteractComicWidgetState extends State<InteractComicWidget> {
 
   void likeOrFavourite(String action, String id) {
     if (!isLogin) return;
+    showDialog(context: context, builder: (c) {
+      return const LoadingDialog(message: "Đang xử lý",);
+    });
     InteractComicRepository.instance
         .interactComic(action, widget.detailComic.id)
         .then((value) {
@@ -36,6 +41,9 @@ class _InteractComicWidgetState extends State<InteractComicWidget> {
           widget.detailComic.totalFavourite += (value ? 1 : -1);
         }
       });
+      Helper.dialogPop(context);
+    }).catchError((Object e, StackTrace stackTrace) {
+      Helper.dialogPop(context);
     });
   }
   
