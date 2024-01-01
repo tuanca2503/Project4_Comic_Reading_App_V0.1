@@ -26,13 +26,8 @@ class BaseWidget {
       return setImageAsset(link: 'user.png', size: size, fit: fit);
       return setIcon(iconData: Icons.manage_accounts_outlined, size: size);
     } else {
-      print('----------------');
       return setImageNetwork(
-<<<<<<< Updated upstream
           link: '${Environment.apiUrl}/images/${user.avatar}', size: size, fit: fit);
-=======
-          link: '${Environment.apiUrl}/${user.avatar}', size: size);
->>>>>>> Stashed changes
     }
   }
 
