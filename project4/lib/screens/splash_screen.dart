@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:project4/config/app_color.dart';
+import 'package:project4/config/app_font_size.dart';
 import 'package:project4/main.dart';
 import 'package:project4/models/users/user.dart';
 import 'package:project4/repositories/auth_repository.dart';
 import 'package:project4/screens/main_screen.dart';
+import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/socket_helper.dart';
 import 'package:project4/utils/storages.dart';
 import 'package:project4/widgets/base_widget.dart';
@@ -51,7 +54,25 @@ class _SplashScreenState extends State<SplashScreen> {
               fit: BoxFit.cover,
               child: BaseWidget.instance.getBackground(context: context),
             ),
-          )
+          ),
+          Positioned.fill(
+            child: Container(
+              color: AppColor.overlayActive,
+            ),
+          ),
+          Positioned(
+              left: 0,
+              right: 0,
+              top: AppDimension.baseConstraints.maxHeight * 0.45,
+              child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Comic Reading',
+                    style: TextStyle(
+                        color: AppColor.onOverlay,
+                        fontSize: AppFontSize.headline1,
+                        fontWeight: FontWeight.bold),
+                  ))),
         ],
       ),
     );
