@@ -29,9 +29,10 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       AuthRepository.instance.logout();
     }
-    if (!mounted) return;
-    Navigator.push(
-        context, MaterialPageRoute(builder: (c) => const MainScreen()));
+    Timer(const Duration(seconds: 1), () async {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (c) => const MainScreen()));
+    });
   }
 
   @override
