@@ -82,7 +82,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       children: [
         _labelWidget(),
         SizedBox(
-          height: height,
+          // height: height,
           child: TextFormField(
             controller: widget.controller,
             inputFormatters: widget.inputFormatters,
