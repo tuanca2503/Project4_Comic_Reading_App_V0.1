@@ -34,10 +34,10 @@ class HttpInterceptor {
     _dio.interceptors
         .add(InterceptorsWrapper(onRequest: (options, handler) async {
       // config url (dotenv, ...)
-      if(_storage.isLogin()) {
+      if (_storage.isLogin()) {
         String? accessToken = await _storage.getAccessToken();
 
-        bool tokenIsValid = await _checkTokenIsValid();
+        bool tokenIsValid = await _storage.isValidAccessToken();
         if (!tokenIsValid) {
           await _clearToken();
           String? refreshToken = await _storage.getRefreshToken();
@@ -52,7 +52,7 @@ class HttpInterceptor {
         // Add header when call API
         if (accessToken.isHasText) {
           _headers['Authorization'] =
-          '${_AuthorizationPrefix.Bearer.name} $accessToken';
+              '${_AuthorizationPrefix.Bearer.name} $accessToken';
         }
       }
       options.headers = _headers;
@@ -166,13 +166,6 @@ class HttpInterceptor {
     } else {
       await _storage.clearStorage();
     }
-  }
-
-  Future<bool> _checkTokenIsValid() async {
-    int? accessTokenExp = await _storage.getExpAccessToken();
-    if (accessTokenExp == null) return false;
-    return DateTime.now().isBefore(
-        DateTime.fromMillisecondsSinceEpoch(accessTokenExp * 1000 - 5000));
   }
 
   String? _getTokenFromAuthorize(String headerAuth) {

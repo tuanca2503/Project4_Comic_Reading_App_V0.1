@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project4/config/app_color.dart';
 import 'package:project4/config/app_font_size.dart';
-import 'package:project4/main.dart';
 import 'package:project4/models/users/user.dart';
 import 'package:project4/repositories/file_repository.dart';
 import 'package:project4/repositories/user_repository.dart';
@@ -80,14 +78,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       }
 
       await UserRepository.instance.updateUserInfo(
-          username: _usernameController!.text, avatar: _avatarName!);
-      User? user = Storages.instance.getUser();
-      if (user != null) {
-        user.avatar = _avatarName!;
-        user.username = _usernameController!.text;
-        await Storages.instance.setUser(user);
-        GetIt.instance<ScreenProvider>().updateUserInfo(user.email);
-      }
+          username: _usernameController!.text,
+          avatar: _avatarName!,
+          email: _emailController!.text);
       if (!mounted) return;
       // pop loading dialog
       Helper.dialogPop(context);

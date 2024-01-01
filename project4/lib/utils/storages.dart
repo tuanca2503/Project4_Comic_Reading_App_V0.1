@@ -74,18 +74,24 @@ class Storages {
         key: _FlutterSecureStorageEnum.refreshToken.name);
   }
 
-  Future<int?> getExpAccessToken() async {
+  Future<bool> isValidAccessToken() async {
     String? accessToken = await getAccessToken();
-    if (accessToken == null) return null;
 
-    return _getPayloadToken(accessToken)['exp'];
+    if (accessToken == null) return false;
+
+    int accessTokenExp = _getPayloadToken(accessToken)['exp'];
+    return DateTime.now().isBefore(
+        DateTime.fromMillisecondsSinceEpoch(accessTokenExp * 1000 - 5000));
   }
 
-  Future<int?> getExpRefreshToken() async {
+  Future<bool> isValidRefreshToken() async {
     String? refreshToken = await getRefreshToken();
-    if (refreshToken == null) return null;
 
-    return _getPayloadToken(refreshToken)['exp'];
+    if (refreshToken == null) return false;
+
+    int refreshTokenExp = _getPayloadToken(refreshToken)['exp'];
+    return DateTime.now().isBefore(
+        DateTime.fromMillisecondsSinceEpoch(refreshTokenExp * 1000 - 5000));
   }
 
   Future<void> setToken(String? accessToken, String? refreshToken) async {

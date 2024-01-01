@@ -3,14 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:project4/config/app_theme.dart';
 import 'package:project4/models/notification/notification_page_item.dart';
-import 'package:project4/models/users/user.dart';
-import 'package:project4/screens/main_screen.dart';
 import 'package:project4/screens/splash_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
-import 'package:project4/utils/helper.dart';
-import 'package:project4/utils/socket_helper.dart';
 import 'package:project4/utils/storages.dart';
-import 'package:project4/utils/string_utils.dart';
 import 'package:provider/provider.dart';
 
 import 'config/http_interceptor.dart';
@@ -22,25 +17,6 @@ Future<void> main() async {
   GetIt.instance.registerLazySingleton<ScreenProvider>(() => ScreenProvider());
 
   HttpInterceptor.instance.interceptor();
-
-  final storage = Storages.instance;
-  final screenProvider = GetIt.instance<ScreenProvider>();
-  User? userLogin = storage.getUser();
-
-  // Splash Screen
-  if (storage.isLogin()) {
-    String? accessToken = await storage.getAccessToken();
-    Helper.debug('accessToken = $accessToken');
-    if (accessToken.isHasText) {
-      // TODO get user info
-
-      SocketHelper.instance.activate();
-    }
-  } else {
-    // update BottomNavigatorWidget
-    // Helper.debug('userLogin = ${userLogin!.username}');
-    // screenProvider.updateUserInfo(userLogin!.email);
-  }
 
   runApp(
     ChangeNotifierProvider(

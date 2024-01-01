@@ -1,13 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:project4/config/environment.dart';
+import 'package:project4/main.dart';
 import 'package:project4/models/users/user.dart';
 import 'package:project4/utils/helper.dart';
+import 'package:project4/utils/storages.dart';
 
 
 class UserRepository {
   static UserRepository? _instance;
   UserRepository._();
+  final screenProvider = GetIt.instance<ScreenProvider>();
 
   static UserRepository get instance {
     _instance ??= UserRepository._();
@@ -34,7 +37,7 @@ class UserRepository {
     }
   }
 
-  Future<void> updateUserInfo({required String username, required String avatar}) async {
+  Future<void> updateUserInfo({required String username, required String avatar, required String email}) async {
     try {
       final Response response =
           await dio.post('$_apiBase/update-information', data: {
@@ -44,6 +47,13 @@ class UserRepository {
       if (response.statusCode != 200) {
         Helper.debug("///ERROR at updateUserInfo: ${response.data}///");
         throw Exception(response.data);
+      }
+      User? user = Storages.instance.getUser();
+      if (user != null) {
+        user.avatar = avatar;
+        user.username = username;
+        await Storages.instance.setUser(user);
+        screenProvider.updateUserInfo(user.email);
       }
     } catch (e) {
       Helper.debug("///ERROR at updateUserInfo: $e///");
