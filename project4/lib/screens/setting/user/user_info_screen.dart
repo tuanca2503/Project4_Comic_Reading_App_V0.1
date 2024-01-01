@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project4/config/app_color.dart';
 import 'package:project4/config/app_font_size.dart';
-import 'package:project4/models/users/update_user.dart';
+import 'package:project4/main.dart';
 import 'package:project4/models/users/user.dart';
 import 'package:project4/repositories/file_repository.dart';
 import 'package:project4/repositories/user_repository.dart';
@@ -67,15 +68,26 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       return;
     }
     try {
-      showDialog(context: context, builder: (c) {
-        return const LoadingDialog(message: "Đang cập nhật",);
-      });
+      showDialog(
+          context: context,
+          builder: (c) {
+            return const LoadingDialog(
+              message: "Đang cập nhật",
+            );
+          });
       if (imageXFile != null) {
         _avatarName = await FileRepository.instance.uploadFile(imageXFile!);
       }
 
       await UserRepository.instance.updateUserInfo(
-          user: UpdateUser(_usernameController!.text, _avatarName!));
+          username: _usernameController!.text, avatar: _avatarName!);
+      User? user = Storages.instance.getUser();
+      if (user != null) {
+        user.avatar = _avatarName!;
+        user.username = _usernameController!.text;
+        await Storages.instance.setUser(user);
+        GetIt.instance<ScreenProvider>().updateUserInfo(user.email);
+      }
       if (!mounted) return;
       // pop loading dialog
       Helper.dialogPop(context);
@@ -92,19 +104,26 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isLoading ? BaseWidget.instance.loadingWidget() : Container(
-        padding: AppDimension.initPaddingBody(),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _avatarPicker(),
-            _avatarError != null ? Text(_avatarError!, style: TextStyle(color: AppColor.error),) : Container(),
-            _formGroupWidget(context, _formKey),
-            _btnGroupWidget(),
-          ],
-        ),
-      ),
+      body: _isLoading
+          ? BaseWidget.instance.loadingWidget()
+          : Container(
+              padding: AppDimension.initPaddingBody(),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _avatarPicker(),
+                  _avatarError != null
+                      ? Text(
+                          _avatarError!,
+                          style: TextStyle(color: AppColor.error),
+                        )
+                      : Container(),
+                  _formGroupWidget(context, _formKey),
+                  _btnGroupWidget(),
+                ],
+              ),
+            ),
     );
   }
 
@@ -114,14 +133,24 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       child: CircleAvatar(
         radius: AppDimension.baseConstraints.maxHeight * 0.1,
         backgroundColor: _avatarError != null ? AppColor.error : Colors.white,
-        backgroundImage: imageXFile == null ? (_avatarName != null ? BaseWidget.instance.getAvatarWidget() as NetworkImage : null) : FileImage(File(imageXFile!.path)) as ImageProvider<Object>?,
+        backgroundImage: imageXFile == null
+            ? null
+            : FileImage(File(imageXFile!.path)) as ImageProvider<Object>?,
         child: imageXFile == null
-            ? Icon(
-                Icons.add_photo_alternate,
-                size: AppDimension.baseConstraints.maxHeight * 0.1,
-                color: Theme.of(context).colorScheme.primary,
-              )
-            : null,
+            ? (_avatarName != null
+                ? ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(AppDimension.dimension64),
+                    child: BaseWidget.instance.getAvatarWidget(),
+                  )
+                : null)
+            : (_avatarName != null
+                ? Icon(
+                    Icons.add_photo_alternate,
+                    size: AppDimension.baseConstraints.maxHeight * 0.1,
+                    color: Theme.of(context).colorScheme.primary,
+                  )
+                : null),
       ),
     );
   }
@@ -142,7 +171,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
             controller: _emailController!,
             label: "Email",
             hintText: 'abc@mail.com',
-            prefixIcon: BaseWidget.instance.setIcon(iconData: Icons.email_outlined),
+            prefixIcon:
+                BaseWidget.instance.setIcon(iconData: Icons.email_outlined),
             isEnable: false,
             validator: (value) {
               return AppValidator.emailValidator(value);

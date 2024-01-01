@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:project4/config/environment.dart';
-import 'package:project4/models/users/update_user.dart';
 import 'package:project4/models/users/user.dart';
 import 'package:project4/utils/helper.dart';
 
@@ -35,10 +34,13 @@ class UserRepository {
     }
   }
 
-  Future<void> updateUserInfo({required UpdateUser user}) async {
+  Future<void> updateUserInfo({required String username, required String avatar}) async {
     try {
       final Response response =
-          await dio.post('$_apiBase/update-information', data: user);
+          await dio.post('$_apiBase/update-information', data: {
+            'username': username,
+            'avatar': avatar,
+          });
       if (response.statusCode != 200) {
         Helper.debug("///ERROR at updateUserInfo: ${response.data}///");
         throw Exception(response.data);

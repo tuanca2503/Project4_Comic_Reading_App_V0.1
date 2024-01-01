@@ -7,9 +7,9 @@ import 'package:project4/config/app_font_size.dart';
 import 'package:project4/main.dart';
 import 'package:project4/repositories/auth_repository.dart';
 import 'package:project4/repositories/user_repository.dart';
-import 'package:project4/screens/setting/user/comic_history_screen.dart';
 import 'package:project4/screens/main_screen.dart';
 import 'package:project4/screens/setting/user/change_password_screen.dart';
+import 'package:project4/screens/setting/user/comic_history_screen.dart';
 import 'package:project4/screens/setting/user/user_info_screen.dart';
 import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/helper.dart';
@@ -17,6 +17,7 @@ import 'package:project4/utils/storages.dart';
 import 'package:project4/widgets/app/custom_button_widget.dart';
 import 'package:project4/widgets/base_widget.dart';
 import 'package:project4/widgets/loading_dialog.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 
@@ -43,9 +44,11 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   void _logout() {
-    showDialog(context: context, builder: (c) {
-      return const LoadingDialog(message: "Đang đăng xuất");
-    });
+    showDialog(
+        context: context,
+        builder: (c) {
+          return const LoadingDialog(message: "Đang đăng xuất");
+        });
 
     Timer(const Duration(seconds: 1), () async {
       await AuthRepository.instance.logout();
@@ -66,9 +69,11 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   void _switchNotification(bool _) {
-    showDialog(context: context, builder: (c) {
-      return const LoadingDialog(message: "Đang cập nhật");
-    });
+    showDialog(
+        context: context,
+        builder: (c) {
+          return const LoadingDialog(message: "Đang cập nhật");
+        });
     UserRepository.instance.toggleReceiveNotification().then((value) {
       _storage.setIsNotify(value).then((_) {
         setState(() {
@@ -88,18 +93,22 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         padding: AppDimension.initPaddingBody(),
-        child: Column(children: [
-          _userSettingWidget(),
-          _modeSettingWidget(),
-          _notificationSettingWidget(),
-          const SizedBox(height: AppDimension.dimension8,),
-          CustomButtonWidget(
-            onTap: _logout,
-            text: 'Đăng xuất',
-            textColor: Theme.of(context).colorScheme.onBackground,
-            bgColor: AppColor.error,
-          ),
-        ]),
+        child: Consumer<ScreenProvider>(builder: (context, provider, child) {
+          return Column(children: [
+            _userSettingWidget(),
+            _modeSettingWidget(),
+            _notificationSettingWidget(),
+            const SizedBox(
+              height: AppDimension.dimension8,
+            ),
+            CustomButtonWidget(
+              onTap: _logout,
+              text: 'Đăng xuất',
+              textColor: Theme.of(context).colorScheme.onBackground,
+              bgColor: AppColor.error,
+            ),
+          ]);
+        }),
       ),
     );
   }
@@ -175,7 +184,9 @@ class _SettingScreenState extends State<SettingScreen> {
         children: [
           titleGroupWidget,
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppDimension.dimension16, vertical: AppDimension.dimension8),
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppDimension.dimension16,
+                vertical: AppDimension.dimension8),
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(
                   Radius.circular(AppDimension.dimension8)),
@@ -219,7 +230,9 @@ class _SettingScreenState extends State<SettingScreen> {
               avatarWidget: avatarWidget,
               color: prefixIconColor),
           _settingNameWidget(title),
-          suffixIconData != null ? BaseWidget.instance.setIcon(iconData: suffixIconData) : Container(),
+          suffixIconData != null
+              ? BaseWidget.instance.setIcon(iconData: suffixIconData)
+              : Container(),
         ]),
       ),
     );
@@ -235,9 +248,7 @@ class _SettingScreenState extends State<SettingScreen> {
     return SizedBox(
       height: AppDimension.baseConstraints.maxHeight * 0.08,
       child: Row(children: [
-        _userAvatarWidget(
-            iconData: prefixIconData,
-            color: prefixIconColor),
+        _userAvatarWidget(iconData: prefixIconData, color: prefixIconColor),
         _settingNameWidget(title),
         _suffixSwitchButtonWidget(switchValue, onSetting),
       ]),
@@ -247,6 +258,7 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget _userAvatarWidget(
       {IconData? iconData, Widget? avatarWidget, required Color color}) {
     return SizedBox(
+      width: AppDimension.baseConstraints.maxHeight * 0.08,
       child: iconData != null
           ? BaseWidget.instance.setIcon(iconData: iconData, color: color)
           : avatarWidget,

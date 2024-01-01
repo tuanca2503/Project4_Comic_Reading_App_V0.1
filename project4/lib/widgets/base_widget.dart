@@ -20,14 +20,14 @@ class BaseWidget {
     return _instance!;
   }
 
-  Widget getAvatarWidget({double? size}) {
+  Widget getAvatarWidget({double? size, BoxFit fit = BoxFit.cover}) {
     User? user = Storages.instance.getUser();
     if (user == null || !user.avatar.isHasText) {
-      return setImageAsset(link: 'user.png', size: size);
+      return setImageAsset(link: 'user.png', size: size, fit: fit);
       return setIcon(iconData: Icons.manage_accounts_outlined, size: size);
     } else {
       return setImageNetwork(
-          link: '${Environment.apiUrl}/images/${user.avatar}', size: size);
+          link: '${Environment.apiUrl}/images/${user.avatar}', size: size, fit: fit);
     }
   }
 
