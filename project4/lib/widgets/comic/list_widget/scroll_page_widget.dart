@@ -77,7 +77,7 @@ class _ScrollPageWidgetState extends State<ScrollPageWidget>
         case QueryType.favourite:
         case QueryType.read:
           pageData = await ComicRepository.instance
-              .getAllHistoryComics(page: _page, pageSize: _pageSize, action: QueryType.read.name.toUpperCase());
+              .getAllHistoryComics(page: _page, pageSize: _pageSize, action: widget.queryType.name.toUpperCase());
       }
       _page += 1;
       _hasNext = pageData.hasNext;
