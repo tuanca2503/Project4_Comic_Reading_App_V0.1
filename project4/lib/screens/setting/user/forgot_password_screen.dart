@@ -25,13 +25,13 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController =
-  TextEditingController(text: "string2@gmail.com");
+  TextEditingController();
   final TextEditingController _codeController =
   TextEditingController();
   final TextEditingController _newPasswordController =
-  TextEditingController(text: "string123aA@");
+  TextEditingController();
   final TextEditingController _reNewPasswordController =
-  TextEditingController(text: "string123aA@");
+  TextEditingController();
 
   int? _sendEmailAfterSecond;
 

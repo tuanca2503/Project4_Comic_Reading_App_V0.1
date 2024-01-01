@@ -24,13 +24,13 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController =
-      TextEditingController(text: "string2@gmail.com");
+      TextEditingController();
   final TextEditingController _usernameController =
-      TextEditingController(text: "string");
+      TextEditingController();
   final TextEditingController _passwordController =
-      TextEditingController(text: "string123aA@");
+      TextEditingController();
   final TextEditingController _rePasswordController =
-      TextEditingController(text: "string123aA@");
+      TextEditingController();
 
   Future<void> _signUp() async {
     if (!_formKey.currentState!.validate()) {

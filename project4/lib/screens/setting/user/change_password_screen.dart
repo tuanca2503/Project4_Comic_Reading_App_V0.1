@@ -22,11 +22,11 @@ class ChangePasswordScreen extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _oldPasswordController =
-      TextEditingController(text: "string123aA@");
+      TextEditingController();
   final TextEditingController _newPasswordController =
-      TextEditingController(text: "string123aA@");
+      TextEditingController();
   final TextEditingController _reNewPasswordController =
-      TextEditingController(text: "string123aA@");
+      TextEditingController();
 
   Future<void> _onChangePassword() async {
     if (!_formKey.currentState!.validate()) {

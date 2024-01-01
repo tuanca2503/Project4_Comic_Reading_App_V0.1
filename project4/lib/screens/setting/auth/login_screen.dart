@@ -29,9 +29,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController =
-      TextEditingController(text: "string2@gmail.com");
+      TextEditingController();
   final TextEditingController _passwordController =
-      TextEditingController(text: "string123aA@");
+      TextEditingController();
 
   Future<void> _onLogin() async {
     if (!_formKey.currentState!.validate()) {

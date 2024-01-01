@@ -22,9 +22,22 @@ class ItemNotificationWidget extends StatefulWidget {
 
 class _ItemNotificationWidgetState extends State<ItemNotificationWidget> {
   void _onPress(BuildContext context) {
-    Helper.navigatorPush(
+    showDialog(
         context: context,
-        screen: DetailsComicScreen(id: widget.notification.comicId));
+        builder: (c) {
+          return const LoadingDialog(message: "Đang xử lý");
+        });
+    NotificationRepository.instance
+        .markAsRead(widget.notification.id)
+        .then((_) {
+      setState(() {
+        widget.notification.isRead = true;
+      });
+      Helper.dialogPop(context);
+      Helper.navigatorPush(
+          context: context,
+          screen: DetailsComicScreen(id: widget.notification.comicId));
+    });
   }
 
   void _onMarkAsRead() {
@@ -33,7 +46,9 @@ class _ItemNotificationWidgetState extends State<ItemNotificationWidget> {
         builder: (c) {
           return const LoadingDialog(message: "Đang xử lý");
         });
-    NotificationRepository.instance.markAsRead(widget.notification.id).then((_) {
+    NotificationRepository.instance
+        .markAsRead(widget.notification.id)
+        .then((_) {
       setState(() {
         widget.notification.isRead = true;
       });
