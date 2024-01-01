@@ -44,7 +44,7 @@ class _CustomBottomNavigatorBarState extends State<CustomBottomNavigatorBar> {
           ),
           BottomNavigationBarItem(
             icon: Storages.instance.isLogin()
-                ? BaseWidget.instance.getAvatarWidget(size: 24)
+                ? Container(clipBehavior: Clip.hardEdge,child: BaseWidget.instance.getAvatarWidget(size: 24),decoration: BoxDecoration(shape: BoxShape.circle),)
                 : const Icon(Icons.settings),
             label: Storages.instance.isLogin()
                 ? Storages.instance.getUser()?.username ?? 'User'

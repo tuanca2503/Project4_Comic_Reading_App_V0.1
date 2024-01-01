@@ -69,7 +69,7 @@ class AppColor {
 
   static final lightTheme = _createTheme(
       onBackground: _createMaterialColor(const Color(0xff0F0F0F)),
-      background: _createMaterialColor(const Color(0xFFE6E6E6)),
+      background: _createMaterialColor(Color.fromARGB(255, 255, 255, 255)),
       primary: _createMaterialColor(const Color(0xFFF0BC2C)),
       secondary: _createMaterialColor(const Color(0xff311EC4)),
       tertiary: _createMaterialColor(const Color(0xff15B8B6)));
