@@ -128,7 +128,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   }
 
   Widget _avatarPicker() {
-print(BaseWidget.instance.getAvatarWidget().runtimeType);
     return GestureDetector(
       onTap: _getImage,
       child: CircleAvatar(
