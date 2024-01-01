@@ -138,7 +138,7 @@ class _ComicBottomSheetState extends State<ComicBottomSheet> {
                   ListGenresHorizontal(
                     genres: comic.genres,
                     fontSize: AppFontSize.label,
-                    height: AppDimension.baseConstraints.maxHeight * 0.04,
+                    height: AppDimension.baseConstraints.maxHeight * 0.03,
                     bgColor: Theme.of(context).colorScheme.surfaceVariant,
                     textColor: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),

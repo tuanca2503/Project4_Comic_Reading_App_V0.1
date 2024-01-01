@@ -5,7 +5,7 @@ class Environment {
   static const String socketUrl = 'ws://localhost:8080/socket';
 
   // Localhost ios emulator 127.0.0.1 or localhost
-  // Localhost ios emulator 10.0.2.2
+  // Localhost android emulator 10.0.2.2
   // Localhost on Real device means different
 
   // static const String apiUrl = 'http://10.0.2.2:8080';

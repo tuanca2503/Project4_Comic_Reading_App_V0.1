@@ -93,15 +93,13 @@ class _ReadingScreenState extends State<ReadingScreen>
     switch (action) {
       case NavigateChapterAction.prev:
         if (_currentChapterIndex > 0) {
-          setState(() {
-            _currentChapterIndex--;
-          });
+          _currentChapterIndex -= 1;
+          _onSelectChapter(_currentChapterIndex);
         }
       case NavigateChapterAction.next:
         if (_currentChapterIndex < chapterList.length) {
-          setState(() {
-            _currentChapterIndex++;
-          });
+          _currentChapterIndex += 1;
+          _onSelectChapter(_currentChapterIndex);
         }
     }
   }
@@ -157,6 +155,9 @@ class _ReadingScreenState extends State<ReadingScreen>
   }
 
   Widget _bottomBar() {
+    
+    int maxTotalChap = chapterList.length-1;
+    int minTotalChap = chapterList.length-chapterList.length;
     return !_isShowBar
         ? Container()
         : Positioned(
@@ -170,11 +171,17 @@ class _ReadingScreenState extends State<ReadingScreen>
                 padding: const EdgeInsets.all(AppDimension.dimension8),
                 width: AppDimension.baseConstraints.maxWidth,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _navigateChapterWidget(NavigateChapterAction.prev),
-                    _dropdownChapterListWidget(),
-                    _navigateChapterWidget(NavigateChapterAction.next),
+                    Expanded(flex: 3,child: Container(alignment: Alignment.centerLeft,child: (_currentChapterIndex > minTotalChap) ?
+                    _navigateChapterWidget(NavigateChapterAction.prev) : Container(),
+                    ),
+                    ),
+                    
+                    Expanded(flex: 6,child: Container(child: _dropdownChapterListWidget(),padding: EdgeInsets.symmetric(horizontal: 20),)),
+                    Expanded(flex: 3,child:  Container(alignment: Alignment.centerRight,child: (_currentChapterIndex < maxTotalChap) ?
+                    _navigateChapterWidget(NavigateChapterAction.next) : Container(),))
+                   ,
                   ],
                 ),
               ),
@@ -188,7 +195,7 @@ class _ReadingScreenState extends State<ReadingScreen>
         _navigateChapter(action);
       },
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: (action == NavigateChapterAction.prev) ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: [
           BaseWidget.instance.setIcon(
             iconData: action == NavigateChapterAction.prev
