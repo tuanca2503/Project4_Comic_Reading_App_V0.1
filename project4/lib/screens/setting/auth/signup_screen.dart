@@ -13,7 +13,6 @@ import 'package:project4/widgets/base_widget.dart';
 import 'package:project4/widgets/loading_dialog.dart';
 import 'package:project4/widgets/title_app_widget.dart';
 
-
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
@@ -23,14 +22,10 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController =
-      TextEditingController();
-  final TextEditingController _usernameController =
-      TextEditingController();
-  final TextEditingController _passwordController =
-      TextEditingController();
-  final TextEditingController _rePasswordController =
-      TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _rePasswordController = TextEditingController();
 
   Future<void> _signUp() async {
     if (!_formKey.currentState!.validate()) {
@@ -38,9 +33,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
 
     try {
-      showDialog(context: context, builder: (c) {
-        return const LoadingDialog(message: "Đang đăng ký",);
-      });
+      showDialog(
+          context: context,
+          builder: (c) {
+            return const LoadingDialog(
+              message: "Đang đăng ký",
+            );
+          });
       await AuthRepository.instance.registerUser(
           email: _emailController.text,
           password: _passwordController.text,
@@ -53,7 +52,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } catch (e) {
       if (!mounted) return;
       Helper.dialogPop(context);
-      Helper.showErrorSnackBar(context, ResponseErrorHelper.getErrorMessage(e));
+      Helper.showErrorSnackBar(context, 'Email đã tồn tại');
+      // Helper.showErrorSnackBar(context, ResponseErrorHelper.getErrorMessage(e));
     }
   }
 
@@ -111,13 +111,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Center(
-            child: TitleAppWidget(title: 'Đăng ký', mainAxisAlignment: MainAxisAlignment.center,),
+            child: TitleAppWidget(
+              title: 'Đăng ký',
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
           ),
           CustomTextFormField(
             controller: _emailController,
             label: "Email",
             hintText: 'abc@mail.com',
-            prefixIcon: BaseWidget.instance.setIcon(iconData: Icons.email_outlined),
+            prefixIcon:
+                BaseWidget.instance.setIcon(iconData: Icons.email_outlined),
             validator: (value) {
               return AppValidator.emailValidator(value);
             },
@@ -126,7 +130,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             controller: _usernameController,
             label: "Name",
             hintText: 'Nguyễn Văn A',
-            prefixIcon: BaseWidget.instance.setIcon(iconData: Icons.account_circle),
+            prefixIcon:
+                BaseWidget.instance.setIcon(iconData: Icons.account_circle),
             validator: (value) {
               return AppValidator.usernameValidator(value, 3, 255);
             },
@@ -135,8 +140,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
             controller: _passwordController,
             label: "Mật khẩu",
             hintText: 'Mật khẩu',
-            prefixIcon: BaseWidget.instance.setIcon(iconData: Icons.lock_outline),
-            suffixIcon: BaseWidget.instance.setIcon(iconData: Icons.remove_red_eye_outlined),
+            prefixIcon:
+                BaseWidget.instance.setIcon(iconData: Icons.lock_outline),
+            suffixIcon: BaseWidget.instance
+                .setIcon(iconData: Icons.remove_red_eye_outlined),
             obscureText: true,
             validator: (value) {
               return AppValidator.passwordValidator(value);
@@ -146,8 +153,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
             controller: _rePasswordController,
             label: "Nhập lại mật khẩu",
             hintText: 'Nhập lại mật khẩu',
-            prefixIcon: BaseWidget.instance.setIcon(iconData: Icons.lock_outline),
-            suffixIcon: BaseWidget.instance.setIcon(iconData: Icons.remove_red_eye_outlined),
+            prefixIcon:
+                BaseWidget.instance.setIcon(iconData: Icons.lock_outline),
+            suffixIcon: BaseWidget.instance
+                .setIcon(iconData: Icons.remove_red_eye_outlined),
             obscureText: true,
             validator: (value) {
               return AppValidator.rePasswordValidator(
@@ -163,7 +172,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: AppDimension.dimension32,),
+        const SizedBox(
+          height: AppDimension.dimension32,
+        ),
         Row(
           children: [
             Expanded(

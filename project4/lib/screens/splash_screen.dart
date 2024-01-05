@@ -61,18 +61,20 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ),
           Positioned(
-              left: 0,
-              right: 0,
-              top: AppDimension.baseConstraints.maxHeight * 0.45,
-              child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Comic Reading',
-                    style: TextStyle(
-                        color: AppColor.onOverlay,
-                        fontSize: AppFontSize.headline1,
-                        fontWeight: FontWeight.bold),
-                  ))),
+            left: 0,
+            right: 0,
+            top: AppDimension.baseConstraints.maxHeight * 0.45,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Comic Reading',
+                style: TextStyle(
+                    color: AppColor.onOverlay,
+                    fontSize: AppFontSize.headline1,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
         ],
       ),
     );

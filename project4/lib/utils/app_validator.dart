@@ -74,7 +74,7 @@ class AppValidator {
 
   static String? _regexPassword(String? value) {
     final passwordRegExp =
-        RegExp(r'^(?=.*[a-zA-Z])(?=.*\d?)(?=.*[!@#$%^&*]?).{8,30}$');
+        RegExp(r'^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,30}$');
 
     if (value != null && !passwordRegExp.hasMatch(value)) {
       return 'Mật khẩu từ 8 - 30 ký tự, phải bao gồm số, chữ và ký tự đặc biệt!';

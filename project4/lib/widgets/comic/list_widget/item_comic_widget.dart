@@ -12,7 +12,11 @@ import 'package:project4/widgets/comic/list_widget/list_genres_horizontal.dart';
 enum ItemComicType { normal, history }
 
 class ItemComicWidget extends StatelessWidget {
-  const ItemComicWidget({Key? key, required this.comic, this.itemComicType = ItemComicType.normal}) : super(key: key);
+  const ItemComicWidget(
+      {Key? key,
+      required this.comic,
+      this.itemComicType = ItemComicType.normal})
+      : super(key: key);
 
   final PageComicItem comic;
   final ItemComicType itemComicType;
@@ -22,15 +26,19 @@ class ItemComicWidget extends StatelessWidget {
       case ItemComicType.normal:
         Helper.navigatorPush(
             context: context, screen: DetailsComicScreen(id: comic.id));
-        case ItemComicType.history:
-          Helper.navigatorPush(
-              context: context, screen: ReadingScreen(comicId: comic.id, chapterId: comic.currentReadChapterId,));
+      case ItemComicType.history:
+        Helper.navigatorPush(
+            context: context,
+            screen: ReadingScreen(
+              comicId: comic.id,
+              chapterId: comic.currentReadChapterId,
+            ));
     }
-
   }
 
   void _onLongPress(BuildContext context, String id) {
     // ignore: use_build_context_synchronously
+
     showModalBottomSheet(
       isScrollControlled: true,
       isDismissible: true,
@@ -98,8 +106,7 @@ class ItemComicWidget extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
           style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: AppFontSize.headline3),
+              fontWeight: FontWeight.bold, fontSize: AppFontSize.headline3),
         ),
         ListGenresHorizontal(
           genres: comic.genres,
@@ -111,23 +118,23 @@ class ItemComicWidget extends StatelessWidget {
         Text(
           "${comic.totalChapters} Chương",
           style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: AppFontSize.label),
+              fontWeight: FontWeight.w500, fontSize: AppFontSize.label),
         ),
-        itemComicType == ItemComicType.history ? Text(
-          "Đang đọc: ${comic.currentReadChapterName}",
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: AppFontSize.label,
-          ),
-        ) : Container(),
+        itemComicType == ItemComicType.history
+            ? Text(
+                "Đang đọc: ${comic.currentReadChapterName}",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: AppFontSize.label,
+                ),
+              )
+            : Container(),
         Text(
           "Cập nhật: ${Helper.showTimeUpdatedComic(comic.lastUpdatedDate)}",
           style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: AppFontSize.label,
-              color: Theme.of(context).colorScheme.tertiary
-          ),
+              color: Theme.of(context).colorScheme.tertiary),
         ),
         _comicInteractGroupWidget(context),
       ],
@@ -152,14 +159,12 @@ class ItemComicWidget extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            child: BaseWidget.instance.setIcon(
-                iconData: iconData,
-                size: AppFontSize.label),
+            child: BaseWidget.instance
+                .setIcon(iconData: iconData, size: AppFontSize.label),
           ),
           Text(
             " $text",
-            style: TextStyle(
-                fontSize: AppFontSize.label),
+            style: TextStyle(fontSize: AppFontSize.label),
           ),
         ],
       ),

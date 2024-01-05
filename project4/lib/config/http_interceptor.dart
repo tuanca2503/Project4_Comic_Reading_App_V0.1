@@ -23,16 +23,17 @@ class HttpInterceptor {
 
   final _dio = GetIt.instance<Dio>();
   final _storage = Storages.instance;
-  final Map<String, String> _headers = {
-    // 'accept': '*/*',
-    'Content-Type': 'application/json',
-    // 'ngrok-skip-browser-warning': 'true',
-  };
+
   bool isRefreshToken = false;
 
   void interceptor() {
     _dio.interceptors
         .add(InterceptorsWrapper(onRequest: (options, handler) async {
+      final Map<String, String> headers = {
+        // 'accept': '*/*',
+        'Content-Type': 'application/json',
+        // 'ngrok-skip-browser-warning': 'true',
+      };
       // config url (dotenv, ...)
       if (_storage.isLogin()) {
         String? accessToken = await _storage.getAccessToken();
@@ -51,11 +52,11 @@ class HttpInterceptor {
 
         // Add header when call API
         if (accessToken.isHasText) {
-          _headers['Authorization'] =
+          headers['Authorization'] =
               '${_AuthorizationPrefix.Bearer.name} $accessToken';
         }
       }
-      options.headers = _headers;
+      options.headers = headers;
 
       if (!options.path.startsWith('http')) {
         options.path = Environment.apiUrl + options.path;
@@ -132,16 +133,21 @@ class HttpInterceptor {
   }
 
   Future<bool> _refreshToken() async {
+    final Map<String, String> headers = {
+      // 'accept': '*/*',
+      'Content-Type': 'application/json',
+      // 'ngrok-skip-browser-warning': 'true',
+    };
     try {
       Helper.debug('run refresh token');
       String? refreshToken = await _storage.getRefreshToken();
       if (refreshToken.isHasText) {
-        _headers['Authorization'] =
+        headers['Authorization'] =
             '${_AuthorizationPrefix.Refresh.name} $refreshToken';
       }
       final Response response = await _dio.get(
         '${Environment.apiUrl}/api/auth/free/refresh-token',
-        options: Options(headers: _headers),
+        options: Options(headers: headers),
       );
       if (response.statusCode != 200) {
         Helper.debug("///ERROR _refreshToken: ${response.data}///");

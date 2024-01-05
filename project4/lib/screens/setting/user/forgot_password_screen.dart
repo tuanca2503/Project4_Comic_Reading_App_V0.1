@@ -8,12 +8,12 @@ import 'package:project4/utils/app_dimension.dart';
 import 'package:project4/utils/app_validator.dart';
 import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/response_helper.dart';
+import 'package:project4/utils/string_utils.dart';
 import 'package:project4/widgets/app/custom_button_widget.dart';
 import 'package:project4/widgets/app/custom_text_form_field.dart';
 import 'package:project4/widgets/base_widget.dart';
 import 'package:project4/widgets/loading_dialog.dart';
 import 'package:project4/widgets/title_app_widget.dart';
-
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
@@ -24,47 +24,60 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController =
-  TextEditingController();
-  final TextEditingController _codeController =
-  TextEditingController();
-  final TextEditingController _newPasswordController =
-  TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _reNewPasswordController =
-  TextEditingController();
+      TextEditingController();
 
   int? _sendEmailAfterSecond;
+  Timer? _timer;
 
   @override
-  void initState() {
-    super.initState();
-    _sendEmailTimer();
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   _sendEmailTimer() {
-    Timer(const Duration(seconds: 1), () async {
+    _sendEmailAfterSecond = 60;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_sendEmailAfterSecond != null && _sendEmailAfterSecond! > 0) {
         setState(() {
           _sendEmailAfterSecond = _sendEmailAfterSecond! - 1;
         });
+      } else {
+        _timer?.cancel();
       }
     });
   }
 
   Future<void> _sendEmailForgotPassword() async {
+    if (!_emailController.text.isHasText) {
+      return;
+    }
+    if (_sendEmailAfterSecond != null && _sendEmailAfterSecond! > 0) {
+      Helper.showErrorSnackBar(context, 'Vui lòng đợi hết 60s!');
+      return;
+    }
     try {
-      showDialog(context: context, builder: (c) {
-        return const LoadingDialog(message: "Đang gửi mã",);
-      });
-      _sendEmailAfterSecond = 60;
-      await AuthRepository.instance.forgotPassword(
-          email: _emailController.text);
+      showDialog(
+          context: context,
+          builder: (c) {
+            return const LoadingDialog(
+              message: "Đang gửi mã",
+            );
+          });
+      _sendEmailTimer();
+      await AuthRepository.instance
+          .forgotPassword(email: _emailController.text);
       if (!mounted) return;
       Helper.dialogPop(context);
     } catch (e) {
       if (!mounted) return;
       Helper.dialogPop(context);
-      Helper.showErrorSnackBar(context, ResponseErrorHelper.getErrorMessage(e));
+      Helper.showErrorSnackBar(context, "Không tìm thấy Email");
+      _sendEmailAfterSecond = 0;
     }
   }
 
@@ -74,9 +87,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     }
 
     try {
-      showDialog(context: context, builder: (c) {
-        return const LoadingDialog(message: "Đang đổi mật khẩu",);
-      });
+      showDialog(
+          context: context,
+          builder: (c) {
+            return const LoadingDialog(
+              message: "Đang đổi mật khẩu",
+            );
+          });
       await AuthRepository.instance.updatePasswordByCode(
         email: _emailController.text,
         code: _codeController.text,
@@ -147,13 +164,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Center(
-            child: TitleAppWidget(title: 'Quên mật khẩu', mainAxisAlignment: MainAxisAlignment.center,),
+            child: TitleAppWidget(
+              title: 'Quên mật khẩu',
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
           ),
           CustomTextFormField(
             controller: _emailController,
             label: "Email",
             hintText: 'abc@mail.com',
-            prefixIcon: BaseWidget.instance.setIcon(iconData: Icons.email_outlined),
+            prefixIcon:
+                BaseWidget.instance.setIcon(iconData: Icons.email_outlined),
             suffixIcon: BaseWidget.instance.setIcon(iconData: Icons.send),
             onSuffixIcon: _sendEmailForgotPassword,
             validator: (value) {
@@ -176,8 +197,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             label: "Mật khẩu",
             hintText: 'Mật khẩu',
             isEnable: _sendEmailAfterSecond != null,
-            prefixIcon: BaseWidget.instance.setIcon(iconData: Icons.lock_outline),
-            suffixIcon: BaseWidget.instance.setIcon(iconData: Icons.remove_red_eye_outlined),
+            prefixIcon:
+                BaseWidget.instance.setIcon(iconData: Icons.lock_outline),
+            suffixIcon: BaseWidget.instance
+                .setIcon(iconData: Icons.remove_red_eye_outlined),
             obscureText: true,
             validator: (value) {
               return AppValidator.passwordValidator(value);
@@ -188,11 +211,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             label: "Nhập lại mật khẩu",
             hintText: 'Mật khẩu',
             isEnable: _sendEmailAfterSecond != null,
-            prefixIcon: BaseWidget.instance.setIcon(iconData: Icons.lock_outline),
-            suffixIcon: BaseWidget.instance.setIcon(iconData: Icons.remove_red_eye_outlined),
+            prefixIcon:
+                BaseWidget.instance.setIcon(iconData: Icons.lock_outline),
+            suffixIcon: BaseWidget.instance
+                .setIcon(iconData: Icons.remove_red_eye_outlined),
             obscureText: true,
             validator: (value) {
-              return AppValidator.rePasswordValidator(_newPasswordController.text, _reNewPasswordController.text);
+              return AppValidator.rePasswordValidator(
+                  _newPasswordController.text, _reNewPasswordController.text);
             },
           ),
         ],
@@ -204,9 +230,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     if (_sendEmailAfterSecond == null) {
       return Container();
     } else if (_sendEmailAfterSecond! > 0) {
-      return Text('Không nhận được Email? Gửi lại sau $_sendEmailAfterSecond giây!', style: TextStyle(color: AppColor.error, fontSize: AppFontSize.body, fontWeight: FontWeight.w500),);
+      return Text(
+        'Không nhận được Email? Gửi lại sau $_sendEmailAfterSecond giây!',
+        style: TextStyle(
+            color: AppColor.error,
+            fontSize: AppFontSize.body,
+            fontWeight: FontWeight.w500),
+      );
     } else {
-      return Text('Gửi lại Email!', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: AppFontSize.body, fontWeight: FontWeight.w500),);
+      return Container();
     }
   }
 
@@ -214,7 +246,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: AppDimension.dimension16,),
+        const SizedBox(
+          height: AppDimension.dimension16,
+        ),
         Row(
           children: [
             Expanded(

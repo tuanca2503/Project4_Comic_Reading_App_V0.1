@@ -28,10 +28,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController =
-      TextEditingController();
-  final TextEditingController _passwordController =
-      TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _onLogin() async {
     if (!_formKey.currentState!.validate()) {
@@ -60,7 +58,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (!mounted) return;
       Helper.dialogPop(context);
-      Helper.showErrorSnackBar(context, 'Email đã tồn tại');
+      Helper.showErrorSnackBar(
+          context, 'Tài khoản hoặc mật khẩu không chính xác');
       // Helper.showErrorSnackBar(context, ResponseErrorHelper.getErrorMessage(e));
     }
   }

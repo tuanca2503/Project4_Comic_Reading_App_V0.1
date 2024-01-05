@@ -11,7 +11,11 @@ enum NavigateChapterAction { prev, next }
 
 class ReadingScreen extends StatefulWidget {
   const ReadingScreen(
-      {super.key, this.chapterIndex, this.chapterList, this.comicId, this.chapterId});
+      {super.key,
+      this.chapterIndex,
+      this.chapterList,
+      this.comicId,
+      this.chapterId});
   /* Guide: Use chapterList && chapterIndex (from DetailScreen)
   or comicId && chapterId (from ComicBottomSheet). If chapterId = null => set chapterIndex = 0
   * */
@@ -41,26 +45,33 @@ class _ReadingScreenState extends State<ReadingScreen>
   void initState() {
     super.initState();
 
-    if (widget.comicId == null && !(widget.chapterIndex != null && widget.chapterList != null)) {
-      throw Exception("Cannot get chapter information, check `Guide` in `ReadingScreen`");
+    if (widget.comicId == null &&
+        !(widget.chapterIndex != null && widget.chapterList != null)) {
+      throw Exception(
+          "Cannot get chapter information, check `Guide` in `ReadingScreen`");
     }
 
     if (widget.chapterList != null) {
       chapterList = widget.chapterList!;
+
       _createDropdownChapterList();
       _onSelectChapter(widget.chapterIndex!);
     } else {
-      ChapterRepository.instance.getChapterListByComicId(comicId: widget.comicId!).then((value) {
+      ChapterRepository.instance
+          .getChapterListByComicId(comicId: widget.comicId!)
+          .then((value) {
         chapterList = value;
+
         if (widget.chapterId != null) {
-          _currentChapterIndex = _createDropdownChapterList(chapterId: widget.chapterId)!;
+          _currentChapterIndex =
+              _createDropdownChapterList(chapterId: widget.chapterId)!;
         } else {
+          _createDropdownChapterList();
           _currentChapterIndex = 0;
         }
         _onSelectChapter(_currentChapterIndex);
       });
     }
-    
   }
 
   int? _createDropdownChapterList({String? chapterId}) {
@@ -72,7 +83,12 @@ class _ReadingScreenState extends State<ReadingScreen>
       }
       _chapterListMenu.add(DropdownMenuItem(
         value: i,
-        child: Text(chapter.name),
+        child: Text(
+          chapter.name,
+          style: TextStyle(
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
       ));
     }
     return chapterIndex;
@@ -155,9 +171,8 @@ class _ReadingScreenState extends State<ReadingScreen>
   }
 
   Widget _bottomBar() {
-    
-    int maxTotalChap = chapterList.length-1;
-    int minTotalChap = chapterList.length-chapterList.length;
+    int maxTotalChap = chapterList.length - 1;
+    int minTotalChap = chapterList.length - chapterList.length;
     return !_isShowBar
         ? Container()
         : Positioned(
@@ -173,15 +188,30 @@ class _ReadingScreenState extends State<ReadingScreen>
                 child: Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(flex: 3,child: Container(alignment: Alignment.centerLeft,child: (_currentChapterIndex > minTotalChap) ?
-                    _navigateChapterWidget(NavigateChapterAction.prev) : Container(),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: (_currentChapterIndex > minTotalChap)
+                            ? _navigateChapterWidget(NavigateChapterAction.prev)
+                            : Container(),
+                      ),
                     ),
-                    ),
-                    
-                    Expanded(flex: 6,child: Container(child: _dropdownChapterListWidget(),padding: EdgeInsets.symmetric(horizontal: 20),)),
-                    Expanded(flex: 3,child:  Container(alignment: Alignment.centerRight,child: (_currentChapterIndex < maxTotalChap) ?
-                    _navigateChapterWidget(NavigateChapterAction.next) : Container(),))
-                   ,
+                    Expanded(
+                        flex: 6,
+                        child: Container(
+                          child: _dropdownChapterListWidget(),
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                        )),
+                    Expanded(
+                        flex: 3,
+                        child: Container(
+                          alignment: Alignment.centerRight,
+                          child: (_currentChapterIndex < maxTotalChap)
+                              ? _navigateChapterWidget(
+                                  NavigateChapterAction.next)
+                              : Container(),
+                        )),
                   ],
                 ),
               ),
@@ -195,7 +225,9 @@ class _ReadingScreenState extends State<ReadingScreen>
         _navigateChapter(action);
       },
       child: Row(
-        mainAxisAlignment: (action == NavigateChapterAction.prev) ? MainAxisAlignment.start : MainAxisAlignment.end,
+        mainAxisAlignment: (action == NavigateChapterAction.prev)
+            ? MainAxisAlignment.start
+            : MainAxisAlignment.end,
         children: [
           BaseWidget.instance.setIcon(
             iconData: action == NavigateChapterAction.prev
@@ -217,12 +249,15 @@ class _ReadingScreenState extends State<ReadingScreen>
 
   Widget _dropdownChapterListWidget() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppDimension.dimension16, vertical: AppDimension.dimension8),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppDimension.dimension16,
+          vertical: AppDimension.dimension8),
       decoration: BoxDecoration(
         border: Border.all(color: AppColor.onOverlay),
         borderRadius: BorderRadius.circular(AppDimension.dimension8),
       ),
       child: DropdownButton(
+        isExpanded: true,
         value: _currentChapterIndex,
         items: _chapterListMenu,
         onChanged: (chapterIndex) {
@@ -233,7 +268,8 @@ class _ReadingScreenState extends State<ReadingScreen>
         style: TextStyle(
           color: AppColor.onOverlay,
           overflow: TextOverflow.ellipsis,
-        ),alignment: Alignment.centerLeft,
+        ),
+        alignment: Alignment.centerLeft,
         icon: Icon(
           Icons.arrow_drop_down_circle,
           color: AppColor.onOverlay,

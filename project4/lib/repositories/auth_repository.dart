@@ -9,7 +9,6 @@ import 'package:project4/utils/helper.dart';
 import 'package:project4/utils/socket_helper.dart';
 import 'package:project4/utils/storages.dart';
 
-
 class AuthRepository {
   static AuthRepository? _instance;
   AuthRepository._();
@@ -56,6 +55,7 @@ class AuthRepository {
   Future<void> logout() async {
     try {
       await _storage.clearStorage();
+      // await _storage.setUser(null);
       SocketHelper.instance.deactivate();
       screenProvider.updateUserInfo(null);
     } catch (e) {
@@ -102,10 +102,11 @@ class AuthRepository {
     }
   }
 
-  Future<void> updatePassword({required String oldPassword, required String newPassword}) async {
+  Future<void> updatePassword(
+      {required String oldPassword, required String newPassword}) async {
     try {
       final Response response =
-      await dio.post('$_apiBase/change-password', data: {
+          await dio.post('$_apiBase/change-password', data: {
         'oldPassword': oldPassword,
         'newPassword': newPassword,
       });
@@ -119,10 +120,13 @@ class AuthRepository {
     }
   }
 
-  Future<void> updatePasswordByCode({required String code, required String email, required String newPassword}) async {
+  Future<void> updatePasswordByCode(
+      {required String code,
+      required String email,
+      required String newPassword}) async {
     try {
       final Response response =
-      await dio.post('$_apiBase/free/change-password-by-token', data: {
+          await dio.post('$_apiBase/free/change-password-by-token', data: {
         'email': email,
         'code': code,
         'newPassword': newPassword,
